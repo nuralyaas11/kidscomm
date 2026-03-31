@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidsComm - Markah Saya</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Konfigurasi Tema Tailwind & Custom CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Nunito', 'sans-serif'], },
+                    colors: {
+                        primary: '#FF6B6B',
+                        secondary: '#4ECDC4',
+                        accent: '#FFE66D',
+                        dark: '#2B2D42',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .kartun-border {
+            border: 4px solid #2B2D42;
+            box-shadow: 6px 6px 0px #2B2D42;
+            transition: all 0.2s ease-in-out;
+        }
+        .kartun-border:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px #2B2D42;
+        }
+        .kartun-border:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #2B2D42;
+        }
+        .bg-dots {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        .kartun-table th, .kartun-table td {
+            border: 3px solid #2B2D42;
+            padding: 1rem;
+        }
+        
+        /* Animasi */
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-in { animation: slideIn 0.4s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-dots flex h-screen overflow-hidden text-dark">
+
+    <!-- SIDEBAR (HARDCODED) -->
+    <aside class="w-72 bg-white border-r-4 border-dark hidden md:flex flex-col z-20 shadow-xl relative min-h-screen">
+        <div class="p-8 text-center border-b-4 border-dark bg-accent">
+            <h1 class="text-4xl font-black tracking-tighter text-dark">Kids<span class="text-primary">Comm</span></h1>
+            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Jom Berkomunikasi!</p>
+        </div>
+        
+        <nav class="flex-1 p-6 space-y-2" id="sidebarNav">
+            <div id="customerMenu" class="flex flex-col space-y-4">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Menu Pelajar</p>
+                <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Utama
+                </a>
+                <a href="play_game.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Main Game
+                </a>
+                <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Jawab Kuiz
+                </a>
+                <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> Markah Saya
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- KAWASAN KANDUNGAN UTAMA -->
+    <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
+        
+        <!-- HEADER -->
+        <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-10 shadow-sm w-full">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden text-2xl font-black bg-accent w-10 h-10 rounded-xl kartun-border flex items-center justify-center">☰</button>
+                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Markah Saya</h2>
+            </div>
+            <div class="flex items-center gap-4 md:gap-6">
+                <div class="text-right hidden sm:block">
+                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Memuatkan...</p>
+                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Akaun Murid</p>
+                </div>
+                <button id="logoutBtn" class="bg-primary hover:bg-red-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-black kartun-border text-sm md:text-base transition-all">
+                    Log Keluar
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6 md:p-8 lg:p-10 max-w-5xl mx-auto w-full animate-slide-in">
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div>
+                    <h1 class="text-4xl font-black mb-2">Pencapaian Saya 🏆</h1>
+                    <p class="text-gray-600 font-bold text-lg">Syabas! Lihat markah yang telah anda kumpulkan setakat ini.</p>
+                </div>
+            </div>
+
+            <!-- Kad Statistik Ringkas -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <div class="bg-accent p-6 rounded-[2rem] kartun-border text-dark flex items-center gap-6">
+                    <div class="text-6xl">⭐</div>
+                    <div>
+                        <p class="font-black uppercase tracking-wider opacity-80 mb-1">Jumlah Bintang Terkumpul</p>
+                        <p class="text-5xl font-black" id="totalStars">0</p>
+                    </div>
+                </div>
+                <div class="bg-[#9BF6FF] p-6 rounded-[2rem] kartun-border text-dark flex items-center gap-6">
+                    <div class="text-6xl">🎮</div>
+                    <div>
+                        <p class="font-black uppercase tracking-wider opacity-80 mb-1">Aktiviti Diselesaikan</p>
+                        <p class="text-5xl font-black" id="totalActivities">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jadual Sejarah Markah -->
+            <div class="bg-white rounded-[2rem] kartun-border p-8 mb-8 overflow-x-auto">
+                <h2 class="text-2xl font-black mb-6">📜 Sejarah Aktiviti Anda</h2>
+                <table class="w-full text-left border-collapse kartun-table min-w-[500px]">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="font-black w-16 text-center">No</th>
+                            <th class="font-black">Aktiviti Diselesaikan</th>
+                            <th class="font-black text-center w-32">Markah</th>
+                            <th class="font-black">Tarikh & Masa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myScoresTableBody">
+                        <tr>
+                            <td colspan="4" class="text-center font-bold text-gray-500 py-8">
+                                Sedang menarik rekod markah anda...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+        
+        <!-- FOOTER -->
+        <footer class="mt-auto p-6 text-center border-t-4 border-dark bg-white">
+            <p class="text-dark font-bold text-sm md:text-base">
+                &copy; 2026 KidsComm. Dibangunkan dengan ❤️
+            </p>
+        </footer>
+    </div>
+
+    <!-- Logik Javascript & Firebase -->
+    <script type="module">
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { auth, db } from "../firebase-config.js";
+
+        // --- Active Menu Highlight ---
+        function highlightActiveMenu() {
+            const currentPage = 'my_scores.html';
+            document.querySelectorAll('#sidebarNav a').forEach(link => {
+                if (link.getAttribute('href').includes(currentPage)) {
+                    // Warna khusus untuk menu Markah Saya
+                    link.className = `menu-link flex items-center gap-4 bg-[#9BF6FF] text-dark p-4 rounded-2xl font-black text-lg kartun-border group hover:-translate-y-1 transition-transform`;
+                }
+            });
+        }
+        highlightActiveMenu();
+
+        // --- Logik Tarik Markah (Spesifik Pengguna) ---
+        async function fetchMyScores(userId) {
+            const tableBody = document.getElementById('myScoresTableBody');
+            try {
+                // Tarik dokumen markah di mana userId sepadan dengan pengguna yang log masuk
+                const scoresRef = collection(db, "scores");
+                const q = query(scoresRef, where("userId", "==", userId));
+                const querySnapshot = await getDocs(q);
+                
+                let myScoresList = [];
+                let totalStars = 0;
+                
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    myScoresList.push(data);
+                    totalStars += (data.score || 0);
+                });
+
+                // Kemaskini Kad Statistik
+                document.getElementById('totalStars').textContent = totalStars;
+                document.getElementById('totalActivities').textContent = myScoresList.length;
+
+                // Susun senarai mengikut tarikh terkini (Sort di client side untuk elak isu Index Firebase)
+                myScoresList.sort((a, b) => {
+                    const timeA = a.playedAt ? a.playedAt.toMillis() : 0;
+                    const timeB = b.playedAt ? b.playedAt.toMillis() : 0;
+                    return timeB - timeA;
+                });
+
+                renderTable(myScoresList);
+
+            } catch (error) {
+                console.error("Ralat menarik markah:", error);
+                tableBody.innerHTML = `<tr><td colspan="4" class="text-center font-bold text-red-500 py-8">Gagal menarik data. Ralat pangkalan data.</td></tr>`;
+            }
+        }
+
+        function renderTable(dataArray) {
+            const tableBody = document.getElementById('myScoresTableBody');
+            
+            if (dataArray.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="4" class="text-center font-bold text-gray-500 py-8">Anda belum bermain apa-apa aktiviti. Jom main sekarang!</td></tr>`;
+                return;
+            }
+
+            let htmlContent = '';
+            dataArray.forEach((scoreData, index) => {
+                
+                // Format Tarikh
+                let dateStr = "Tiada Tarikh";
+                if(scoreData.playedAt) {
+                    const date = scoreData.playedAt.toDate();
+                    dateStr = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+                }
+
+                // Format Aktiviti
+                let actName = '';
+                let actClass = '';
+                if (scoreData.activityType === 'game1') {
+                    actName = '🧩 Padanan Gambar';
+                    actClass = 'bg-[#A8E6CF]';
+                } else if (scoreData.activityType === 'game2') {
+                    actName = '🧱 Susun Perkataan';
+                    actClass = 'bg-[#FFD3B6]';
+                } else {
+                    actName = '📝 Kuiz Uji Minda';
+                    actClass = 'bg-[#FF8A8A] text-white';
+                }
+
+                htmlContent += `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="font-bold text-center">${index + 1}</td>
+                        <td>
+                            <span class="${actClass} text-dark font-black px-3 py-1 rounded-lg text-sm kartun-border border-2">
+                                ${actName}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="bg-dark text-accent px-4 py-2 rounded-xl font-black text-lg border-2 border-dark shadow-sm">
+                                ${scoreData.score || 0}
+                            </span>
+                        </td>
+                        <td class="font-bold text-gray-500 text-sm">${dateStr}</td>
+                    </tr>
+                `;
+            });
+            tableBody.innerHTML = htmlContent;
+        }
+
+        // --- Log Keluar ---
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = '../index.html';
+        });
+
+        // --- Auth Guard (Semak Sesi) ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        
+                        // Halang Admin (Guru)
+                        if (userData.role === 'admin') {
+                            window.location.href = '../admin/dashboard.html';
+                            return;
+                        }
+
+                        // Kemaskini nama
+                        document.getElementById('userNameDisplay').textContent = userData.nickname || "Pelajar";
+                        
+                        // Tarik markah menggunakan UID pelajar
+                        fetchMyScores(user.uid);
+                        
+                    } else {
+                        await signOut(auth);
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error("Ralat Auth:", error);
+                }
+            } else {
+                window.location.href = '../index.html';
+            }
+        });
+    </script>
+</body>
+</html>
