@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidsComm - Log Masuk</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Konfigurasi Tema Tailwind (Warna Ceria) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B6B',
+                        secondary: '#4ECDC4',
+                        accent: '#FFE66D',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-secondary via-blue-200 to-primary min-h-screen flex items-center justify-center p-4">
+
+    <!-- Kotak Log Masuk -->
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-md p-8 relative overflow-hidden">
+        <!-- Elemen Hiasan -->
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent rounded-full opacity-50"></div>
+        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-primary rounded-full opacity-50"></div>
+
+        <div class="relative z-10">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold text-gray-800 mb-2 tracking-tight">Kids<span class="text-primary">Comm</span></h1>
+                <p class="text-gray-500 font-medium">Mari Belajar Berkomunikasi!</p>
+            </div>
+
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-bold text-gray-700 mb-2">E-mel Pengguna</label>
+                    <input type="email" id="email" required
+                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-secondary focus:ring-2 focus:ring-secondary focus:outline-none transition-colors bg-gray-50"
+                        placeholder="contoh@emel.com">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-bold text-gray-700 mb-2">Kata Laluan</label>
+                    <input type="password" id="password" required
+                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none transition-colors bg-gray-50"
+                        placeholder="••••••••">
+                </div>
+
+                <button type="submit" id="loginBtn"
+                    class="w-full bg-secondary hover:bg-teal-500 text-white font-bold text-lg py-3 px-4 rounded-xl transition-transform transform hover:scale-105 shadow-lg">
+                    Log Masuk Sekarang!
+                </button>
+                
+                <div id="errorMessage" class="hidden text-center text-red-500 font-semibold mt-4 text-sm bg-red-50 py-2 rounded-lg border border-red-200">
+                    <!-- Mesej ralat akan dipaparkan di sini -->
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modul Firebase (Versi 11.6.1) -->
+    <script type="module">
+        import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // Import Auth dan Database dari fail konfigurasi berasingan
+        import { auth, db } from "./firebase-config.js";
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Fungsi pembantu untuk semak peranan dan halakan pengguna
+        async function routeUserBasedOnRole(uid) {
+            try {
+                // Rujuk kepada dokumen pengguna di dalam koleksi 'users' berdasarkan UID
+                const userDocRef = doc(db, "users", uid);
+                const userDocSnap = await getDoc(userDocRef);
+                
+                if (userDocSnap.exists()) {
+                    const userData = userDocSnap.data();
+                    
+                    // Halakan mengikut medan 'role' dalam Firestore
+                    if (userData.role === 'admin') {
+                        window.location.href = './admin/dashboard.html';
+                    } else {
+                        window.location.href = './customer/dashboard.html';
+                    }
+                } else {
+                    // Jika rekod tiada di Firestore, tunjukkan ralat
+                    throw new Error("Profil data tidak dijumpai. Sila hubungi Admin.");
+                }
+            } catch (error) {
+                console.error("Ralat mendapatkan peranan pengguna:", error);
+                throw error;
+            }
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // UI Loading State
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = 'Sedang Menyemak...';
+            errorMessage.classList.add('hidden');
+
+            try {
+                // 1. Log masuk melalui Firebase Auth
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // 2. Semak peranan sebenar di Firestore untuk penghalaan
+                await routeUserBasedOnRole(user.uid);
+
+            } catch (error) {
+                console.error("Ralat log masuk:", error);
+                
+                // Mesej ralat yang mesra pengguna
+                if(error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                     errorMessage.textContent = "Log masuk gagal. E-mel atau kata laluan tidak tepat.";
+                } else if (error.message.includes("Profil data")) {
+                     errorMessage.textContent = error.message;
+                } else {
+                     errorMessage.textContent = "Ralat pelayan. Sila cuba sebentar lagi.";
+                }
+                
+                errorMessage.classList.remove('hidden');
+                
+                // Kembalikan butang UI ke asal
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'Log Masuk Sekarang!';
+            }
+        });
+
+        // Semak jika pengguna sudah log masuk sebelum ini, terus hantar ke dashboard
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = 'Membawa anda ke Dashboard...';
+                
+                try {
+                    await routeUserBasedOnRole(user.uid);
+                } catch (error) {
+                    console.error("Ralat Auto-Login:", error);
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = 'Log Masuk Sekarang!';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!-- Sidebar Utama (Dinamik & Gamifikasi) -->
+<aside class="w-full md:w-72 bg-white md:border-r-4 border-dark flex flex-col z-20 shadow-xl relative min-h-screen">
+    
+    <!-- Logo KidsComm -->
+    <div class="p-8 text-center border-b-4 border-dark bg-accent">
+        <h1 class="text-4xl font-black tracking-tighter text-dark">Kids<span class="text-primary">Comm</span></h1>
+        <p class="font-bold text-sm mt-2 opacity-80 text-dark">Jom Berkomunikasi!</p>
+    </div>
+    
+    <!-- Navigasi Menu -->
+    <nav class="flex-1 p-6 space-y-2" id="sidebarNav">
+        
+        <!-- ========================================== -->
+        <!-- 1. MENU PELAJAR (CUSTOMER)                 -->
+        <!-- ========================================== -->
+        <div id="customerMenu" class="hidden flex-col space-y-4">
+            <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Menu Pelajar</p>
+            
+            <a href="../customer/dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Utama
+            </a>
+            
+            <a href="../customer/play_game.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Main Game
+            </a>
+
+            <a href="../customer/take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Jawab Kuiz
+            </a>
+            
+            <a href="../customer/my_scores.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> Markah Saya
+            </a>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 2. MENU GURU (ADMIN)                       -->
+        <!-- ========================================== -->
+        <div id="adminMenu" class="hidden flex-col space-y-4 mt-4">
+            <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Menu Guru</p>
+            
+            <a href="../admin/dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                <span class="text-2xl group-hover:scale-110 transition-transform">📊</span> Statistik
+            </a>
+            
+            <a href="../admin/manage_users.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                <span class="text-2xl group-hover:scale-110 transition-transform">👥</span> Urus Pelajar
+            </a>
+            
+            <a href="../admin/view_reports.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                <span class="text-2xl group-hover:scale-110 transition-transform">📈</span> Laporan Markah
+            </a>
+        </div>
+
+    </nav>
+</aside>

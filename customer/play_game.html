@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidsComm - Main Game</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Konfigurasi Tema Tailwind & Custom CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Nunito', 'sans-serif'], },
+                    colors: {
+                        primary: '#FF6B6B',
+                        secondary: '#4ECDC4',
+                        accent: '#FFE66D',
+                        dark: '#2B2D42',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .kartun-border {
+            border: 4px solid #2B2D42;
+            box-shadow: 6px 6px 0px #2B2D42;
+            transition: all 0.2s ease-in-out;
+        }
+        .kartun-border:hover { transform: translate(-4px, -4px); box-shadow: 10px 10px 0px #2B2D42; }
+        .kartun-border:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #2B2D42; }
+        .bg-dots { background-color: #f8fafc; background-image: radial-gradient(#cbd5e1 2px, transparent 2px); background-size: 30px 30px; }
+        
+        /* Animasi Khas untuk Permainan */
+        @keyframes pop { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .animate-pop { animation: pop 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-dots flex h-screen overflow-hidden text-dark">
+
+    <!-- SIDEBAR FALLBACK -->
+    <div id="sidebar-container" class="w-72 bg-white border-r-4 border-dark hidden md:flex flex-col z-20 shadow-xl relative">
+        <div class="p-8 text-center border-b-4 border-dark bg-accent">
+            <h1 class="text-4xl font-black tracking-tighter">Kids<span class="text-primary">Comm</span></h1>
+            <p class="font-bold text-sm mt-2 opacity-80">Jom Berkomunikasi!</p>
+        </div>
+        <nav class="flex-1 p-6 space-y-4" id="sidebarNav">
+            <div id="customerMenu" class="flex flex-col space-y-4">
+                <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Utama
+                </a>
+                <a href="play_game.html" class="menu-link flex items-center gap-4 bg-primary text-white p-4 rounded-2xl font-black text-lg kartun-border group hover:-translate-y-1 transition-transform">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Main Game
+                </a>
+                <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Jawab Kuiz
+                </a>
+                <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> Markah Saya
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- KAWASAN KANDUNGAN UTAMA -->
+    <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
+        
+        <!-- HEADER FALLBACK -->
+        <div id="header-container" class="bg-white border-b-4 border-dark p-6 flex justify-between items-center sticky top-0 z-10">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden text-3xl font-black bg-accent w-12 h-12 rounded-xl kartun-border flex items-center justify-center">☰</button>
+                <h2 class="text-2xl md:text-3xl font-black" id="pageTitle">Zon Permainan</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p class="font-black text-lg text-primary" id="userNameDisplay">Pelajar</p>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Akaun Murid</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN GAME CONTENT -->
+        <main class="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full flex flex-col">
+            
+            <div class="flex justify-between items-center mb-6">
+                <a href="dashboard.html" class="bg-white px-4 py-2 rounded-xl font-bold kartun-border hover:bg-gray-100 flex items-center gap-2">
+                    <span>⬅️</span> Kembali
+                </a>
+                <div class="bg-accent px-4 py-2 rounded-xl font-black kartun-border text-lg flex items-center gap-2">
+                    <span>⭐</span> Skor: <span id="scoreDisplay">0</span>
+                </div>
+            </div>
+
+            <!-- CONTAINER PERMAINAN -->
+            <div class="bg-white rounded-[2rem] kartun-border p-6 md:p-10 flex-1 flex flex-col relative overflow-hidden">
+                
+                <!-- Skrin Pilihan Permainan (Jika tiada URL param ?game=) -->
+                <div id="gameSelection" class="text-center flex-1 flex flex-col justify-center hidden">
+                    <h2 class="text-4xl font-black mb-8">Pilih Permainan Anda!</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto w-full">
+                        <button onclick="window.location.href='?game=1'" class="bg-[#A8E6CF] p-8 rounded-2xl kartun-border group text-left">
+                            <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform">🧩</span>
+                            <h3 class="text-2xl font-black mb-2">Padanan Gambar</h3>
+                            <p class="font-bold text-gray-700">Padankan situasi dengan ucapan yang betul.</p>
+                        </button>
+                        <button onclick="window.location.href='?game=2'" class="bg-[#FFD3B6] p-8 rounded-2xl kartun-border group text-left">
+                            <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform">🧱</span>
+                            <h3 class="text-2xl font-black mb-2">Susun Perkataan</h3>
+                            <p class="font-bold text-gray-700">Susun blok perkataan menjadi ayat lengkap.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Skrin Permainan Aktif -->
+                <div id="activeGameArea" class="hidden flex-1 flex flex-col">
+                    <div class="text-center mb-8">
+                        <span id="gameBadge" class="bg-primary text-white font-black px-4 py-1 rounded-full text-sm uppercase tracking-wider kartun-border inline-block mb-4 border-2">Tahap 1</span>
+                        <h2 id="gameTitle" class="text-3xl md:text-5xl font-black mb-2">Memuatkan...</h2>
+                        <p id="gameInstruction" class="text-lg font-bold text-gray-500">Sila tunggu sebentar.</p>
+                    </div>
+
+                    <!-- Papan Permainan Dinamik (Akan diisi oleh JavaScript) -->
+                    <div id="gameBoard" class="flex-1 flex flex-col items-center justify-center bg-gray-50 rounded-2xl border-4 border-dashed border-gray-300 p-6 relative">
+                        <!-- Kandungan game akan dijana di sini -->
+                    </div>
+                </div>
+
+                <!-- Skrin Tamat/Menang -->
+                <div id="gameOverArea" class="hidden text-center flex-1 flex flex-col justify-center items-center">
+                    <div class="text-8xl mb-6 animate-bounce">🎉</div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-4 text-primary">Tahniah!</h2>
+                    <p class="text-xl font-bold text-gray-700 mb-8">Anda berjaya menamatkan permainan dengan skor <span id="finalScoreDisplay" class="text-accent text-3xl bg-dark px-3 rounded-lg kartun-border ml-2">100</span></p>
+                    
+                    <button id="saveScoreBtn" class="bg-secondary text-white text-xl font-black px-8 py-4 rounded-xl kartun-border hover:bg-teal-500 mb-4 w-full md:w-auto">
+                        Simpan Markah & Kembali
+                    </button>
+                    <p id="saveStatusMessage" class="font-bold text-primary hidden">Menyimpan markah...</p>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modul Firebase & Logik Permainan -->
+    <script type="module">
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { auth, db } from "../firebase-config.js";
+
+        // Variabel Global Permainan
+        let currentUser = null;
+        let currentNickname = "Pelajar";
+        let currentGameType = "";
+        let currentScore = 0;
+        let currentLevel = 0;
+        
+        // --- Data Mock Permainan ---
+        const game1Data = [
+            { img: "🎁", situasi: "Rakan memberi anda hadiah.", jawapan: "Terima Kasih", pilihan: ["Maafkan Saya", "Sama-sama", "Terima Kasih"] },
+            { img: "🏃💨", situasi: "Anda terlanggar bahu rakan secara tidak sengaja.", jawapan: "Maafkan Saya", pilihan: ["Maafkan Saya", "Terima Kasih", "Sila Duduk"] }
+        ];
+
+        const game2Data = [
+            { soalan: "Ucapan apabila berjumpa guru pada waktu pagi.", words: ["cikgu.", "Selamat", "pagi,"], betul: "Selamat pagi, cikgu." },
+            { soalan: "Ucapan apabila ingin meminjam pensel rakan.", words: ["pensel?", "Boleh", "pinjam", "saya"], betul: "Boleh saya pinjam pensel?" }
+        ];
+
+        // --- Fungsi Permainan Utama ---
+        const ui = {
+            selection: document.getElementById('gameSelection'),
+            active: document.getElementById('activeGameArea'),
+            gameOver: document.getElementById('gameOverArea'),
+            board: document.getElementById('gameBoard'),
+            title: document.getElementById('gameTitle'),
+            instruction: document.getElementById('gameInstruction'),
+            score: document.getElementById('scoreDisplay'),
+            badge: document.getElementById('gameBadge')
+        };
+
+        function initGame() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameId = urlParams.get('game');
+
+            if (!gameId) {
+                ui.selection.classList.remove('hidden');
+                return;
+            }
+
+            ui.active.classList.remove('hidden');
+            ui.active.classList.add('flex');
+
+            if (gameId === '1') {
+                currentGameType = "game1";
+                ui.title.textContent = "Padanan Gambar";
+                ui.instruction.textContent = "Pilih ucapan yang paling sesuai untuk situasi di bawah.";
+                ui.badge.className = "bg-[#A8E6CF] text-dark font-black px-4 py-1 rounded-full text-sm uppercase tracking-wider kartun-border inline-block mb-4 border-2";
+                loadGame1();
+            } else if (gameId === '2') {
+                currentGameType = "game2";
+                ui.title.textContent = "Susun Perkataan";
+                ui.instruction.textContent = "Klik blok perkataan mengikut urutan untuk membentuk ayat yang betul.";
+                ui.badge.className = "bg-[#FFD3B6] text-dark font-black px-4 py-1 rounded-full text-sm uppercase tracking-wider kartun-border inline-block mb-4 border-2";
+                loadGame2();
+            }
+        }
+
+        // --- Logik Permainan 1: Padanan Gambar ---
+        function loadGame1() {
+            if (currentLevel >= game1Data.length) { showGameOver(); return; }
+            
+            const levelData = game1Data[currentLevel];
+            ui.board.innerHTML = `
+                <div class="text-8xl mb-4 animate-pop">${levelData.img}</div>
+                <h3 class="text-2xl font-black text-center mb-8 bg-white px-6 py-3 rounded-2xl kartun-border">${levelData.situasi}</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-2xl">
+                    ${levelData.pilihan.map(opt => `
+                        <button onclick="checkAnswer1('${opt}')" class="bg-white hover:bg-secondary hover:text-white p-4 rounded-xl kartun-border font-bold text-xl transition-colors">
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        window.checkAnswer1 = function(selected) {
+            const levelData = game1Data[currentLevel];
+            if (selected === levelData.jawapan) {
+                currentScore += 50;
+                ui.score.textContent = currentScore;
+                currentLevel++;
+                
+                // Tunjuk kesan betul (Flash hijau sementara)
+                ui.board.classList.add('bg-green-100');
+                setTimeout(() => { ui.board.classList.remove('bg-green-100'); loadGame1(); }, 500);
+            } else {
+                alert("Opps! Kurang tepat. Cuba lagi ya!");
+            }
+        }
+
+        // --- Logik Permainan 2: Susun Perkataan ---
+        let currentSentenceArrangement = [];
+        
+        function loadGame2() {
+            if (currentLevel >= game2Data.length) { showGameOver(); return; }
+            
+            currentSentenceArrangement = [];
+            const levelData = game2Data[currentLevel];
+            
+            renderGame2Board(levelData);
+        }
+
+        function renderGame2Board(levelData) {
+            // Blok yang tinggal
+            const remainingWords = levelData.words.filter(w => !currentSentenceArrangement.includes(w));
+            
+            ui.board.innerHTML = `
+                <h3 class="text-xl font-bold text-gray-500 mb-6 text-center">${levelData.soalan}</h3>
+                
+                <!-- Kotak Jawapan (Ayat yang sedang disusun) -->
+                <div class="w-full max-w-3xl min-h-[80px] bg-white border-4 border-dark rounded-2xl shadow-inner p-4 flex flex-wrap gap-2 mb-8 items-center justify-center">
+                    ${currentSentenceArrangement.length === 0 ? '<span class="text-gray-400 font-bold">Ayat anda akan dipaparkan di sini...</span>' : ''}
+                    ${currentSentenceArrangement.map((word, index) => `
+                        <button onclick="removeWord2(${index})" class="bg-primary text-white font-black px-4 py-2 rounded-lg kartun-border border-2 animate-pop hover:bg-red-600">${word}</button>
+                    `).join('')}
+                </div>
+
+                <!-- Blok Perkataan Rawak -->
+                <div class="flex flex-wrap gap-4 justify-center">
+                    ${remainingWords.map(word => `
+                        <button onclick="addWord2('${word}')" class="bg-accent text-dark font-black px-6 py-3 text-xl rounded-xl kartun-border hover:bg-yellow-400 transition-transform hover:-translate-y-1">
+                            ${word}
+                        </button>
+                    `).join('')}
+                </div>
+                
+                ${remainingWords.length === 0 ? `
+                    <button onclick="checkAnswer2()" class="mt-8 bg-dark text-white text-xl font-black px-8 py-3 rounded-xl kartun-border hover:bg-gray-800 animate-bounce">Semak Jawapan!</button>
+                ` : ''}
+            `;
+        }
+
+        window.addWord2 = function(word) {
+            currentSentenceArrangement.push(word);
+            renderGame2Board(game2Data[currentLevel]);
+        }
+        
+        window.removeWord2 = function(index) {
+            currentSentenceArrangement.splice(index, 1);
+            renderGame2Board(game2Data[currentLevel]);
+        }
+
+        window.checkAnswer2 = function() {
+            const levelData = game2Data[currentLevel];
+            const formedSentence = currentSentenceArrangement.join(" ");
+            
+            if (formedSentence === levelData.betul) {
+                currentScore += 50;
+                ui.score.textContent = currentScore;
+                currentLevel++;
+                
+                ui.board.classList.add('bg-green-100');
+                setTimeout(() => { ui.board.classList.remove('bg-green-100'); loadGame2(); }, 500);
+            } else {
+                alert("Alamak! Ayat masih salah. Cuba susun semula.");
+                // Reset untuk cuba lagi
+                currentSentenceArrangement = [];
+                renderGame2Board(levelData);
+            }
+        }
+
+        // --- Pengurusan Tamat Permainan & Firestore ---
+        function showGameOver() {
+            ui.active.classList.add('hidden');
+            ui.gameOver.classList.remove('hidden');
+            ui.gameOver.classList.add('flex');
+            document.getElementById('finalScoreDisplay').textContent = currentScore;
+        }
+
+        document.getElementById('saveScoreBtn').addEventListener('click', async () => {
+            if (!currentUser || currentScore === 0) return;
+            
+            const btn = document.getElementById('saveScoreBtn');
+            const msg = document.getElementById('saveStatusMessage');
+            btn.disabled = true;
+            msg.classList.remove('hidden');
+            msg.textContent = "Menyimpan markah ke pangkalan data awan...";
+
+            try {
+                // Simpan ke Firestore koleksi 'scores' (Rujuk dokumen struktur DB)
+                await addDoc(collection(db, "scores"), {
+                    userId: currentUser.uid,
+                    nickname: currentNickname,
+                    activityType: currentGameType,
+                    score: currentScore,
+                    playedAt: serverTimestamp()
+                });
+                
+                msg.textContent = "Markah Berjaya Disimpan!";
+                msg.classList.replace('text-primary', 'text-green-500');
+                
+                // Kembali ke Dashboard selepas 1.5 saat
+                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+                
+            } catch (error) {
+                console.error("Ralat simpan markah:", error);
+                msg.textContent = "Ralat: Gagal menyimpan markah.";
+                btn.disabled = false;
+            }
+        });
+
+        // --- Pengesahan Pengguna (Auth Guard) ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        if (userData.role === 'admin') {
+                            window.location.href = '../admin/dashboard.html';
+                            return;
+                        }
+                        
+                        currentUser = user;
+                        currentNickname = userData.nickname || "Pelajar";
+                        document.getElementById('userNameDisplay').textContent = currentNickname;
+                        
+                        // Mulakan Game setelah sah profil ditarik
+                        initGame();
+                    } else {
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error("Ralat Auth:", error);
+                }
+            } else {
+                window.location.href = '../index.html';
+            }
+        });
+        
+        // --- Active Menu Fallback ---
+        const currentPage = 'play_game.html';
+        document.querySelectorAll('#sidebarNav a').forEach(link => {
+            if (link.getAttribute('href').includes(currentPage)) {
+                link.className = `menu-link flex items-center gap-4 bg-primary text-white p-4 rounded-2xl font-black text-lg kartun-border group hover:-translate-y-1 transition-transform`;
+            }
+        });
+    </script>
+</body>
+</html>

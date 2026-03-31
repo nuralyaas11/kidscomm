@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidsComm - Papan Pemuka Pelajar</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Konfigurasi Tema Tailwind & Custom CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#FF6B6B',
+                        secondary: '#4ECDC4',
+                        accent: '#FFE66D',
+                        dark: '#2B2D42',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .kartun-border {
+            border: 4px solid #2B2D42;
+            box-shadow: 6px 6px 0px #2B2D42;
+            transition: all 0.2s ease-in-out;
+        }
+        .kartun-border:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 10px 10px 0px #2B2D42;
+        }
+        .kartun-border:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #2B2D42;
+        }
+        .bg-dots {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+    </style>
+</head>
+<body class="bg-dots flex h-screen overflow-hidden text-dark">
+
+    <!-- SIDEBAR (HARDCODED) -->
+    <aside class="w-72 bg-white border-r-4 border-dark hidden md:flex flex-col z-20 shadow-xl relative min-h-screen">
+        <!-- Logo KidsComm -->
+        <div class="p-8 text-center border-b-4 border-dark bg-accent">
+            <h1 class="text-4xl font-black tracking-tighter text-dark">Kids<span class="text-primary">Comm</span></h1>
+            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Jom Berkomunikasi!</p>
+        </div>
+        
+        <!-- Navigasi Menu -->
+        <nav class="flex-1 p-6 space-y-2" id="sidebarNav">
+            <!-- MENU PELAJAR -->
+            <div id="customerMenu" class="flex flex-col space-y-4">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Menu Pelajar</p>
+                <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Utama
+                </a>
+                <a href="play_game.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Main Game
+                </a>
+                <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Jawab Kuiz
+                </a>
+                <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> Markah Saya
+                </a>
+            </div>
+            
+            <!-- MENU GURU (Disembunyikan untuk Dashboard Pelajar) -->
+            <div id="adminMenu" class="hidden flex-col space-y-4 mt-4">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Menu Guru</p>
+                <a href="../admin/dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📊</span> Statistik
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- KAWASAN KANDUNGAN UTAMA -->
+    <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
+        
+        <!-- HEADER (HARDCODED) -->
+        <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-10 shadow-sm w-full">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden text-2xl font-black bg-accent w-10 h-10 md:w-12 md:h-12 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">☰</button>
+                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Papan Pemuka</h2>
+            </div>
+            <div class="flex items-center gap-4 md:gap-6">
+                <div class="text-right hidden sm:block">
+                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Memuatkan...</p>
+                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider" id="userRoleDisplay">Akaun Murid</p>
+                </div>
+                <button id="logoutBtn" class="bg-primary hover:bg-red-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-black kartun-border text-sm md:text-base transition-all">
+                    Log Keluar
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN DASHBOARD CONTENT -->
+        <main class="flex-1 p-6 md:p-8 lg:p-10 max-w-7xl mx-auto w-full">
+            
+            <div class="bg-secondary kartun-border rounded-[2rem] p-8 md:p-12 text-white mb-10 relative overflow-hidden flex flex-col md:flex-row items-center justify-between shadow-lg">
+                <div class="relative z-10 w-full md:w-2/3">
+                    <span class="bg-white text-secondary font-black px-4 py-1 rounded-full text-sm mb-4 inline-block uppercase tracking-wider shadow-sm">Tahap 1</span>
+                    <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight">Selamat Kembali,<br><span id="welcomeName" class="text-accent drop-shadow-md">Kawan</span>! 🌟</h1>
+                    <p class="text-lg md:text-xl font-bold opacity-90">Sedia untuk misi komunikasi kita hari ini? Pilih aktiviti di bawah untuk kumpul lebih banyak bintang!</p>
+                </div>
+                <div class="text-8xl md:text-9xl mt-6 md:mt-0 drop-shadow-xl animate-bounce">🚀</div>
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-white opacity-10 rounded-full"></div>
+                <div class="absolute right-40 -bottom-20 w-48 h-48 bg-white opacity-10 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                <div class="bg-white p-4 rounded-2xl kartun-border text-center">
+                    <div class="text-3xl mb-1">⭐</div>
+                    <p class="font-bold text-gray-500 text-sm">Bintang</p>
+                    <p class="text-2xl font-black">120</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl kartun-border text-center">
+                    <div class="text-3xl mb-1">🏅</div>
+                    <p class="font-bold text-gray-500 text-sm">Lencana</p>
+                    <p class="text-2xl font-black">3</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl kartun-border text-center">
+                    <div class="text-3xl mb-1">🔥</div>
+                    <p class="font-bold text-gray-500 text-sm">Hari Berturut</p>
+                    <p class="text-2xl font-black">2 Hari</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl kartun-border text-center">
+                    <div class="text-3xl mb-1">🎯</div>
+                    <p class="font-bold text-gray-500 text-sm">Ketepatan</p>
+                    <p class="text-2xl font-black">85%</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-black tracking-tight">🎮 Jom Mula Bermain!</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <a href="play_game.html?game=1" class="bg-[#A8E6CF] rounded-[2rem] p-8 kartun-border group flex flex-col justify-between h-full">
+                    <div>
+                        <div class="bg-white w-24 h-24 rounded-full flex items-center justify-center text-5xl mb-6 kartun-border group-hover:rotate-12 transition-transform">🧩</div>
+                        <h3 class="text-2xl font-black mb-3">Padanan Gambar</h3>
+                        <p class="font-bold text-gray-700 leading-relaxed mb-6">Seret dan padankan situasi dengan ucapan yang paling tepat. Kumpul bintang untuk setiap padanan yang betul!</p>
+                    </div>
+                    <button class="bg-dark text-white font-black py-4 w-full rounded-xl text-lg group-hover:bg-white group-hover:text-dark border-4 border-dark transition-colors shadow-sm">Mula Main!</button>
+                </a>
+                
+                <a href="play_game.html?game=2" class="bg-[#FFD3B6] rounded-[2rem] p-8 kartun-border group flex flex-col justify-between h-full">
+                    <div>
+                        <div class="bg-white w-24 h-24 rounded-full flex items-center justify-center text-5xl mb-6 kartun-border group-hover:rotate-12 transition-transform">🧱</div>
+                        <h3 class="text-2xl font-black mb-3">Susun Perkataan</h3>
+                        <p class="font-bold text-gray-700 leading-relaxed mb-6">Alamak, ayat sudah berterabur! Mari susun bongkah perkataan menjadi satu ayat komunikasi yang lengkap.</p>
+                    </div>
+                    <button class="bg-dark text-white font-black py-4 w-full rounded-xl text-lg group-hover:bg-white group-hover:text-dark border-4 border-dark transition-colors shadow-sm">Mula Main!</button>
+                </a>
+
+                <a href="take_quiz.html" class="bg-[#FF8A8A] rounded-[2rem] p-8 kartun-border group flex flex-col justify-between h-full md:col-span-2 lg:col-span-1 text-white">
+                    <div>
+                        <div class="bg-white w-24 h-24 rounded-full flex items-center justify-center text-5xl mb-6 kartun-border group-hover:-rotate-12 transition-transform">📝</div>
+                        <h3 class="text-2xl font-black mb-3">Uji Minda (Kuiz)</h3>
+                        <p class="font-bold text-white/90 leading-relaxed mb-6">Uji kefahaman anda tentang komunikasi. Jawab soalan pelbagai pilihan dan jadi juara komunikasi!</p>
+                    </div>
+                    <button class="bg-white text-dark font-black py-4 w-full rounded-xl text-lg group-hover:bg-dark group-hover:text-white border-4 border-white transition-colors shadow-sm">Jawab Kuiz</button>
+                </a>
+            </div>
+
+        </main>
+        
+        <!-- FOOTER (HARDCODED) -->
+        <footer class="mt-auto p-6 text-center border-t-4 border-dark bg-white relative z-10 overflow-hidden">
+            <div class="absolute -left-4 top-2 text-3xl opacity-20 transform -rotate-12">🎈</div>
+            <div class="absolute -right-4 bottom-2 text-3xl opacity-20 transform rotate-12">🌟</div>
+            <p class="text-dark font-bold text-sm md:text-base relative z-10">
+                &copy; 2026 <span class="font-black tracking-tight">Kids<span class="text-primary">Comm</span></span>. 
+                Dibangunkan dengan ❤️ oleh <span class="bg-accent px-2 py-1 rounded-md kartun-border inline-block mt-2 md:mt-0 text-xs md:text-sm">Hazeeq Programming</span>.
+            </p>
+        </footer>
+    </div>
+
+    <!-- Logik Firebase & Active Menu -->
+    <script type="module">
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { auth, db } from "../firebase-config.js";
+
+        // --- Fungsi Auto-Highlight Menu Pintar ---
+        function highlightActiveMenu() {
+            // Dapatkan nama fail semasa daripada URL (cth: "dashboard.html")
+            const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
+            const links = document.querySelectorAll('#sidebarNav a');
+            
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.includes(currentPage)) {
+                    // Beri gaya AKTIF
+                    const isCustomer = link.closest('#customerMenu');
+                    const activeBg = isCustomer ? 'bg-secondary' : 'bg-primary';
+                    link.className = `menu-link flex items-center gap-4 ${activeBg} text-white p-4 rounded-2xl font-black text-lg kartun-border group hover:-translate-y-1 transition-transform`;
+                } else {
+                    // Beri gaya TIDAK AKTIF
+                    link.className = "menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1";
+                }
+            });
+        }
+
+        // Panggil fungsi highlight
+        highlightActiveMenu();
+
+        // --- Logik Butang Log Keluar ---
+        const logoutBtn = document.getElementById('logoutBtn');
+        if(logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                await signOut(auth);
+                window.location.href = '../index.html';
+            });
+        }
+
+        // --- Semak Sesi Pengguna & Peranan ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        
+                        // Halang admin daripada masuk ke halaman pelajar
+                        if (userData.role === 'admin') {
+                            window.location.href = '../admin/dashboard.html';
+                            return;
+                        }
+
+                        // Kemaskini nama
+                        document.getElementById('welcomeName').textContent = userData.nickname || "Kawan";
+                        const userNameDisplay = document.getElementById('userNameDisplay');
+                        if(userNameDisplay) userNameDisplay.textContent = userData.nickname || "Pelajar";
+                        
+                    } else {
+                        await signOut(auth);
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error("Ralat mendapatkan profil:", error);
+                }
+            } else {
+                window.location.href = '../index.html';
+            }
+        });
+    </script>
+</body>
+</html>
