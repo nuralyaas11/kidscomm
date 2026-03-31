@@ -5,12 +5,13 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase
 
 // GANTIKAN DENGAN KONFIGURASI FIREBASE SEBENAR ANDA
 const firebaseConfig = {
-    apiKey: "API_KEY_ANDA",
-    authDomain: "PROJECT_ID.firebaseapp.com",
-    projectId: "PROJECT_ID",
-    storageBucket: "PROJECT_ID.appspot.com",
-    messagingSenderId: "SENDER_ID",
-    appId: "APP_ID"
+    apiKey: "AIzaSyA6uxUhruVVqdllVVTupBDDwyt4mkhGSUk",
+    authDomain: "kidscomm-75b4a.firebaseapp.com",
+    projectId: "kidscomm-75b4a",
+    storageBucket: "kidscomm-75b4a.firebasestorage.app",
+    messagingSenderId: "800324716023",
+    appId: "1:800324716023:web:fb7e8222bf85fc21321af2",
+    measurementId: "G-EHDP3MPLD1"
 };
 
 // Inisialisasi Firebase
