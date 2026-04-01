@@ -48,6 +48,10 @@
             background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
             background-size: 30px 30px;
         }
+        /* Elak butang dalam header terjun ke luar sempadan header */
+        header .kartun-border:hover {
+            transform: none;
+        }
     </style>
 </head>
 <body class="bg-dots flex h-screen overflow-hidden text-dark relative">
@@ -97,7 +101,7 @@
     <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
         
         <!-- HEADER -->
-        <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-10 shadow-sm w-full">
+        <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
             <div class="flex items-center gap-4">
                 <button id="openSidebarBtn" class="md:hidden text-2xl font-black bg-accent w-10 h-10 md:w-12 md:h-12 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">☰</button>
                 <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Papan Pemuka</h2>
@@ -185,15 +189,6 @@
 
         </main>
         
-        <!-- FOOTER -->
-        <footer class="mt-auto p-6 text-center border-t-4 border-dark bg-white relative z-10 overflow-hidden">
-            <div class="absolute -left-4 top-2 text-3xl opacity-20 transform -rotate-12">🎈</div>
-            <div class="absolute -right-4 bottom-2 text-3xl opacity-20 transform rotate-12">🌟</div>
-            <p class="text-dark font-bold text-sm md:text-base relative z-10">
-                &copy; 2026 <span class="font-black tracking-tight">Kids<span class="text-primary">Comm</span></span>. 
-                Dibangunkan dengan ❤️ oleh <span class="bg-accent px-2 py-1 rounded-md kartun-border inline-block mt-2 md:mt-0 text-xs md:text-sm">Hazeeq Programming</span>.
-            </p>
-        </footer>
     </div>
 
     <!-- UI Scripts -->

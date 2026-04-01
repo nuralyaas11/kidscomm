@@ -61,6 +61,10 @@
             75% { transform: translateX(-10px); }
         }
         .animate-shake { animation: shake 0.4s ease-in-out; }
+        /* Elak butang dalam header terjun ke luar sempadan header */
+        header .kartun-border:hover {
+            transform: none;
+        }
     </style>
 </head>
 <body class="bg-dots flex h-screen overflow-hidden text-dark relative">
@@ -99,7 +103,7 @@
     <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
         
         <!-- HEADER -->
-        <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-10 shadow-sm w-full">
+        <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
             <div class="flex items-center gap-4">
                 <button id="openSidebarBtn" class="md:hidden text-2xl font-black bg-accent w-10 h-10 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">☰</button>
                 <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Uji Minda</h2>

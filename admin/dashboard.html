@@ -47,6 +47,10 @@
             border: 3px solid #2B2D42;
             padding: 1rem;
         }
+        /* Elak butang dalam header terjun ke luar sempadan header */
+        header .kartun-border:hover {
+            transform: none;
+        }
     </style>
 </head>
 <body class="bg-dots flex h-screen overflow-hidden text-dark">
@@ -82,7 +86,7 @@
     <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
         
         <!-- HEADER (HARDCODED) -->
-        <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-10 shadow-sm w-full">
+        <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
             <div class="flex items-center gap-4">
                 <button class="md:hidden text-2xl font-black bg-accent w-10 h-10 rounded-xl kartun-border flex items-center justify-center">☰</button>
                 <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Pemantauan</h2>
@@ -163,12 +167,6 @@
 
         </main>
         
-        <!-- FOOTER (HARDCODED) -->
-        <footer class="mt-auto p-6 text-center border-t-4 border-dark bg-white">
-            <p class="text-dark font-bold text-sm md:text-base">
-                &copy; 2026 KidsComm. Akses Khas Pentadbir.
-            </p>
-        </footer>
     </div>
 
     <!-- Logik Firebase & Javascript -->
