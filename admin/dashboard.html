@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KidsComm - Papan Pemuka Guru</title>
+    <title>KidsComm - Teacher Dashboard</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,7 +11,7 @@
     <!-- Google Fonts: Nunito -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Konfigurasi Tema Tailwind & Custom CSS -->
+    <!-- Tailwind Theme Configuration & Custom CSS -->
     <script>
         tailwind.config = {
             theme: {
@@ -42,12 +42,12 @@
             background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
             background-size: 30px 30px;
         }
-        /* Style khas jadual */
+        /* Table styles */
         .kartun-table th, .kartun-table td {
             border: 3px solid #2B2D42;
             padding: 1rem;
         }
-        /* Elak butang dalam header terjun ke luar sempadan header */
+        /* Prevent header buttons from overflowing */
         header .kartun-border:hover {
             transform: none;
         }
@@ -55,49 +55,49 @@
 </head>
 <body class="bg-dots flex h-screen overflow-hidden text-dark">
 
-    <!-- SIDEBAR (HARDCODED) -->
+    <!-- SIDEBAR -->
     <aside class="w-72 bg-white border-r-4 border-dark hidden md:flex flex-col z-20 shadow-xl relative min-h-screen">
         <div class="p-8 text-center border-b-4 border-dark bg-accent">
             <h1 class="text-4xl font-black tracking-tighter text-dark">Kids<span class="text-primary">Comm</span></h1>
-            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Sistem Pengurusan</p>
+            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Management System</p>
         </div>
         
         <nav class="flex-1 p-6 space-y-2" id="sidebarNav">
-            <!-- MENU GURU -->
+            <!-- TEACHER MENU -->
             <div id="adminMenu" class="flex flex-col space-y-4 mt-2">
-                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Menu Guru</p>
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Teacher Menu</p>
                 
                 <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">📊</span> Statistik
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📊</span> Statistics
                 </a>
                 
                 <a href="manage_users.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">👥</span> Urus Pelajar
+                    <span class="text-2xl group-hover:scale-110 transition-transform">👥</span> Manage Students
                 </a>
                 
                 <a href="view_reports.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">📈</span> Laporan Markah
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📈</span> Score Reports
                 </a>
             </div>
         </nav>
     </aside>
 
-    <!-- KAWASAN KANDUNGAN UTAMA -->
+    <!-- MAIN CONTENT AREA -->
     <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
         
-        <!-- HEADER (HARDCODED) -->
+        <!-- HEADER -->
         <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
             <div class="flex items-center gap-4">
                 <button class="md:hidden text-2xl font-black bg-accent w-10 h-10 rounded-xl kartun-border flex items-center justify-center">☰</button>
-                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Pemantauan</h2>
+                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Overview</h2>
             </div>
             <div class="flex items-center gap-4 md:gap-6">
                 <div class="text-right hidden sm:block">
-                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Memuatkan...</p>
-                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Akaun Guru</p>
+                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Teacher Account</p>
                 </div>
                 <button id="logoutBtn" class="bg-primary hover:bg-red-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-black kartun-border text-sm md:text-base transition-all">
-                    Log Keluar
+                    Log Out
                 </button>
             </div>
         </header>
@@ -106,16 +106,16 @@
         <main class="flex-1 p-6 md:p-8 lg:p-10 max-w-7xl mx-auto w-full">
             
             <div class="mb-8">
-                <h1 class="text-4xl font-black mb-2">Selamat Datang, <span id="welcomeName" class="text-primary">Cikgu</span>! 👨‍🏫</h1>
-                <p class="text-gray-600 font-bold text-lg">Berikut adalah ringkasan prestasi pelajar KidsComm setakat ini.</p>
+                <h1 class="text-4xl font-black mb-2">Welcome, <span id="welcomeName" class="text-primary">Teacher</span>! 👨‍🏫</h1>
+                <p class="text-gray-600 font-bold text-lg">Here is a summary of your KidsComm students' performance so far.</p>
             </div>
 
-            <!-- Kad Statistik (Overview) -->
+            <!-- Statistics Cards (Overview) -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                 
                 <div class="bg-secondary p-6 rounded-[2rem] kartun-border text-white relative overflow-hidden">
                     <div class="relative z-10">
-                        <p class="font-bold text-white/80 uppercase tracking-wider mb-2">Jumlah Pelajar</p>
+                        <p class="font-bold text-white/80 uppercase tracking-wider mb-2">Total Students</p>
                         <p class="text-5xl font-black" id="totalStudents">0</p>
                     </div>
                     <div class="absolute -right-4 -bottom-4 text-8xl opacity-30">🎓</div>
@@ -123,7 +123,7 @@
 
                 <div class="bg-primary p-6 rounded-[2rem] kartun-border text-white relative overflow-hidden">
                     <div class="relative z-10">
-                        <p class="font-bold text-white/80 uppercase tracking-wider mb-2">Aktiviti Diselesaikan</p>
+                        <p class="font-bold text-white/80 uppercase tracking-wider mb-2">Activities Completed</p>
                         <p class="text-5xl font-black" id="totalGames">0</p>
                     </div>
                     <div class="absolute -right-4 -bottom-4 text-8xl opacity-30">🎮</div>
@@ -131,7 +131,7 @@
 
                 <div class="bg-accent p-6 rounded-[2rem] kartun-border text-dark relative overflow-hidden">
                     <div class="relative z-10">
-                        <p class="font-bold text-dark/70 uppercase tracking-wider mb-2">Pencapaian Purata</p>
+                        <p class="font-bold text-dark/70 uppercase tracking-wider mb-2">Average Score</p>
                         <p class="text-5xl font-black" id="averageScore">0<span class="text-2xl">%</span></p>
                     </div>
                     <div class="absolute -right-4 -bottom-4 text-8xl opacity-30">🏆</div>
@@ -139,26 +139,26 @@
 
             </div>
 
-            <!-- Jadual Markah Terkini -->
+            <!-- Recent Activity Table -->
             <div class="bg-white rounded-[2rem] kartun-border p-8 mb-8 overflow-x-auto">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-black">📝 Rekod Aktiviti Terkini</h2>
-                    <a href="view_reports.html" class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-xl font-bold border-2 border-dark text-sm transition-colors">Lihat Semua</a>
+                    <h2 class="text-2xl font-black">📝 Recent Activity Records</h2>
+                    <a href="view_reports.html" class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-xl font-bold border-2 border-dark text-sm transition-colors">View All</a>
                 </div>
                 
                 <table class="w-full text-left border-collapse kartun-table min-w-[600px]">
                     <thead>
                         <tr class="bg-gray-100">
-                            <th class="font-black">Nama Pelajar</th>
-                            <th class="font-black">Aktiviti</th>
-                            <th class="font-black text-center">Markah</th>
-                            <th class="font-black">Tarikh & Masa</th>
+                            <th class="font-black">Student Name</th>
+                            <th class="font-black">Activity</th>
+                            <th class="font-black text-center">Score</th>
+                            <th class="font-black">Date & Time</th>
                         </tr>
                     </thead>
                     <tbody id="recentActivityTable">
                         <tr>
                             <td colspan="4" class="text-center font-bold text-gray-500 py-8">
-                                Sedang menarik data dari pangkalan data...
+                                Loading data from the database...
                             </td>
                         </tr>
                     </tbody>
@@ -169,13 +169,13 @@
         
     </div>
 
-    <!-- Logik Firebase & Javascript -->
+    <!-- Firebase & Javascript Logic -->
     <script type="module">
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { doc, getDoc, collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { auth, db } from "../firebase-config.js";
 
-        // --- Fungsi Auto-Highlight Menu Pintar ---
+        // --- Auto-Highlight Active Menu ---
         function highlightActiveMenu() {
             const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
             const links = document.querySelectorAll('#sidebarNav a');
@@ -191,32 +191,32 @@
         }
         highlightActiveMenu();
 
-        // --- Logik Butang Log Keluar ---
+        // --- Logout Button Logic ---
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await signOut(auth);
             window.location.href = '../index.html';
         });
 
-        // --- Tarik Data Statistik dari Firestore ---
+        // --- Fetch Statistics Data from Firestore ---
         async function fetchDashboardData() {
             try {
-                // 1. Kira jumlah pelajar (role == customer)
+                // 1. Count total students (role == customer)
                 const usersRef = collection(db, "users");
                 const qUsers = query(usersRef, where("role", "==", "customer"));
                 const usersSnapshot = await getDocs(qUsers);
                 document.getElementById('totalStudents').textContent = usersSnapshot.size;
 
-                // 2. Tarik rekod markah untuk aktiviti terkini & kiraan
+                // 2. Fetch score records for recent activity & count
                 const scoresRef = collection(db, "scores");
-                // Susun ikut tarikh terbaru, ambil 5 rekod terakhir (PENTING: Memerlukan Index di Firebase jika gabung filter/orderBy)
+                // Sort by most recent, fetch last 5 records (NOTE: Requires a Firestore index when combining filter/orderBy)
                 const qScores = query(scoresRef, orderBy("playedAt", "desc"), limit(5));
                 const scoresSnapshot = await getDocs(qScores);
                 
-                // Kira keseluruhan aktiviti yang pernah dimainkan (Untuk demo kita guna saiz semua rekod, pada production lebih baik guna kaedah aggregation)
+                // Count all activities ever played (For demo we use total record count; in production prefer an aggregation approach)
                 const allScoresSnapshot = await getDocs(scoresRef);
                 document.getElementById('totalGames').textContent = allScoresSnapshot.size;
                 
-                // Kira purata (Mockup formula ringkas)
+                // Calculate average (simple formula)
                 if(allScoresSnapshot.size > 0) {
                     let totalPoin = 0;
                     allScoresSnapshot.forEach(doc => totalPoin += doc.data().score);
@@ -224,28 +224,28 @@
                     document.getElementById('averageScore').innerHTML = `${avg}<span class="text-2xl">pts</span>`;
                 }
 
-                // 3. Paparkan ke dalam jadual
+                // 3. Render into the table
                 const tableBody = document.getElementById('recentActivityTable');
                 if (scoresSnapshot.empty) {
-                    tableBody.innerHTML = `<tr><td colspan="4" class="text-center font-bold text-gray-500 py-8">Tiada rekod aktiviti setakat ini.</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="4" class="text-center font-bold text-gray-500 py-8">No activity records yet.</td></tr>`;
                     return;
                 }
 
                 let htmlContent = '';
                 scoresSnapshot.forEach((docSnap) => {
                     const data = docSnap.data();
-                    let dateStr = "Tiada Tarikh";
+                    let dateStr = "No Date";
                     if(data.playedAt) {
                         const date = data.playedAt.toDate();
                         dateStr = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
                     }
                     
-                    let actName = data.activityType === 'game1' ? '🧩 Padanan Gambar' : 
-                                 data.activityType === 'game2' ? '🧱 Susun Perkataan' : '📝 Kuiz';
+                    let actName = data.activityType === 'game1' ? '🧩 Picture Match' : 
+                                 data.activityType === 'game2' ? '🧱 Word Scramble' : '📝 Quiz';
 
                     htmlContent += `
                         <tr class="hover:bg-yellow-50 transition-colors">
-                            <td class="font-bold">${data.nickname || 'Pelajar'}</td>
+                            <td class="font-bold">${data.nickname || 'Student'}</td>
                             <td class="font-bold text-gray-700">${actName}</td>
                             <td class="text-center"><span class="bg-accent px-3 py-1 rounded-lg font-black kartun-border border-2 text-sm">${data.score}</span></td>
                             <td class="font-bold text-gray-500 text-sm">${dateStr}</td>
@@ -256,11 +256,11 @@
 
             } catch (error) {
                 console.error("Ralat menarik data dashboard:", error);
-                document.getElementById('recentActivityTable').innerHTML = `<tr><td colspan="4" class="text-center font-bold text-red-500 py-8">Ralat pangkalan data. Sila pastikan 'Rules' dan 'Indexes' Firestore telah ditetapkan.</td></tr>`;
+                document.getElementById('recentActivityTable').innerHTML = `<tr><td colspan="4" class="text-center font-bold text-red-500 py-8">Database error. Please ensure Firestore 'Rules' and 'Indexes' are configured correctly.</td></tr>`;
             }
         }
 
-        // --- Semak Sesi Pengguna & Peranan (Auth Guard) ---
+        // --- Check User Session & Role (Auth Guard) ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 try {
@@ -268,17 +268,17 @@
                     if (userDoc.exists()) {
                         const userData = userDoc.data();
                         
-                        // HALANG PELAJAR: Jika role bukan admin, tendang ke dashboard pelajar
+                        // BLOCK STUDENTS: If role is not admin, redirect to student dashboard
                         if (userData.role !== 'admin') {
                             window.location.href = '../customer/dashboard.html';
                             return;
                         }
 
-                        // Kemaskini nama Admin di UI
-                        document.getElementById('welcomeName').textContent = userData.nickname || "Cikgu";
+                        // Update admin name in the UI
+                        document.getElementById('welcomeName').textContent = userData.nickname || "Teacher";
                         document.getElementById('userNameDisplay').textContent = userData.nickname || "Admin";
                         
-                        // Tarik data laporan
+                        // Fetch report data
                         fetchDashboardData();
                         
                     } else {

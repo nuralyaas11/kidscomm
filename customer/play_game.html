@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KidsComm - Main Game</title>
+    <title>KidsComm - Play Game</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,7 +11,7 @@
     <!-- Google Fonts: Nunito -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Konfigurasi Tema Tailwind & Custom CSS -->
+    <!-- Tailwind Theme Configuration & Custom CSS -->
     <script>
         tailwind.config = {
             theme: {
@@ -37,11 +37,11 @@
         .kartun-border:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #2B2D42; }
         .bg-dots { background-color: #f8fafc; background-image: radial-gradient(#cbd5e1 2px, transparent 2px); background-size: 30px 30px; }
         
-        /* Animasi Khas untuk Permainan */
+        /* Custom Game Animations */
         @keyframes pop { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         .animate-pop { animation: pop 0.3s ease-out forwards; }
         
-        /* Animasi Ralat (Shake) */
+        /* Error Animation (Shake) */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-10px); }
@@ -49,7 +49,7 @@
             75% { transform: translateX(-10px); }
         }
         .animate-shake { animation: shake 0.4s ease-in-out; }
-        /* Elak butang dalam header terjun ke luar sempadan header */
+        /* Prevent header buttons from overflowing */
         header .kartun-border:hover {
             transform: none;
         }
@@ -57,7 +57,7 @@
 </head>
 <body class="bg-dots flex h-screen overflow-hidden text-dark relative">
 
-    <!-- OVERLAY MUDAH ALIH -->
+    <!-- MOBILE OVERLAY -->
     <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden transition-opacity"></div>
 
     <!-- SIDEBAR -->
@@ -65,41 +65,41 @@
         <div class="p-8 text-center border-b-4 border-dark bg-accent relative">
             <button id="closeSidebarBtn" class="md:hidden absolute top-4 right-4 text-2xl font-black w-8 h-8 flex items-center justify-center bg-white rounded-lg kartun-border hover:bg-red-400 hover:text-white transition-colors">&times;</button>
             <h1 class="text-4xl font-black tracking-tighter">Kids<span class="text-primary">Comm</span></h1>
-            <p class="font-bold text-sm mt-2 opacity-80">Jom Berkomunikasi!</p>
+            <p class="font-bold text-sm mt-2 opacity-80">Let's Communicate!</p>
         </div>
         
         <nav class="flex-1 p-6 space-y-4 overflow-y-auto" id="sidebarNav">
             <div id="customerMenu" class="flex flex-col space-y-4">
-                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Menu Pelajar</p>
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Student Menu</p>
                 <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Utama
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Home
                 </a>
                 <a href="play_game.html" class="menu-link flex items-center gap-4 bg-primary text-white p-4 rounded-2xl font-black text-lg kartun-border group hover:-translate-y-1 transition-transform">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Main Game
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Play Game
                 </a>
                 <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Jawab Kuiz
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Take Quiz
                 </a>
                 <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> Markah Saya
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> My Scores
                 </a>
             </div>
         </nav>
     </aside>
 
-    <!-- KAWASAN KANDUNGAN UTAMA -->
+    <!-- MAIN CONTENT AREA -->
     <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
         
         <!-- HEADER -->
         <header id="header-container" class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
             <div class="flex items-center gap-4">
                 <button id="openSidebarBtn" class="md:hidden text-2xl font-black bg-accent w-10 h-10 md:w-12 md:h-12 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">☰</button>
-                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Zon Permainan</h2>
+                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Game Zone</h2>
             </div>
             <div class="flex items-center gap-4 md:gap-6">
                 <div class="text-right hidden sm:block">
-                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Pelajar</p>
-                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Akaun Murid</p>
+                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Student</p>
+                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Student Account</p>
                 </div>
             </div>
         </header>
@@ -109,36 +109,36 @@
             
             <div class="flex justify-between items-center mb-6 gap-2">
                 <a href="dashboard.html" class="bg-white px-3 md:px-4 py-2 rounded-xl font-bold kartun-border hover:bg-gray-100 flex items-center gap-2 text-sm md:text-base">
-                    <span>⬅️</span> <span class="hidden sm:inline">Kembali</span>
+                    <span>⬅️</span> <span class="hidden sm:inline">Back</span>
                 </a>
                 <div class="bg-accent px-4 py-2 rounded-xl font-black kartun-border text-base md:text-lg flex items-center gap-2">
                     <span>⭐</span> Skor: <span id="scoreDisplay">0</span>
                 </div>
             </div>
 
-            <!-- CONTAINER PERMAINAN -->
-            <div class="bg-white rounded-[2rem] kartun-border p-6 md:p-10 flex-1 flex flex-col relative overflow-hidden">
+                <!-- GAME CONTAINER -->
+                <div class="bg-white rounded-[2rem] kartun-border p-6 md:p-10 flex-1 flex flex-col relative overflow-hidden">
                 
-                <!-- Skrin Pilihan Permainan -->
+                <!-- Game Selection Screen -->
                 <div id="gameSelection" class="text-center flex-1 flex flex-col justify-center hidden">
-                    <h2 class="text-3xl md:text-4xl font-black mb-8">Pilih Permainan Anda!</h2>
+                    <h2 class="text-3xl md:text-4xl font-black mb-8">Choose Your Game!</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto w-full">
                         <button onclick="window.location.href='?game=1'" class="bg-[#A8E6CF] p-6 md:p-8 rounded-2xl kartun-border group text-left relative overflow-hidden">
                             <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform relative z-10">🧩</span>
-                            <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Padanan Gambar</h3>
-                            <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">Padankan situasi dengan ucapan yang betul.</p>
+                            <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Picture Match</h3>
+                            <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">Match the situation with the correct phrase.</p>
                             <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white opacity-20 rounded-full"></div>
                         </button>
                         <button onclick="window.location.href='?game=2'" class="bg-[#FFD3B6] p-6 md:p-8 rounded-2xl kartun-border group text-left relative overflow-hidden">
                             <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform relative z-10">🧱</span>
-                            <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Susun Perkataan</h3>
-                            <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">Susun blok perkataan menjadi ayat lengkap.</p>
+                            <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Word Scramble</h3>
+                            <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">Arrange word blocks into a complete sentence.</p>
                             <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white opacity-20 rounded-full"></div>
                         </button>
                     </div>
                 </div>
 
-                <!-- Skrin Permainan Aktif -->
+                <!-- Active Game Screen -->
                 <div id="activeGameArea" class="hidden flex-1 flex flex-col">
                     
                     <!-- Top Bar: Lives & Progress -->
@@ -149,49 +149,49 @@
                                 <div class="absolute inset-0 bg-white opacity-20 w-full animate-pulse"></div>
                             </div>
                         </div>
-                        <span id="gameBadge" class="bg-primary text-white font-black px-4 py-1 rounded-full text-xs md:text-sm uppercase tracking-wider kartun-border whitespace-nowrap border-2">Tahap 1</span>
+                        <span id="gameBadge" class="bg-primary text-white font-black px-4 py-1 rounded-full text-xs md:text-sm uppercase tracking-wider kartun-border whitespace-nowrap border-2">Level 1</span>
                     </div>
 
                     <div class="text-center mb-6">
-                        <h2 id="gameTitle" class="text-2xl md:text-4xl font-black mb-2">Memuatkan...</h2>
-                        <p id="gameInstruction" class="text-base md:text-lg font-bold text-gray-500">Sila tunggu sebentar.</p>
+                        <h2 id="gameTitle" class="text-2xl md:text-4xl font-black mb-2">Loading...</h2>
+                        <p id="gameInstruction" class="text-base md:text-lg font-bold text-gray-500">Please wait a moment.</p>
                     </div>
 
-                    <!-- Papan Permainan Dinamik -->
+                    <!-- Dynamic Game Board -->
                     <div id="gameBoard" class="flex-1 flex flex-col items-center justify-center bg-gray-50 rounded-2xl border-4 border-dashed border-gray-300 p-4 md:p-8 relative transition-colors duration-300">
-                        <!-- Kandungan game akan dijana di sini -->
+                        <!-- Game content will be generated here -->
                     </div>
                 </div>
 
-                <!-- Skrin Tamat/Menang/Kalah -->
+                <!-- End/Win/Lose Screen -->
                 <div id="gameOverArea" class="hidden text-center flex-1 flex flex-col justify-center items-center">
                     <div id="gameOverIcon" class="text-7xl md:text-8xl mb-6 animate-bounce">🎉</div>
-                    <h2 id="gameOverTitle" class="text-3xl md:text-5xl font-black mb-4 text-primary">Tahniah!</h2>
-                    <p id="gameOverText" class="text-lg md:text-xl font-bold text-gray-700 mb-8">Anda berjaya menamatkan permainan dengan skor <span id="finalScoreDisplay" class="text-accent text-2xl md:text-3xl bg-dark px-3 rounded-lg kartun-border ml-2">100</span></p>
+                    <h2 id="gameOverTitle" class="text-3xl md:text-5xl font-black mb-4 text-primary">Congratulations!</h2>
+                    <p id="gameOverText" class="text-lg md:text-xl font-bold text-gray-700 mb-8">You have completed the game with a score of <span id="finalScoreDisplay" class="text-accent text-2xl md:text-3xl bg-dark px-3 rounded-lg kartun-border ml-2">100</span></p>
                     
                     <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                         <button onclick="window.location.reload()" id="retryBtn" class="hidden bg-white text-dark text-lg font-black px-6 py-4 rounded-xl kartun-border hover:bg-gray-100">
-                            🔄 Cuba Lagi
+                            🔄 Try Again
                         </button>
                         <button id="saveScoreBtn" class="bg-secondary text-white text-lg md:text-xl font-black px-6 py-4 rounded-xl kartun-border hover:bg-teal-500">
-                            💾 Simpan Markah
+                            💾 Save Score
                         </button>
                     </div>
-                    <p id="saveStatusMessage" class="font-bold text-primary hidden mt-4">Menyimpan markah...</p>
+                    <p id="saveStatusMessage" class="font-bold text-primary hidden mt-4">Saving score...</p>
                 </div>
 
             </div>
         </main>
     </div>
 
-    <!-- Mesej Toast (Alert Moden) -->
+    <!-- Toast Message (Modern Alert) -->
     <div id="toastMessage" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl font-black text-white text-lg transition-all duration-300 translate-y-20 opacity-0 z-50 shadow-xl border-4 border-dark pointer-events-none text-center min-w-[300px]">
-        Mesej di sini
+        Message here
     </div>
 
     <!-- UI Scripts -->
     <script>
-        // Logik Buka/Tutup Sidebar untuk Telefon Bimbit
+        // Mobile Sidebar Open/Close Logic
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('mobileOverlay');
         const openBtn = document.getElementById('openSidebarBtn');
@@ -207,38 +207,38 @@
         overlay.addEventListener('click', toggleSidebar);
     </script>
 
-    <!-- Modul Firebase & Logik Permainan -->
+    <!-- Firebase Module & Game Logic -->
     <script type="module">
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { auth, db } from "../firebase-config.js";
 
-        // --- Variabel Global Permainan ---
+        // --- Global Game Variables ---
         let currentUser = null;
-        let currentNickname = "Pelajar";
+        let currentNickname = "Student";
         let currentGameType = "";
         let currentScore = 0;
         let currentLevel = 0;
         let lives = 3;
         
-        // --- Data Mock Permainan (Dikembangkan) ---
+        // --- Game Data (Expanded) ---
         const game1Data = [
-            { img: "🎁", situasi: "Rakan memberi hadiah hari jadi.", jawapan: "Terima Kasih", pilihan: ["Maafkan Saya", "Sama-sama", "Terima Kasih"], hint: "Jika terima sesuatu, kita mesti hargai." },
-            { img: "🏃💨", situasi: "Terlanggar rakan secara tidak sengaja.", jawapan: "Maafkan Saya", pilihan: ["Maafkan Saya", "Terima Kasih", "Sila Duduk"], hint: "Bila buat salah, cepat-cepat minta..." },
-            { img: "🤝", situasi: "Rakan tolong angkat buku anda yang jatuh.", jawapan: "Terima Kasih", pilihan: ["Biar saya buat", "Terima Kasih", "Jumpa Lagi"], hint: "Ucapkan penghargaan atas pertolongan." },
-            { img: "👋", situasi: "Loceng tamat sekolah berbunyi.", jawapan: "Jumpa Lagi", pilihan: ["Selamat Pagi", "Tahniah", "Jumpa Lagi"], hint: "Ucapan perpisahan sementara." },
-            { img: "🏆", situasi: "Rakan anda menang tempat pertama merentas desa.", jawapan: "Tahniah", pilihan: ["Tahniah", "Maafkan Saya", "Sama-sama"], hint: "Raikan kejayaan kawan kita." }
+            { img: "🎁", situasi: "A friend gives you a birthday gift.", jawapan: "Thank You", pilihan: ["I'm Sorry", "You're Welcome", "Thank You"], hint: "When receiving something, we must show appreciation." },
+            { img: "🏃💨", situasi: "You accidentally bump into a friend.", jawapan: "I'm Sorry", pilihan: ["I'm Sorry", "Thank You", "Please Sit"], hint: "When you make a mistake, quickly ask for forgiveness." },
+            { img: "🤝", situasi: "A friend helps pick up your dropped book.", jawapan: "Thank You", pilihan: ["Let me do it", "Thank You", "See You Again"], hint: "Express appreciation for help received." },
+            { img: "👋", situasi: "The school dismissal bell rings.", jawapan: "See You Again", pilihan: ["Good Morning", "Congratulations", "See You Again"], hint: "A temporary farewell greeting." },
+            { img: "🏆", situasi: "Your friend wins first place in the cross-country race.", jawapan: "Congratulations", pilihan: ["Congratulations", "I'm Sorry", "You're Welcome"], hint: "Celebrate our friend's achievement." }
         ];
 
         const game2Data = [
-            { soalan: "Ucapan apabila berjumpa guru pada waktu pagi.", words: ["cikgu.", "Selamat", "pagi,"], betul: "Selamat pagi, cikgu." },
-            { soalan: "Meminta izin meminjam pemadam rakan.", words: ["pemadam?", "Boleh", "pinjam", "saya"], betul: "Boleh saya pinjam pemadam?" },
-            { soalan: "Cara meminta izin ke tandas.", words: ["ke", "tandas?", "Boleh", "saya", "pergi"], betul: "Boleh saya pergi ke tandas?" },
-            { soalan: "Meminta tolong guru menerangkan kerja sekolah.", words: ["terangkan", "soalan", "Tolong", "ini."], betul: "Tolong terangkan soalan ini." },
-            { soalan: "Mempersilakan tetamu duduk.", words: ["duduk", "encik.", "Sila", "di sini,"], betul: "Sila duduk di sini, encik." }
+            { soalan: "A greeting when meeting your teacher in the morning.", words: ["Good", "morning,", "teacher."], betul: "Good morning, teacher." },
+            { soalan: "Asking permission to borrow a friend's eraser.", words: ["May", "I", "borrow", "your", "eraser?"], betul: "May I borrow your eraser?" },
+            { soalan: "How to ask permission to go to the toilet.", words: ["May", "I", "go", "to", "the", "toilet?"], betul: "May I go to the toilet?" },
+            { soalan: "Asking the teacher to explain the schoolwork.", words: ["Please", "explain", "this", "question."], betul: "Please explain this question." },
+            { soalan: "Inviting a guest to sit down.", words: ["Please", "sit", "here,", "sir."], betul: "Please sit here, sir." }
         ];
 
-        // --- Elemen UI Utama ---
+        // --- Main UI Elements ---
         const ui = {
             selection: document.getElementById('gameSelection'),
             active: document.getElementById('activeGameArea'),
@@ -272,7 +272,7 @@
             let totalLevels = currentGameType === 'game1' ? game1Data.length : game2Data.length;
             let percentage = (currentLevel / totalLevels) * 100;
             ui.progress.style.width = `${percentage}%`;
-            ui.badge.textContent = `Tahap ${currentLevel + 1}`;
+            ui.badge.textContent = `Level ${currentLevel + 1}`;
             
             // Update Nyawa
             let hearts = "";
@@ -289,10 +289,10 @@
             setTimeout(() => { ui.board.classList.remove('animate-shake', 'border-red-500', 'bg-red-50'); }, 400);
 
             if (lives <= 0) {
-                showToast("Alamak! Nyawa habis.", 'error');
+                showToast("Oh no! Out of lives.", 'error');
                 setTimeout(showGameOver, 1000);
             } else {
-                showToast(`❌ Salah! Hint: ${hintMsg}`, 'error');
+                showToast(`❌ Wrong! Hint: ${hintMsg}`, 'error');
             }
         }
 
@@ -310,19 +310,19 @@
 
             if (gameId === '1') {
                 currentGameType = "game1";
-                ui.title.textContent = "Padanan Gambar";
-                ui.instruction.textContent = "Pilih ucapan yang paling sesuai untuk situasi di bawah.";
+                ui.title.textContent = "Picture Match";
+                ui.instruction.textContent = "Choose the most appropriate phrase for the situation below.";
                 loadGame1();
             } else if (gameId === '2') {
                 currentGameType = "game2";
-                ui.title.textContent = "Susun Perkataan";
-                ui.instruction.textContent = "Klik blok perkataan mengikut urutan untuk membentuk ayat.";
+                ui.title.textContent = "Word Scramble";
+                ui.instruction.textContent = "Click word blocks in order to form a sentence.";
                 loadGame2();
             }
             updateProgress();
         }
 
-        // --- Logik Permainan 1: Padanan Gambar ---
+        // --- Game 1 Logic: Picture Match ---
         function loadGame1() {
             if (currentLevel >= game1Data.length || lives <= 0) { showGameOver(); return; }
             updateProgress();
@@ -352,7 +352,7 @@
                 ui.score.textContent = currentScore;
                 currentLevel++;
                 
-                showToast("✨ Tepat Sekali!", "success");
+                showToast("✨ Spot on!", "success");
                 btnElement.classList.replace('bg-white', 'bg-green-400');
                 btnElement.classList.add('text-white', 'scale-105');
                 ui.board.classList.add('bg-green-100', 'border-green-400');
@@ -366,7 +366,7 @@
             }
         }
 
-        // --- Logik Permainan 2: Susun Perkataan ---
+        // --- Game 2 Logic: Word Scramble ---
         let currentSentenceArrangement = [];
         
         function loadGame2() {
@@ -388,9 +388,9 @@
                 
                 <!-- Kotak Jawapan (Ayat yang sedang disusun) -->
                 <div class="w-full max-w-3xl min-h-[100px] bg-white border-4 border-dark rounded-2xl shadow-inner p-4 md:p-6 flex flex-wrap gap-2 mb-10 items-center justify-center relative">
-                    ${currentSentenceArrangement.length === 0 ? '<span class="text-gray-400 font-bold text-center text-lg">Sentuh perkataan di bawah untuk mula menyusun...</span>' : ''}
+                    ${currentSentenceArrangement.length === 0 ? '<span class="text-gray-400 font-bold text-center text-lg">Tap words below to start arranging...</span>' : ''}
                     ${currentSentenceArrangement.map((word, index) => `
-                        <button onclick="removeWord2(${index})" class="bg-primary text-white font-black px-4 md:px-5 py-2 md:py-3 rounded-xl kartun-border border-2 animate-pop hover:bg-red-600 text-lg md:text-xl transition-transform hover:scale-105" title="Klik untuk buang">${word}</button>
+                        <button onclick="removeWord2(${index})" class="bg-primary text-white font-black px-4 md:px-5 py-2 md:py-3 rounded-xl kartun-border border-2 animate-pop hover:bg-red-600 text-lg md:text-xl transition-transform hover:scale-105" title="Click to remove">${word}</button>
                     `).join('')}
                 </div>
 
@@ -404,11 +404,11 @@
                 </div>
                 
                 ${remainingWords.length === 0 ? `
-                    <button onclick="checkAnswer2()" class="mt-10 bg-dark text-accent text-xl font-black px-8 py-4 rounded-xl kartun-border hover:bg-gray-800 animate-bounce w-full md:w-auto shadow-xl">✅ Semak Ayat Semasa!</button>
+                    <button onclick="checkAnswer2()" class="mt-10 bg-dark text-accent text-xl font-black px-8 py-4 rounded-xl kartun-border hover:bg-gray-800 animate-bounce w-full md:w-auto shadow-xl">✅ Check Sentence!</button>
                 ` : ''}
                 
                 ${currentSentenceArrangement.length > 0 && remainingWords.length > 0 ? `
-                     <button onclick="clearAllWords()" class="absolute bottom-4 right-4 text-sm font-bold text-gray-400 hover:text-red-500 underline">Kosongkan Semua</button>
+                     <button onclick="clearAllWords()" class="absolute bottom-4 right-4 text-sm font-bold text-gray-400 hover:text-red-500 underline">Clear All</button>
                 `: ''}
             `;
         }
@@ -433,11 +433,11 @@
             const formedSentence = currentSentenceArrangement.join(" ");
             
             if (formedSentence === levelData.betul) {
-                currentScore += 60; // Game 2 sikit susah, bagi lebih markah
+                currentScore += 60; // Game 2 is slightly harder, worth more points
                 ui.score.textContent = currentScore;
                 currentLevel++;
                 
-                showToast("✨ Bijak! Ayat anda betul.", "success");
+                showToast("✨ Smart! Your sentence is correct.", "success");
                 ui.board.classList.add('bg-green-100', 'border-green-400');
                 
                 setTimeout(() => { 
@@ -445,7 +445,7 @@
                     loadGame2(); 
                 }, 800);
             } else {
-                loseLife("Susunan ayat kurang tepat. Sila baca semula.");
+                loseLife("The word order is incorrect. Please try again.");
                 // Jika masih ada nyawa, kosongkan ayat untuk cuba lagi
                 if(lives > 0) {
                     currentSentenceArrangement = [];
@@ -454,7 +454,7 @@
             }
         }
 
-        // --- Pengurusan Tamat Permainan & Firestore ---
+        // --- Game Over Management & Firestore ---
         function showGameOver() {
             ui.active.classList.add('hidden');
             ui.gameOver.classList.remove('hidden');
@@ -469,13 +469,13 @@
 
             if (lives <= 0) {
                 icon.textContent = "💔";
-                title.textContent = "Alamak!";
+                title.textContent = "Oh no!";
                 title.classList.replace('text-primary', 'text-red-500');
-                text.innerHTML = `Nyawa anda telah habis. Skor terkumpul: <span class="text-accent text-2xl md:text-3xl bg-dark px-3 rounded-lg kartun-border ml-2">${currentScore}</span>`;
+                text.innerHTML = `You have run out of lives. Score collected: <span class="text-accent text-2xl md:text-3xl bg-dark px-3 rounded-lg kartun-border ml-2">${currentScore}</span>`;
                 retryBtn.classList.remove('hidden');
             } else {
                 icon.textContent = "🏆";
-                title.textContent = "Tahniah!";
+                title.textContent = "Congratulations!";
                 // Progress bar full
                 ui.progress.style.width = '100%';
             }
@@ -488,10 +488,10 @@
             const msg = document.getElementById('saveStatusMessage');
             btn.disabled = true;
             msg.classList.remove('hidden');
-            msg.textContent = "Menyimpan markah ke pangkalan data awan...";
+            msg.textContent = "Saving score to cloud database...";
 
             try {
-                // Simpan ke Firestore
+                // Save to Firestore
                 await addDoc(collection(db, "scores"), {
                     userId: currentUser.uid,
                     nickname: currentNickname,
@@ -500,19 +500,19 @@
                     playedAt: serverTimestamp()
                 });
                 
-                msg.textContent = "Markah Berjaya Disimpan!";
+                msg.textContent = "Score Saved Successfully!";
                 msg.classList.replace('text-primary', 'text-green-500');
                 
                 setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
                 
             } catch (error) {
-                console.error("Ralat simpan markah:", error);
-                msg.textContent = "Ralat: Gagal menyimpan markah.";
+                console.error("Error saving score:", error);
+                msg.textContent = "Error: Failed to save score.";
                 btn.disabled = false;
             }
         });
 
-        // --- Pengesahan Pengguna (Auth Guard) ---
+        // --- User Authentication (Auth Guard) ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 try {
@@ -525,7 +525,7 @@
                         }
                         
                         currentUser = user;
-                        currentNickname = userData.nickname || "Pelajar";
+                        currentNickname = userData.nickname || "Student";
                         document.getElementById('userNameDisplay').textContent = currentNickname;
                         
                         initGame();
@@ -533,7 +533,7 @@
                         window.location.href = '../index.html';
                     }
                 } catch (error) {
-                    console.error("Ralat Auth:", error);
+                    console.error("Auth Error:", error);
                 }
             } else {
                 window.location.href = '../index.html';

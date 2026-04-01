@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KidsComm - Uji Minda (Kuiz)</title>
+    <title>KidsComm - Mind Challenge (Quiz)</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,7 +11,7 @@
     <!-- Google Fonts: Nunito -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Konfigurasi Tema Tailwind & Custom CSS -->
+    <!-- Tailwind Theme Configuration & Custom CSS -->
     <script>
         tailwind.config = {
             theme: {
@@ -47,7 +47,7 @@
             background-size: 30px 30px;
         }
         
-        /* Animasi */
+        /* Animation */
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-slide-in { animation: slideIn 0.4s ease-out forwards; }
         
@@ -61,7 +61,7 @@
             75% { transform: translateX(-10px); }
         }
         .animate-shake { animation: shake 0.4s ease-in-out; }
-        /* Elak butang dalam header terjun ke luar sempadan header */
+        /* Prevent header buttons from overflowing */
         header .kartun-border:hover {
             transform: none;
         }
@@ -69,7 +69,7 @@
 </head>
 <body class="bg-dots flex h-screen overflow-hidden text-dark relative">
 
-    <!-- OVERLAY MUDAH ALIH -->
+    <!-- MOBILE OVERLAY -->
     <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden transition-opacity"></div>
 
     <!-- SIDEBAR -->
@@ -77,44 +77,44 @@
         <div class="p-8 text-center border-b-4 border-dark bg-accent relative">
             <button id="closeSidebarBtn" class="md:hidden absolute top-4 right-4 text-2xl font-black w-8 h-8 flex items-center justify-center bg-white rounded-lg kartun-border hover:bg-red-400 hover:text-white transition-colors">&times;</button>
             <h1 class="text-4xl font-black tracking-tighter text-dark">Kids<span class="text-primary">Comm</span></h1>
-            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Jom Berkomunikasi!</p>
+            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Let's Communicate!</p>
         </div>
         
         <nav class="flex-1 p-6 space-y-2 overflow-y-auto" id="sidebarNav">
             <div id="customerMenu" class="flex flex-col space-y-4">
-                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Menu Pelajar</p>
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Student Menu</p>
                 <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Utama
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Home
                 </a>
                 <a href="play_game.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Main Game
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Play Game
                 </a>
                 <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-[#FF8A8A] text-white p-4 rounded-2xl font-black text-lg kartun-border group hover:-translate-y-1 transition-transform">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Jawab Kuiz
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Take Quiz
                 </a>
                 <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> Markah Saya
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> My Scores
                 </a>
             </div>
         </nav>
     </aside>
 
-    <!-- KAWASAN KANDUNGAN UTAMA -->
+    <!-- MAIN CONTENT AREA -->
     <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
         
         <!-- HEADER -->
         <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
             <div class="flex items-center gap-4">
                 <button id="openSidebarBtn" class="md:hidden text-2xl font-black bg-accent w-10 h-10 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">☰</button>
-                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Uji Minda</h2>
+                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Mind Challenge</h2>
             </div>
             <div class="flex items-center gap-4 md:gap-6">
                 <div class="text-right hidden sm:block">
-                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Memuatkan...</p>
-                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Akaun Murid</p>
+                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Student Account</p>
                 </div>
                 <button id="logoutBtn" class="bg-primary hover:bg-red-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-black kartun-border text-sm md:text-base transition-all">
-                    Log Keluar
+                    Log Out
                 </button>
             </div>
         </header>
@@ -122,27 +122,27 @@
         <!-- MAIN QUIZ CONTENT -->
         <main class="flex-1 p-4 md:p-8 lg:p-10 max-w-4xl mx-auto w-full flex flex-col justify-center">
             
-            <!-- SKRIN PENGENALAN KUIZ -->
+            <!-- QUIZ INTRODUCTION SCREEN -->
             <div id="quizIntro" class="bg-white rounded-[2rem] kartun-border p-8 md:p-12 text-center animate-slide-in">
                 <div class="text-7xl md:text-8xl mb-6 drop-shadow-lg">📝</div>
-                <h1 class="text-3xl md:text-5xl font-black mb-4 leading-tight">Cabaran Uji Minda!</h1>
-                <p class="text-lg md:text-xl font-bold text-gray-600 mb-8 max-w-lg mx-auto">Mari uji kefahaman anda tentang cara berkomunikasi dengan baik. Jawab soalan dengan tepat tanpa menghabiskan nyawa anda!</p>
+                <h1 class="text-3xl md:text-5xl font-black mb-4 leading-tight">Mind Challenge!</h1>
+                <p class="text-lg md:text-xl font-bold text-gray-600 mb-8 max-w-lg mx-auto">Let's test your understanding of good communication. Answer correctly without losing all your lives!</p>
                 
                 <button id="startQuizBtn" class="bg-[#FF8A8A] hover:bg-red-500 text-white text-xl md:text-2xl font-black px-8 md:px-10 py-4 md:py-5 rounded-2xl kartun-border transition-transform hover:scale-105 shadow-lg w-full md:w-auto">
-                    Mula Kuiz Sekarang! 🚀
+                    Start Quiz Now! 🚀
                 </button>
             </div>
 
-            <!-- SKRIN SOALAN AKTIF -->
+            <!-- ACTIVE QUESTION SCREEN -->
             <div id="quizActive" class="hidden flex-col flex-1 w-full animate-slide-in">
                 
                 <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                    <span id="questionCounter" class="bg-dark text-white font-black px-4 py-2 rounded-xl text-base md:text-lg kartun-border w-full md:w-auto text-center border-2">Soalan 1 / 5</span>
+                    <span id="questionCounter" class="bg-dark text-white font-black px-4 py-2 rounded-xl text-base md:text-lg kartun-border w-full md:w-auto text-center border-2">Question 1 / 5</span>
                     <div id="livesDisplay" class="text-2xl md:text-3xl tracking-widest drop-shadow-sm">❤️❤️❤️</div>
-                    <span class="bg-accent text-dark font-black px-4 py-2 rounded-xl text-base md:text-lg kartun-border w-full md:w-auto text-center border-2">Markah: <span id="currentScore">0</span></span>
+                    <span class="bg-accent text-dark font-black px-4 py-2 rounded-xl text-base md:text-lg kartun-border w-full md:w-auto text-center border-2">Score: <span id="currentScore">0</span></span>
                 </div>
 
-                <!-- Kad Soalan -->
+                <!-- Question Card -->
                 <div class="bg-white rounded-[2rem] kartun-border p-6 md:p-10 mb-8 flex-1 flex flex-col justify-center relative overflow-hidden transition-colors duration-300" id="questionCard">
                     <!-- Progress Bar -->
                     <div class="absolute top-0 left-0 w-full h-3 bg-gray-100">
@@ -152,50 +152,50 @@
                     </div>
 
                     <h2 id="questionText" class="text-xl md:text-3xl font-black text-center mb-8 mt-4 leading-relaxed text-gray-800">
-                        Memuatkan Soalan...
+                        Loading Question...
                     </h2>
 
-                    <!-- Pilihan Jawapan -->
+                    <!-- Answer Options -->
                     <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                        <!-- Butang jawapan akan dijana di sini -->
+                        <!-- Answer buttons will be generated here -->
                     </div>
                 </div>
             </div>
 
-            <!-- SKRIN KEPUTUSAN (TAMAT KUIZ) -->
+            <!-- RESULTS SCREEN (QUIZ ENDED) -->
             <div id="quizResult" class="hidden bg-white rounded-[2rem] kartun-border p-8 md:p-12 text-center flex-col items-center animate-slide-in">
                 <div id="resultIcon" class="text-7xl md:text-8xl mb-6 animate-bounce drop-shadow-lg">🏆</div>
-                <h2 id="resultTitle" class="text-3xl md:text-5xl font-black mb-2 text-primary">Kuiz Tamat!</h2>
-                <p id="resultMessage" class="text-lg md:text-xl font-bold text-gray-600 mb-6">Syabas! Anda telah melengkapkan cabaran Uji Minda.</p>
+                <h2 id="resultTitle" class="text-3xl md:text-5xl font-black mb-2 text-primary">Quiz Over!</h2>
+                <p id="resultMessage" class="text-lg md:text-xl font-bold text-gray-600 mb-6">Well done! You have completed the Mind Challenge.</p>
                 
                 <div class="bg-gray-50 border-4 border-dashed border-gray-300 rounded-2xl p-6 mb-8 w-full max-w-sm">
-                    <p class="text-gray-500 font-bold uppercase tracking-wider mb-2">Markah Akhir Anda</p>
+                    <p class="text-gray-500 font-bold uppercase tracking-wider mb-2">Your Final Score</p>
                     <p id="finalScoreText" class="text-6xl md:text-7xl font-black text-dark">0<span class="text-2xl text-gray-400">/100</span></p>
                 </div>
                 
                 <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                     <button onclick="window.location.reload()" id="retryBtn" class="hidden bg-white text-dark text-lg font-black px-6 py-4 rounded-xl kartun-border hover:bg-gray-100 w-full md:w-auto">
-                        🔄 Cuba Lagi
+                        🔄 Try Again
                     </button>
                     <button id="saveScoreBtn" class="bg-secondary hover:bg-teal-500 text-white text-lg md:text-xl font-black px-8 py-4 rounded-xl kartun-border mb-4 w-full md:w-auto">
-                        💾 Simpan Markah
+                        💾 Save Score
                     </button>
                 </div>
-                <p id="saveStatusMessage" class="font-bold text-primary hidden mt-2">Menyimpan markah anda...</p>
+                <p id="saveStatusMessage" class="font-bold text-primary hidden mt-2">Saving your score...</p>
                 
             </div>
 
         </main>
     </div>
 
-    <!-- Mesej Toast (Alert Moden) -->
+    <!-- Toast Message (Modern Alert) -->
     <div id="toastMessage" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl font-black text-white text-lg md:text-xl transition-all duration-300 translate-y-20 opacity-0 z-50 shadow-xl border-4 border-dark pointer-events-none text-center min-w-[300px]">
-        Mesej di sini
+        Message here
     </div>
 
     <!-- UI Scripts -->
     <script>
-        // Logik Sidebar Mudah Alih
+        // Mobile Sidebar Logic
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('mobileOverlay');
         const openBtn = document.getElementById('openSidebarBtn');
@@ -211,56 +211,56 @@
         overlay.addEventListener('click', toggleSidebar);
     </script>
 
-    <!-- Logik Kuiz & Firebase -->
+    <!-- Quiz & Firebase Logic -->
     <script type="module">
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { auth, db } from "../firebase-config.js";
 
-        // --- Variabel Global Kuiz ---
+        // --- Global Quiz Variables ---
         let currentUser = null;
-        let currentNickname = "Pelajar";
+        let currentNickname = "Student";
         
         let currentQuestionIndex = 0;
         let score = 0;
         let lives = 3;
         const POINTS_PER_QUESTION = 20;
 
-        // --- Data Soalan Kuiz (Dikemas kini dengan Hint) ---
+        // --- Quiz Question Data (Updated with Hints) ---
         const quizData = [
             {
-                question: "Apakah ucapan yang sesuai apabila rakan meminjamkan pensel kepada anda?",
-                options: ["Sama-sama", "Terima kasih", "Maafkan saya", "Tolong diam"],
+                question: "What is the appropriate response when a friend lends you a pencil?",
+                options: ["You're welcome", "Thank you", "I'm sorry", "Please be quiet"],
                 answerIndex: 1,
-                hint: "Apabila menerima sesuatu pertolongan, kita mesti menghargainya."
+                hint: "When receiving any help, we must show appreciation."
             },
             {
-                question: "Jika anda terpijak kasut kawan secara tidak sengaja, anda patut berkata...",
-                options: ["Padan muka", "Terima kasih", "Saya minta maaf", "Tepi sikit"],
+                question: "If you accidentally step on a friend's shoe, you should say...",
+                options: ["Serves you right", "Thank you", "I am sorry", "Move aside"],
                 answerIndex: 2,
-                hint: "Jika kita melakukan kesilapan, cepat-cepatlah mengaku salah."
+                hint: "When we make a mistake, we should quickly admit it."
             },
             {
-                question: "Apabila berjumpa guru pada waktu pagi, kita mestilah mengucapkan...",
-                options: ["Selamat malam", "Selamat tinggal", "Selamat pagi", "Jumpa lagi"],
+                question: "When meeting a teacher in the morning, we should say...",
+                options: ["Good night", "Goodbye", "Good morning", "See you again"],
                 answerIndex: 2,
-                hint: "Lihat pada masa situasi itu berlaku (Waktu pagi)."
+                hint: "Look at when the situation takes place (Morning time)."
             },
             {
-                question: "Rakan anda sedang bersedih kerana penselnya hilang. Apa respon anda?",
-                options: ["Jangan menangis, mari kita cari bersama", "Padan muka awak", "Biarkan dia", "Saya nak balik"],
+                question: "Your friend is sad because their pencil is lost. What is your response?",
+                options: ["Don't cry, let's look for it together", "Serves you right", "Ignore them", "I want to go home"],
                 answerIndex: 0,
-                hint: "Seorang kawan yang baik akan sentiasa membantu."
+                hint: "A good friend will always be there to help."
             },
             {
-                question: "Sebelum masuk ke dalam bilik guru, kita mestilah...",
-                options: ["Terus meluru masuk", "Mengetuk pintu dan memberi salam", "Menjerit dari luar", "Menangis"],
+                question: "Before entering the teacher's room, we must...",
+                options: ["Rush straight in", "Knock and greet", "Shout from outside", "Cry"],
                 answerIndex: 1,
-                hint: "Kita mestilah beradab sebelum masuk ke bilik orang lain."
+                hint: "We must be polite before entering someone else's room."
             }
         ];
 
-        // --- Elemen UI ---
+        // --- UI Elements ---
         const ui = {
             intro: document.getElementById('quizIntro'),
             active: document.getElementById('quizActive'),
@@ -289,7 +289,7 @@
             ui.lives.innerHTML = hearts;
         }
 
-        // --- Logik Utama Kuiz ---
+        // --- Main Quiz Logic ---
         document.getElementById('startQuizBtn').addEventListener('click', () => {
             ui.intro.classList.add('hidden');
             ui.active.classList.remove('hidden');
@@ -301,15 +301,15 @@
         function loadQuestion() {
             const currentQ = quizData[currentQuestionIndex];
             
-            // Kemaskini Kaunter & Progress Bar
-            ui.counter.textContent = `Soalan ${currentQuestionIndex + 1} / ${quizData.length}`;
+            // Update Counter & Progress Bar
+            ui.counter.textContent = `Question ${currentQuestionIndex + 1} / ${quizData.length}`;
             const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
             ui.progressBar.style.width = `${progressPercent}%`;
 
-            // Muat Soalan
+            // Load Question
             ui.questionText.textContent = currentQ.question;
             
-            // Muat Pilihan Jawapan
+            // Load Answer Options
             ui.optionsContainer.innerHTML = '';
             
             const colors = ['bg-[#A8E6CF]', 'bg-[#FFD3B6]', 'bg-[#FF8A8A]', 'bg-[#9BF6FF]'];
@@ -327,24 +327,24 @@
         let isProcessing = false;
 
         function selectAnswer(selectedIndex, btnElement) {
-            if (isProcessing) return; // Elak double click
+            if (isProcessing) return; // Prevent double click
             
             const currentQ = quizData[currentQuestionIndex];
             
             if (selectedIndex === currentQ.answerIndex) {
-                // Jawapan Betul
+                // Correct Answer
                 isProcessing = true;
                 score += POINTS_PER_QUESTION;
                 ui.scoreDisplay.textContent = score;
                 
-                showToast("✨ Tepat Sekali!", "success");
+                showToast("✨ Spot on!", "success");
                 
-                // Gayakan butang
+                // Style the button
                 btnElement.classList.remove('bg-[#A8E6CF]', 'bg-[#FFD3B6]', 'bg-[#FF8A8A]', 'bg-[#9BF6FF]');
                 btnElement.classList.add('bg-green-400', 'text-white', 'scale-105', 'z-10');
                 ui.card.classList.add('bg-green-50');
 
-                // Kunci semua butang lain
+                // Disable all other buttons
                 Array.from(ui.optionsContainer.children).forEach(b => {
                     b.disabled = true;
                     if(b !== btnElement) b.classList.add('opacity-50');
@@ -363,25 +363,25 @@
                 }, 1200);
 
             } else {
-                // Jawapan Salah
+                // Wrong Answer
                 lives--;
                 updateLives();
                 
                 btnElement.classList.add('animate-shake', 'opacity-50', 'bg-gray-300');
-                btnElement.disabled = true; // Elak tekan butang salah berkali-kali
+                btnElement.disabled = true; // Prevent pressing wrong button multiple times
                 
                 ui.card.classList.add('animate-shake', 'border-red-500');
                 setTimeout(() => ui.card.classList.remove('animate-shake', 'border-red-500'), 400);
 
                 if (lives <= 0) {
                     isProcessing = true;
-                    showToast("Alamak! Nyawa habis.", 'error');
+                    showToast("Oh no! Out of lives.", 'error');
                     setTimeout(() => {
                         isProcessing = false;
                         endQuiz();
                     }, 1200);
                 } else {
-                    showToast(`❌ Salah! Hint: ${currentQ.hint}`, 'error');
+                    showToast(`❌ Wrong! Hint: ${currentQ.hint}`, 'error');
                 }
             }
         }
@@ -403,23 +403,23 @@
 
             if (lives <= 0) {
                 icon.textContent = "💔";
-                title.textContent = "Alamak!";
+                title.textContent = "Oh no!";
                 title.classList.replace('text-primary', 'text-red-500');
-                message.textContent = "Nyawa anda telah kehabisan. Cuba lagi untuk skor sempurna!";
+                message.textContent = "You have run out of lives. Try again for a perfect score!";
                 retryBtn.classList.remove('hidden');
             } else {
                 ui.progressBar.style.width = '100%';
                 if (score === totalMaxScore) {
                     icon.textContent = '🌟';
-                    message.textContent = "Hebat! Anda menjawab semua soalan dengan sempurna!";
+                    message.textContent = "Excellent! You answered all questions perfectly!";
                 } else {
                     icon.textContent = '👍';
-                    message.textContent = "Bagus! Anda berjaya menamatkan kuiz ini.";
+                    message.textContent = "Great job! You have completed this quiz.";
                 }
             }
         }
 
-        // --- Logik Simpan Markah Firebase ---
+        // --- Firebase Save Score Logic ---
         document.getElementById('saveScoreBtn').addEventListener('click', async () => {
             if (!currentUser) return;
             
@@ -429,7 +429,7 @@
             btn.disabled = true;
             btn.classList.add('opacity-50', 'cursor-not-allowed');
             msg.classList.remove('hidden');
-            msg.textContent = "Menyimpan markah ke pangkalan data...";
+            msg.textContent = "Saving score to database...";
 
             try {
                 await addDoc(collection(db, "scores"), {
@@ -440,20 +440,20 @@
                     playedAt: serverTimestamp()
                 });
                 
-                msg.textContent = "Markah Berjaya Disimpan! ✅";
+                msg.textContent = "Score Saved Successfully! ✅";
                 msg.classList.replace('text-primary', 'text-green-500');
                 
                 setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
                 
             } catch (error) {
-                console.error("Ralat simpan markah:", error);
-                msg.textContent = "Gagal menyimpan markah. Sila cuba lagi.";
+                console.error("Error saving score:", error);
+                msg.textContent = "Failed to save score. Please try again.";
                 btn.disabled = false;
                 btn.classList.remove('opacity-50', 'cursor-not-allowed');
             }
         });
 
-        // --- Auth Guard (Semak Sesi) ---
+        // --- Auth Guard (Check Session) ---
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await signOut(auth);
             window.location.href = '../index.html';
@@ -472,7 +472,7 @@
                         }
 
                         currentUser = user;
-                        currentNickname = userData.nickname || "Pelajar";
+                        currentNickname = userData.nickname || "Student";
                         document.getElementById('userNameDisplay').textContent = currentNickname;
                         
                     } else {
@@ -480,7 +480,7 @@
                         window.location.href = '../index.html';
                     }
                 } catch (error) {
-                    console.error("Ralat Auth:", error);
+                    console.error("Auth Error:", error);
                 }
             } else {
                 window.location.href = '../index.html';

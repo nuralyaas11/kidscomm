@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KidsComm - Markah Saya</title>
+    <title>KidsComm - My Scores</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,7 +11,7 @@
     <!-- Google Fonts: Nunito -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Konfigurasi Tema Tailwind & Custom CSS -->
+    <!-- Tailwind Theme Configuration & Custom CSS -->
     <script>
         tailwind.config = {
             theme: {
@@ -47,10 +47,10 @@
             background-size: 30px 30px;
         }
         
-        /* Animasi */
+        /* Animation */
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-slide-in { animation: slideIn 0.4s ease-out forwards; }
-        /* Elak butang dalam header terjun ke luar sempadan header */
+        /* Prevent header buttons from overflowing */
         header .kartun-border:hover {
             transform: none;
         }
@@ -58,7 +58,7 @@
 </head>
 <body class="bg-dots flex h-screen overflow-hidden text-dark relative">
 
-    <!-- OVERLAY MUDAH ALIH -->
+    <!-- MOBILE OVERLAY -->
     <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden transition-opacity"></div>
 
     <!-- SIDEBAR -->
@@ -66,44 +66,44 @@
         <div class="p-8 text-center border-b-4 border-dark bg-accent relative">
             <button id="closeSidebarBtn" class="md:hidden absolute top-4 right-4 text-2xl font-black w-8 h-8 flex items-center justify-center bg-white rounded-lg kartun-border hover:bg-red-400 hover:text-white transition-colors">&times;</button>
             <h1 class="text-4xl font-black tracking-tighter text-dark">Kids<span class="text-primary">Comm</span></h1>
-            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Jom Berkomunikasi!</p>
+            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Let's Communicate!</p>
         </div>
         
         <nav class="flex-1 p-6 space-y-2 overflow-y-auto" id="sidebarNav">
             <div id="customerMenu" class="flex flex-col space-y-4">
-                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Menu Pelajar</p>
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Student Menu</p>
                 <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Utama
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Home
                 </a>
                 <a href="play_game.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Main Game
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Play Game
                 </a>
                 <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Jawab Kuiz
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Take Quiz
                 </a>
                 <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-[#9BF6FF] text-dark p-4 rounded-2xl font-black text-lg kartun-border group hover:-translate-y-1 transition-transform">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> Markah Saya
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> My Scores
                 </a>
             </div>
         </nav>
     </aside>
 
-    <!-- KAWASAN KANDUNGAN UTAMA -->
+    <!-- MAIN CONTENT AREA -->
     <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
         
         <!-- HEADER -->
         <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
             <div class="flex items-center gap-4">
                 <button id="openSidebarBtn" class="md:hidden text-2xl font-black bg-accent w-10 h-10 md:w-12 md:h-12 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">☰</button>
-                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Markah Saya</h2>
+                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">My Scores</h2>
             </div>
             <div class="flex items-center gap-4 md:gap-6">
                 <div class="text-right hidden sm:block">
-                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Memuatkan...</p>
-                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Akaun Murid</p>
+                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Student Account</p>
                 </div>
                 <button id="logoutBtn" class="bg-primary hover:bg-red-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-black kartun-border text-sm md:text-base transition-all">
-                    Log Keluar
+                    Log Out
                 </button>
             </div>
         </header>
@@ -113,8 +113,8 @@
             
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <div>
-                    <h1 class="text-3xl md:text-4xl font-black mb-2">Pencapaian Saya 🏆</h1>
-                    <p class="text-gray-600 font-bold text-base md:text-lg">Syabas! Lihat markah yang telah anda kumpulkan setakat ini.</p>
+                    <h1 class="text-3xl md:text-4xl font-black mb-2">My Achievements 🏆</h1>
+                    <p class="text-gray-600 font-bold text-base md:text-lg">Well done! See the scores you've collected so far.</p>
                 </div>
             </div>
 
@@ -123,35 +123,35 @@
                 <div class="bg-accent p-6 rounded-[2rem] kartun-border text-dark flex items-center gap-6 transform transition-transform hover:-translate-y-2">
                     <div class="text-6xl drop-shadow-md">⭐</div>
                     <div>
-                        <p class="font-black uppercase tracking-wider opacity-80 mb-1 text-sm md:text-base">Jumlah Bintang Terkumpul</p>
+                        <p class="font-black uppercase tracking-wider opacity-80 mb-1 text-sm md:text-base">Total Stars Collected</p>
                         <p class="text-4xl md:text-5xl font-black" id="totalStars">0</p>
                     </div>
                 </div>
                 <div class="bg-[#9BF6FF] p-6 rounded-[2rem] kartun-border text-dark flex items-center gap-6 transform transition-transform hover:-translate-y-2">
                     <div class="text-6xl drop-shadow-md">🎮</div>
                     <div>
-                        <p class="font-black uppercase tracking-wider opacity-80 mb-1 text-sm md:text-base">Aktiviti Diselesaikan</p>
+                        <p class="font-black uppercase tracking-wider opacity-80 mb-1 text-sm md:text-base">Activities Completed</p>
                         <p class="text-4xl md:text-5xl font-black" id="totalActivities">0</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Sejarah Markah (Responsif) -->
+            <!-- Score History (Responsive) -->
             <div class="bg-white rounded-[2rem] kartun-border p-6 md:p-8 mb-8 flex flex-col">
-                <h2 class="text-xl md:text-2xl font-black mb-6">📜 Sejarah Aktiviti Anda</h2>
+                <h2 class="text-xl md:text-2xl font-black mb-6">📜 Your Activity History</h2>
                 
-                <!-- Tajuk Kolum (Hanya kelihatan di Desktop) -->
+                <!-- Column Headers (Desktop only) -->
                 <div class="hidden md:grid grid-cols-12 gap-4 bg-gray-100 p-4 rounded-xl kartun-border mb-4 font-black text-center items-center">
                     <div class="col-span-1">No</div>
-                    <div class="col-span-5 text-left">Aktiviti Diselesaikan</div>
-                    <div class="col-span-3">Markah</div>
-                    <div class="col-span-3 text-left">Tarikh & Masa</div>
+                    <div class="col-span-5 text-left">Activity Completed</div>
+                    <div class="col-span-3">Score</div>
+                    <div class="col-span-3 text-left">Date & Time</div>
                 </div>
 
-                <!-- Kontena Senarai Markah -->
+                <!-- Score List Container -->
                 <div id="myScoresList" class="space-y-4 md:space-y-3">
                     <div class="text-center font-bold text-gray-500 py-10 animate-pulse bg-gray-50 rounded-xl kartun-border">
-                        Sedang menyemak rekod markah anda... 🔍
+                        Checking your score records... 🔍
                     </div>
                 </div>
             </div>
@@ -162,7 +162,7 @@
 
     <!-- UI Scripts -->
     <script>
-        // Logik Sidebar Mudah Alih
+        // Mobile Sidebar Logic
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('mobileOverlay');
         const openBtn = document.getElementById('openSidebarBtn');
@@ -178,17 +178,17 @@
         overlay.addEventListener('click', toggleSidebar);
     </script>
 
-    <!-- Logik Javascript & Firebase -->
+    <!-- Javascript & Firebase Logic -->
     <script type="module">
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { auth, db } from "../firebase-config.js";
 
-        // --- Logik Tarik Markah (Spesifik Pengguna) ---
+        // --- Fetch Scores Logic (User Specific) ---
         async function fetchMyScores(userId) {
             const listContainer = document.getElementById('myScoresList');
             try {
-                // Tarik dokumen markah di mana userId sepadan dengan pengguna yang log masuk
+                // Fetch score documents where userId matches the logged-in user
                 const scoresRef = collection(db, "scores");
                 const q = query(scoresRef, where("userId", "==", userId));
                 const querySnapshot = await getDocs(q);
@@ -202,11 +202,11 @@
                     totalStars += (data.score || 0);
                 });
 
-                // Kemaskini Kad Statistik
+                // Update Statistics Cards
                 animateValue("totalStars", 0, totalStars, 1000);
                 animateValue("totalActivities", 0, myScoresList.length, 1000);
 
-                // Susun senarai mengikut tarikh terkini
+                // Sort list by most recent date
                 myScoresList.sort((a, b) => {
                     const timeA = a.playedAt ? a.playedAt.toMillis() : 0;
                     const timeB = b.playedAt ? b.playedAt.toMillis() : 0;
@@ -216,8 +216,8 @@
                 renderList(myScoresList);
 
             } catch (error) {
-                console.error("Ralat menarik markah:", error);
-                listContainer.innerHTML = `<div class="text-center font-bold text-red-500 py-8 bg-red-50 rounded-xl kartun-border">Gagal menarik data. Sila semak sambungan internet anda.</div>`;
+                console.error("Error fetching scores:", error);
+                listContainer.innerHTML = `<div class="text-center font-bold text-red-500 py-8 bg-red-50 rounded-xl kartun-border">Failed to fetch data. Please check your internet connection.</div>`;
             }
         }
 
@@ -225,34 +225,34 @@
             const listContainer = document.getElementById('myScoresList');
             
             if (dataArray.length === 0) {
-                listContainer.innerHTML = `<div class="text-center font-bold text-gray-500 py-12 text-lg bg-gray-50 rounded-xl kartun-border">Anda belum bermain apa-apa aktiviti. Jom mula sekarang! 🎮</div>`;
+                listContainer.innerHTML = `<div class="text-center font-bold text-gray-500 py-12 text-lg bg-gray-50 rounded-xl kartun-border">You haven't played any activities yet. Let's start now! 🎮</div>`;
                 return;
             }
 
             let htmlContent = '';
             dataArray.forEach((scoreData, index) => {
                 
-                // Format Tarikh
-                let dateStr = "Tiada Tarikh";
+                // Format Date
+                let dateStr = "No Date";
                 if(scoreData.playedAt) {
                     const date = scoreData.playedAt.toDate();
                     dateStr = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
                 }
 
-                // Format Aktiviti
+                // Format Activity
                 let actName = '';
                 let actClass = '';
                 if (scoreData.activityType === 'game1') {
-                    actName = '🧩 Padanan Gambar';
+                    actName = '🧩 Picture Match';
                     actClass = 'bg-[#A8E6CF]';
                 } else if (scoreData.activityType === 'game2') {
-                    actName = '🧱 Susun Perkataan';
+                    actName = '🧱 Word Scramble';
                     actClass = 'bg-[#FFD3B6]';
                 } else if (scoreData.activityType === 'quiz') {
-                    actName = '📝 Kuiz Uji Minda';
+                    actName = '📝 Mind Quiz';
                     actClass = 'bg-[#FF8A8A] text-white';
                 } else {
-                    actName = '🎯 Aktiviti ' + scoreData.activityType;
+                    actName = '🎯 Activity ' + scoreData.activityType;
                     actClass = 'bg-gray-200 text-dark';
                 }
 
@@ -265,25 +265,25 @@
                             <span class="font-black text-xl md:text-lg bg-white md:bg-transparent w-8 h-8 md:w-auto md:h-auto flex items-center justify-center rounded-full md:rounded-none kartun-border md:border-0 md:shadow-none">${index + 1}</span>
                         </div>
 
-                        <!-- Aktiviti (Mobile Label + Value) -->
+                        <!-- Activity (Mobile Label + Value) -->
                         <div class="flex flex-col md:flex-row justify-between w-full md:w-auto md:col-span-5 md:justify-start items-center gap-2">
-                            <span class="md:hidden font-bold text-gray-400 w-full text-left text-sm mb-1">Aktiviti</span>
+                            <span class="md:hidden font-bold text-gray-400 w-full text-left text-sm mb-1">Activity</span>
                             <span class="${actClass} font-black px-4 py-3 md:px-3 md:py-1 rounded-xl md:rounded-lg text-base md:text-sm kartun-border border-2 text-center w-full md:w-auto transform transition-transform group-hover:scale-105 md:group-hover:scale-100">
                                 ${actName}
                             </span>
                         </div>
 
-                        <!-- Markah (Mobile Label + Value) -->
+                        <!-- Score (Mobile Label + Value) -->
                         <div class="flex justify-between w-full md:w-auto md:col-span-3 md:justify-center items-center">
-                            <span class="md:hidden font-bold text-gray-400">Markah</span>
+                            <span class="md:hidden font-bold text-gray-400">Score</span>
                             <span class="bg-dark text-accent px-6 py-2 md:px-4 md:py-2 rounded-xl font-black text-2xl md:text-lg border-2 border-dark shadow-sm transform transition-transform group-hover:-translate-y-1 md:group-hover:translate-y-0">
                                 ${scoreData.score || 0}
                             </span>
                         </div>
 
-                        <!-- Tarikh (Mobile Label + Value) -->
+                        <!-- Date (Mobile Label + Value) -->
                         <div class="flex justify-between w-full md:w-auto md:col-span-3 md:justify-start items-center border-t-2 border-dashed border-gray-300 md:border-0 pt-4 md:pt-0 mt-2 md:mt-0">
-                            <span class="md:hidden font-bold text-gray-400">Tarikh</span>
+                            <span class="md:hidden font-bold text-gray-400">Date</span>
                             <span class="font-bold text-gray-500 text-sm">${dateStr}</span>
                         </div>
                     </div>
@@ -313,13 +313,13 @@
             }, stepTime);
         }
 
-        // --- Log Keluar ---
+        // --- Log Out ---
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await signOut(auth);
             window.location.href = '../index.html';
         });
 
-        // --- Auth Guard (Semak Sesi) ---
+        // --- Auth Guard (Check Session) ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 try {
@@ -327,16 +327,16 @@
                     if (userDoc.exists()) {
                         const userData = userDoc.data();
                         
-                        // Halang Admin (Guru)
+                        // Block Admin (Teacher)
                         if (userData.role === 'admin') {
                             window.location.href = '../admin/dashboard.html';
                             return;
                         }
 
-                        // Kemaskini nama
-                        document.getElementById('userNameDisplay').textContent = userData.nickname || "Pelajar";
+                        // Update name
+                        document.getElementById('userNameDisplay').textContent = userData.nickname || "Student";
                         
-                        // Tarik markah menggunakan UID pelajar
+                        // Fetch scores using student UID
                         fetchMyScores(user.uid);
                         
                     } else {
@@ -344,7 +344,7 @@
                         window.location.href = '../index.html';
                     }
                 } catch (error) {
-                    console.error("Ralat Auth:", error);
+                    console.error("Auth Error:", error);
                 }
             } else {
                 window.location.href = '../index.html';

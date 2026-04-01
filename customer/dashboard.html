@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KidsComm - Papan Pemuka Pelajar</title>
+    <title>KidsComm - Student Dashboard</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,7 +11,7 @@
     <!-- Google Fonts: Nunito -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Konfigurasi Tema Tailwind & Custom CSS -->
+    <!-- Tailwind Theme Configuration & Custom CSS -->
     <script>
         tailwind.config = {
             theme: {
@@ -48,7 +48,7 @@
             background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
             background-size: 30px 30px;
         }
-        /* Elak butang dalam header terjun ke luar sempadan header */
+        /* Prevent header buttons from overflowing */
         header .kartun-border:hover {
             transform: none;
         }
@@ -56,7 +56,7 @@
 </head>
 <body class="bg-dots flex h-screen overflow-hidden text-dark relative">
 
-    <!-- OVERLAY MUDAH ALIH -->
+    <!-- MOBILE OVERLAY -->
     <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden transition-opacity"></div>
 
     <!-- SIDEBAR -->
@@ -65,54 +65,54 @@
         <div class="p-8 text-center border-b-4 border-dark bg-accent relative">
             <button id="closeSidebarBtn" class="md:hidden absolute top-4 right-4 text-2xl font-black w-8 h-8 flex items-center justify-center bg-white rounded-lg kartun-border hover:bg-red-400 hover:text-white transition-colors">&times;</button>
             <h1 class="text-4xl font-black tracking-tighter text-dark">Kids<span class="text-primary">Comm</span></h1>
-            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Jom Berkomunikasi!</p>
+            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Let's Communicate!</p>
         </div>
         
-        <!-- Navigasi Menu -->
+        <!-- Navigation Menu -->
         <nav class="flex-1 p-6 space-y-2 overflow-y-auto" id="sidebarNav">
-            <!-- MENU PELAJAR -->
+            <!-- STUDENT MENU -->
             <div id="customerMenu" class="flex flex-col space-y-4">
-                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Menu Pelajar</p>
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Student Menu</p>
                 <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Utama
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Home
                 </a>
                 <a href="play_game.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Main Game
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Play Game
                 </a>
                 <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Jawab Kuiz
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Take Quiz
                 </a>
                 <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> Markah Saya
+                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> My Scores
                 </a>
             </div>
             
-            <!-- MENU GURU (Disembunyikan untuk Dashboard Pelajar) -->
+            <!-- TEACHER MENU (Hidden for Student Dashboard) -->
             <div id="adminMenu" class="hidden flex-col space-y-4 mt-4">
-                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Menu Guru</p>
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Teacher Menu</p>
                 <a href="../admin/dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">📊</span> Statistik
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📊</span> Statistics
                 </a>
             </div>
         </nav>
     </aside>
 
-    <!-- KAWASAN KANDUNGAN UTAMA -->
+    <!-- MAIN CONTENT AREA -->
     <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
         
         <!-- HEADER -->
         <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
             <div class="flex items-center gap-4">
                 <button id="openSidebarBtn" class="md:hidden text-2xl font-black bg-accent w-10 h-10 md:w-12 md:h-12 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">☰</button>
-                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Papan Pemuka</h2>
+                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Dashboard</h2>
             </div>
             <div class="flex items-center gap-4 md:gap-6">
                 <div class="text-right hidden sm:block">
-                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Memuatkan...</p>
-                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider" id="userRoleDisplay">Akaun Murid</p>
+                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider" id="userRoleDisplay">Student Account</p>
                 </div>
                 <button id="logoutBtn" class="bg-primary hover:bg-red-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-black kartun-border text-sm md:text-base transition-all">
-                    Log Keluar
+                    Log Out
                 </button>
             </div>
         </header>
@@ -122,9 +122,9 @@
             
             <div class="bg-secondary kartun-border rounded-[2rem] p-8 md:p-12 text-white mb-10 relative overflow-hidden flex flex-col md:flex-row items-center justify-between shadow-lg">
                 <div class="relative z-10 w-full md:w-2/3">
-                    <span class="bg-white text-secondary font-black px-4 py-1 rounded-full text-sm mb-4 inline-block uppercase tracking-wider shadow-sm">Tahap 1</span>
-                    <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight">Selamat Kembali,<br><span id="welcomeName" class="text-accent drop-shadow-md">Kawan</span>! 🌟</h1>
-                    <p class="text-lg md:text-xl font-bold opacity-90">Sedia untuk misi komunikasi kita hari ini? Pilih aktiviti di bawah untuk kumpul lebih banyak bintang!</p>
+                    <span class="bg-white text-secondary font-black px-4 py-1 rounded-full text-sm mb-4 inline-block uppercase tracking-wider shadow-sm">Level 1</span>
+                    <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight">Welcome Back,<br><span id="welcomeName" class="text-accent drop-shadow-md">Friend</span>! 🌟</h1>
+                    <p class="text-lg md:text-xl font-bold opacity-90">Ready for today's communication mission? Choose an activity below to collect more stars!</p>
                 </div>
                 <div class="text-8xl md:text-9xl mt-6 md:mt-0 drop-shadow-xl animate-bounce">🚀</div>
                 <div class="absolute -right-20 -top-20 w-64 h-64 bg-white opacity-10 rounded-full"></div>
@@ -134,56 +134,56 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
                 <div class="bg-white p-4 rounded-2xl kartun-border text-center">
                     <div class="text-3xl mb-1">⭐</div>
-                    <p class="font-bold text-gray-500 text-sm">Bintang</p>
+                    <p class="font-bold text-gray-500 text-sm">Stars</p>
                     <p class="text-2xl font-black">120</p>
                 </div>
                 <div class="bg-white p-4 rounded-2xl kartun-border text-center">
                     <div class="text-3xl mb-1">🏅</div>
-                    <p class="font-bold text-gray-500 text-sm">Lencana</p>
+                    <p class="font-bold text-gray-500 text-sm">Badges</p>
                     <p class="text-2xl font-black">3</p>
                 </div>
                 <div class="bg-white p-4 rounded-2xl kartun-border text-center">
                     <div class="text-3xl mb-1">🔥</div>
-                    <p class="font-bold text-gray-500 text-sm">Hari Berturut</p>
-                    <p class="text-2xl font-black">2 Hari</p>
+                    <p class="font-bold text-gray-500 text-sm">Day Streak</p>
+                    <p class="text-2xl font-black">2 Days</p>
                 </div>
                 <div class="bg-white p-4 rounded-2xl kartun-border text-center">
                     <div class="text-3xl mb-1">🎯</div>
-                    <p class="font-bold text-gray-500 text-sm">Ketepatan</p>
+                    <p class="font-bold text-gray-500 text-sm">Accuracy</p>
                     <p class="text-2xl font-black">85%</p>
                 </div>
             </div>
 
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-3xl font-black tracking-tight">🎮 Jom Mula Bermain!</h2>
+                <h2 class="text-3xl font-black tracking-tight">🎮 Let's Start Playing!</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                 <a href="play_game.html?game=1" class="bg-[#A8E6CF] rounded-[2rem] p-8 kartun-border group flex flex-col justify-between h-full">
                     <div>
                         <div class="bg-white w-24 h-24 rounded-full flex items-center justify-center text-5xl mb-6 kartun-border group-hover:rotate-12 transition-transform">🧩</div>
-                        <h3 class="text-2xl font-black mb-3">Padanan Gambar</h3>
-                        <p class="font-bold text-gray-700 leading-relaxed mb-6">Seret dan padankan situasi dengan ucapan yang paling tepat. Kumpul bintang untuk setiap padanan yang betul!</p>
+                        <h3 class="text-2xl font-black mb-3">Picture Match</h3>
+                        <p class="font-bold text-gray-700 leading-relaxed mb-6">Drag and match situations with the most appropriate phrase. Collect stars for every correct match!</p>
                     </div>
-                    <button class="bg-dark text-white font-black py-4 w-full rounded-xl text-lg group-hover:bg-white group-hover:text-dark border-4 border-dark transition-colors shadow-sm">Mula Main!</button>
+                    <button class="bg-dark text-white font-black py-4 w-full rounded-xl text-lg group-hover:bg-white group-hover:text-dark border-4 border-dark transition-colors shadow-sm">Play Now!</button>
                 </a>
                 
                 <a href="play_game.html?game=2" class="bg-[#FFD3B6] rounded-[2rem] p-8 kartun-border group flex flex-col justify-between h-full">
                     <div>
                         <div class="bg-white w-24 h-24 rounded-full flex items-center justify-center text-5xl mb-6 kartun-border group-hover:rotate-12 transition-transform">🧱</div>
-                        <h3 class="text-2xl font-black mb-3">Susun Perkataan</h3>
-                        <p class="font-bold text-gray-700 leading-relaxed mb-6">Alamak, ayat sudah berterabur! Mari susun bongkah perkataan menjadi satu ayat komunikasi yang lengkap.</p>
+                        <h3 class="text-2xl font-black mb-3">Word Scramble</h3>
+                        <p class="font-bold text-gray-700 leading-relaxed mb-6">Oops, the sentence is all scrambled! Arrange the word blocks into a complete communication sentence.</p>
                     </div>
-                    <button class="bg-dark text-white font-black py-4 w-full rounded-xl text-lg group-hover:bg-white group-hover:text-dark border-4 border-dark transition-colors shadow-sm">Mula Main!</button>
+                    <button class="bg-dark text-white font-black py-4 w-full rounded-xl text-lg group-hover:bg-white group-hover:text-dark border-4 border-dark transition-colors shadow-sm">Play Now!</button>
                 </a>
 
                 <a href="take_quiz.html" class="bg-[#FF8A8A] rounded-[2rem] p-8 kartun-border group flex flex-col justify-between h-full md:col-span-2 lg:col-span-1 text-white">
                     <div>
                         <div class="bg-white w-24 h-24 rounded-full flex items-center justify-center text-5xl mb-6 kartun-border group-hover:-rotate-12 transition-transform">📝</div>
-                        <h3 class="text-2xl font-black mb-3">Uji Minda (Kuiz)</h3>
-                        <p class="font-bold text-white/90 leading-relaxed mb-6">Uji kefahaman anda tentang komunikasi. Jawab soalan pelbagai pilihan dan jadi juara komunikasi!</p>
+                        <h3 class="text-2xl font-black mb-3">Mind Challenge (Quiz)</h3>
+                        <p class="font-bold text-white/90 leading-relaxed mb-6">Test your understanding of communication. Answer multiple choice questions and become a communication champion!</p>
                     </div>
-                    <button class="bg-white text-dark font-black py-4 w-full rounded-xl text-lg group-hover:bg-dark group-hover:text-white border-4 border-white transition-colors shadow-sm">Jawab Kuiz</button>
+                    <button class="bg-white text-dark font-black py-4 w-full rounded-xl text-lg group-hover:bg-dark group-hover:text-white border-4 border-white transition-colors shadow-sm">Take Quiz</button>
                 </a>
             </div>
 
@@ -193,7 +193,7 @@
 
     <!-- UI Scripts -->
     <script>
-        // Logik Buka/Tutup Sidebar untuk Telefon Bimbit
+        // Mobile Sidebar Open/Close Logic
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('mobileOverlay');
         const openBtn = document.getElementById('openSidebarBtn');
@@ -209,13 +209,13 @@
         overlay.addEventListener('click', toggleSidebar);
     </script>
 
-    <!-- Logik Firebase & Active Menu -->
+    <!-- Firebase & Active Menu Logic -->
     <script type="module">
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { auth, db } from "../firebase-config.js";
 
-        // --- Fungsi Auto-Highlight Menu Pintar ---
+        // --- Auto-Highlight Active Menu ---
         function highlightActiveMenu() {
             const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
             const links = document.querySelectorAll('#sidebarNav a');
@@ -233,7 +233,7 @@
         }
         highlightActiveMenu();
 
-        // --- Logik Butang Log Keluar ---
+        // --- Logout Button Logic ---
         const logoutBtn = document.getElementById('logoutBtn');
         if(logoutBtn) {
             logoutBtn.addEventListener('click', async () => {
@@ -242,7 +242,7 @@
             });
         }
 
-        // --- Semak Sesi Pengguna & Peranan ---
+        // --- Check User Session & Role ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 try {
@@ -255,16 +255,16 @@
                             return;
                         }
 
-                        document.getElementById('welcomeName').textContent = userData.nickname || "Kawan";
+                        document.getElementById('welcomeName').textContent = userData.nickname || "Friend";
                         const userNameDisplay = document.getElementById('userNameDisplay');
-                        if(userNameDisplay) userNameDisplay.textContent = userData.nickname || "Pelajar";
+                        if(userNameDisplay) userNameDisplay.textContent = userData.nickname || "Student";
                         
                     } else {
                         await signOut(auth);
                         window.location.href = '../index.html';
                     }
                 } catch (error) {
-                    console.error("Ralat mendapatkan profil:", error);
+                    console.error("Error fetching profile:", error);
                 }
             } else {
                 window.location.href = '../index.html';
