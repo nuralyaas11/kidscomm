@@ -8,20 +8,27 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Nunito -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Nunito (Main) & Fredoka (Sidebar/Ceria) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Tailwind Theme Configuration & Custom CSS -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Nunito', 'sans-serif'], },
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'], // For the ceria sidebar
+                    },
                     colors: {
                         primary: '#FF6B6B',
                         secondary: '#4ECDC4',
                         accent: '#FFE66D',
                         dark: '#2B2D42',
+                        softbg: '#FFF6E5', // For sidebar hover states
+                        pink: '#FF9A9E',   // For sidebar icon
                     }
                 }
             }
@@ -41,6 +48,8 @@
             transform: translate(2px, 2px);
             box-shadow: 2px 2px 0px #2B2D42;
         }
+        
+        /* Original background */
         .bg-dots {
             background-color: #f8fafc;
             background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
@@ -50,39 +59,52 @@
         /* Animation */
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-slide-in { animation: slideIn 0.4s ease-out forwards; }
-        /* Prevent header buttons from overflowing */
-        header .kartun-border:hover {
-            transform: none;
+        
+        /* Prevent header/sidebar buttons from overflowing or rotating weirdly */
+        header .kartun-border:hover, aside .kartun-border:hover {
+            transform: translate(-2px, -2px) rotate(0deg);
         }
     </style>
 </head>
 <body class="bg-dots flex h-screen overflow-hidden text-dark relative">
 
     <!-- MOBILE OVERLAY -->
-    <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden transition-opacity"></div>
+    <div id="mobileOverlay" class="fixed inset-0 bg-dark bg-opacity-60 z-40 hidden md:hidden transition-opacity backdrop-blur-sm"></div>
 
-    <!-- SIDEBAR -->
-    <aside id="sidebar" class="w-72 bg-white border-r-4 border-dark flex flex-col z-50 shadow-xl fixed md:relative h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300">
-        <div class="p-8 text-center border-b-4 border-dark bg-accent relative">
-            <button id="closeSidebarBtn" class="md:hidden absolute top-4 right-4 text-2xl font-black w-8 h-8 flex items-center justify-center bg-white rounded-lg kartun-border hover:bg-red-400 hover:text-white transition-colors">&times;</button>
-            <h1 class="text-4xl font-black tracking-tighter text-dark">Kids<span class="text-primary">Comm</span></h1>
-            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Let's Communicate!</p>
+    <!-- CERIA SIDEBAR -->
+    <aside id="sidebar" class="w-72 bg-white border-r-4 border-dark flex flex-col z-50 shadow-xl fixed md:relative h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 rounded-r-3xl md:rounded-none">
+        <!-- Logo KidsComm -->
+        <div class="p-8 text-center border-b-4 border-dark bg-accent relative rounded-tr-3xl md:rounded-none">
+            <button id="closeSidebarBtn" class="md:hidden absolute top-4 right-4 text-2xl font-black w-8 h-8 flex items-center justify-center bg-white rounded-lg kartun-border hover:bg-primary hover:text-white transition-colors">&times;</button>
+            <h1 class="text-4xl font-display font-bold tracking-wide text-dark">Kids<span class="text-primary">Comm</span></h1>
+            <p class="font-bold text-sm mt-1 text-dark/70 bg-white/50 inline-block px-3 py-1 rounded-full border-2 border-dark/10">Let's Communicate!</p>
         </div>
         
+        <!-- Navigation Menu -->
         <nav class="flex-1 p-6 space-y-2 overflow-y-auto" id="sidebarNav">
-            <div id="customerMenu" class="flex flex-col space-y-4">
-                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Student Menu</p>
-                <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span> Home
+            <!-- STUDENT MENU -->
+            <div id="customerMenu" class="flex flex-col space-y-3">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">Student Menu</p>
+                <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-primary transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-primary group-hover:scale-110 transition-all shadow-sm">🏠</span> Home
                 </a>
-                <a href="play_game.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span> Play Game
+                <a href="play_game.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-secondary transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-secondary group-hover:scale-110 transition-all shadow-sm">🎮</span> Play Game
                 </a>
-                <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">📝</span> Take Quiz
+                <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-pink transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-pink group-hover:scale-110 transition-all shadow-sm">📝</span> Take Quiz
                 </a>
-                <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-[#9BF6FF] text-dark p-4 rounded-2xl font-black text-lg kartun-border group hover:-translate-y-1 transition-transform">
-                    <span class="text-2xl group-hover:scale-110 transition-transform">🏆</span> My Scores
+                <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-accent transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-accent group-hover:scale-110 transition-all shadow-sm">🏆</span> My Scores
+                </a>
+            </div>
+            
+            <!-- TEACHER MENU -->
+            <div id="adminMenu" class="hidden flex-col space-y-3 mt-6">
+                <div class="h-1 w-full bg-gray-100 rounded-full mb-2"></div>
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">Teacher Menu</p>
+                <a href="../admin/dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-dark group-hover:scale-110 transition-all shadow-sm">📊</span> Statistics
                 </a>
             </div>
         </nav>
@@ -91,7 +113,7 @@
     <!-- MAIN CONTENT AREA -->
     <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
         
-        <!-- HEADER -->
+        <!-- ORIGINAL HEADER -->
         <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
             <div class="flex items-center gap-4">
                 <button id="openSidebarBtn" class="md:hidden text-2xl font-black bg-accent w-10 h-10 md:w-12 md:h-12 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">☰</button>
@@ -108,7 +130,7 @@
             </div>
         </header>
 
-        <!-- MAIN CONTENT -->
+        <!-- ORIGINAL MAIN CONTENT -->
         <main class="flex-1 p-6 md:p-8 lg:p-10 max-w-5xl mx-auto w-full animate-slide-in">
             
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -184,7 +206,30 @@
         import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { auth, db } from "../firebase-config.js";
 
-        // --- Fetch Scores Logic (User Specific) ---
+        // --- Ceria Auto-Highlight Active Menu ---
+        function highlightActiveMenu() {
+            const currentPage = window.location.pathname.split('/').pop() || 'my_scores.html';
+            const links = document.querySelectorAll('#sidebarNav a');
+            
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.includes(currentPage)) {
+                    // Ceria Active State (Thick border, solid background, slightly shifted)
+                    const isCustomer = link.closest('#customerMenu');
+                    const activeBg = isCustomer ? 'bg-secondary' : 'bg-primary';
+                    link.className = `menu-link flex items-center gap-4 ${activeBg} text-white p-4 rounded-2xl font-bold text-lg kartun-border shadow-[4px_4px_0px_#2B2D42]`;
+                    
+                    // Highlight the emoji container inside the active link
+                    const iconSpan = link.querySelector('span');
+                    if(iconSpan) {
+                        iconSpan.className = "text-2xl bg-white p-2 rounded-xl border-2 border-dark text-dark transform -rotate-6 shadow-sm";
+                    }
+                }
+            });
+        }
+        highlightActiveMenu();
+
+        // --- Original Fetch Scores Logic ---
         async function fetchMyScores(userId) {
             const listContainer = document.getElementById('myScoresList');
             try {
