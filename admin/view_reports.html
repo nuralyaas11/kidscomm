@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidsComm - Score Reports</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Theme Configuration & Custom CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Nunito', 'sans-serif'], },
+                    colors: {
+                        primary: '#FF6B6B',
+                        secondary: '#4ECDC4',
+                        accent: '#FFE66D',
+                        dark: '#2B2D42',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .kartun-border {
+            border: 4px solid #2B2D42;
+            box-shadow: 6px 6px 0px #2B2D42;
+            transition: all 0.2s ease-in-out;
+        }
+        .kartun-border:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px #2B2D42;
+        }
+        .kartun-border:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #2B2D42;
+        }
+        .bg-dots {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        .kartun-table th, .kartun-table td {
+            border: 3px solid #2B2D42;
+            padding: 1rem;
+        }
+        /* Prevent header buttons from overflowing */
+        header .kartun-border:hover {
+            transform: none;
+        }
+    </style>
+</head>
+<body class="bg-dots flex h-screen overflow-hidden text-dark">
+
+    <!-- SIDEBAR -->
+    <aside class="w-72 bg-white border-r-4 border-dark hidden md:flex flex-col z-20 shadow-xl relative min-h-screen">
+        <div class="p-8 text-center border-b-4 border-dark bg-accent">
+            <h1 class="text-4xl font-black tracking-tighter text-dark">Kids<span class="text-primary">Comm</span></h1>
+            <p class="font-bold text-sm mt-2 opacity-80 text-dark">Management System</p>
+        </div>
+        
+        <nav class="flex-1 p-6 space-y-2" id="sidebarNav">
+            <div id="adminMenu" class="flex flex-col space-y-4 mt-2">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 pl-2">Teacher Menu</p>
+                
+                <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📊</span> Statistics
+                </a>
+                
+                <a href="manage_users.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">👥</span> Manage Students
+                </a>
+                
+                <a href="view_reports.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1">
+                    <span class="text-2xl group-hover:scale-110 transition-transform">📈</span> Score Reports
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
+        
+        <!-- HEADER -->
+        <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden text-2xl font-black bg-accent w-10 h-10 rounded-xl kartun-border flex items-center justify-center">☰</button>
+                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Score Reports</h2>
+            </div>
+            <div class="flex items-center gap-4 md:gap-6">
+                <div class="text-right hidden sm:block">
+                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Teacher Account</p>
+                </div>
+                <button id="logoutBtn" class="bg-primary hover:bg-red-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-black kartun-border text-sm md:text-base transition-all">
+                    Log Out
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6 md:p-8 lg:p-10 max-w-7xl mx-auto w-full">
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div>
+                    <h1 class="text-4xl font-black mb-2">Achievement Records 📈</h1>
+                    <p class="text-gray-600 font-bold text-lg">Monitor student game and quiz scores here.</p>
+                </div>
+                
+                <!-- Butang Cetak Laporan -->
+                <button onclick="window.print()" class="bg-secondary hover:bg-teal-500 text-white px-6 py-3 rounded-xl font-black kartun-border flex items-center gap-2">
+                    <span class="text-xl">🖨️</span> Print Report
+                </button>
+            </div>
+
+            <!-- Panel Carian & Penapis -->
+            <div class="bg-white p-6 rounded-[2rem] kartun-border mb-8 flex flex-col md:flex-row gap-4">
+                <!-- Penapis Jenis Aktiviti -->
+                <div class="w-full md:w-1/3">
+                    <select id="filterActivity" class="w-full bg-gray-50 border-4 border-dark rounded-xl py-3 px-4 font-bold text-dark focus:outline-none focus:bg-white transition-colors cursor-pointer">
+                        <option value="all">🌟 All Activities</option>
+                        <option value="game1">🧩 Picture Match</option>
+                        <option value="game2">🧱 Word Scramble</option>
+                        <option value="game3">🖐️ Drag & Drop</option>
+                        <option value="game4">🎭 Role Play</option>
+                        <option value="game5">🧠 Memory Flip</option>
+                        <option value="quiz">📝 Mind Quiz</option>
+                    </select>
+                </div>
+
+                <!-- Carian Nama -->
+                <div class="flex-1 relative">
+                    <span class="absolute left-4 top-3 text-xl">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search by student name..." class="w-full bg-gray-50 border-4 border-dark rounded-xl py-3 pl-12 pr-4 font-bold text-dark focus:outline-none focus:bg-white transition-colors">
+                </div>
+            </div>
+
+            <!-- Jadual Laporan Markah -->
+            <div class="bg-white rounded-[2rem] kartun-border p-8 mb-8 overflow-x-auto">
+                <table class="w-full text-left border-collapse kartun-table min-w-[700px]">
+                    <thead>
+                        <tr class="bg-accent">
+                            <th class="font-black w-16 text-center">No</th>
+                            <th class="font-black">Student Name</th>
+                            <th class="font-black">Activity Completed</th>
+                            <th class="font-black text-center w-32">Score</th>
+                            <th class="font-black">Date & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoresTableBody">
+                        <tr>
+                            <td colspan="5" class="text-center font-bold text-gray-500 py-8">
+                                Loading score data...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+        
+    </div>
+
+    <!-- Firebase & Javascript Logic -->
+    <script type="module">
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { doc, getDoc, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { auth, db } from "../firebase-config.js";
+
+        // --- Highlight Active Menu ---
+        function highlightActiveMenu() {
+            const currentPage = window.location.pathname.split('/').pop() || 'view_reports.html';
+            const links = document.querySelectorAll('#sidebarNav a');
+            
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.includes(currentPage)) {
+                    link.className = `menu-link flex items-center gap-4 bg-primary text-white p-4 rounded-2xl font-black text-lg kartun-border group hover:-translate-y-1 transition-transform`;
+                } else {
+                    link.className = "menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group hover:-translate-y-1";
+                }
+            });
+        }
+        highlightActiveMenu();
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = '../index.html';
+        });
+
+        // --- Score Report Logic ---
+        let allScores = [];
+
+        async function fetchScores() {
+            const tableBody = document.getElementById('scoresTableBody');
+            try {
+                // Fetch documents from 'scores' collection, sorted by most recent date
+                const scoresRef = collection(db, "scores");
+                const q = query(scoresRef, orderBy("playedAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                allScores = [];
+                querySnapshot.forEach((docSnap) => {
+                    allScores.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                renderTable(allScores);
+
+            } catch (error) {
+                console.error("Error fetching score data:", error);
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center font-bold text-red-500 py-8">Failed to load score data. Please ensure the 'scores' collection exists.</td></tr>`;
+            }
+        }
+
+        function renderTable(dataArray) {
+            const tableBody = document.getElementById('scoresTableBody');
+            
+            if (dataArray.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center font-bold text-gray-500 py-8">No score records found.</td></tr>`;
+                return;
+            }
+
+            let htmlContent = '';
+            dataArray.forEach((scoreData, index) => {
+                
+                // Format Date
+                let dateStr = "No Date";
+                if(scoreData.playedAt) {
+                    const date = scoreData.playedAt.toDate();
+                    dateStr = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+                }
+
+                // Format Activity
+                let actName = '';
+                let actClass = '';
+                if (scoreData.activityType === 'game1') {
+                    actName = '🧩 Picture Match';
+                    actClass = 'bg-[#A8E6CF]';
+                } else if (scoreData.activityType === 'game2') {
+                    actName = '🧱 Word Scramble';
+                    actClass = 'bg-[#FFD3B6]';
+                } else if (scoreData.activityType === 'game3') {
+                    actName = '🖐️ Drag & Drop';
+                    actClass = 'bg-[#C3B1E1]';
+                } else if (scoreData.activityType === 'game4') {
+                    actName = '🎭 Role Play';
+                    actClass = 'bg-[#FFE66D]';
+                } else if (scoreData.activityType === 'game5') {
+                    actName = '🧠 Memory Flip';
+                    actClass = 'bg-[#B5D5F5]';
+                } else {
+                    actName = '📝 Mind Quiz';
+                    actClass = 'bg-[#FF8A8A] text-white';
+                }
+
+                htmlContent += `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="font-bold text-center">${index + 1}</td>
+                        <td class="font-black text-lg">${scoreData.nickname || 'Student'}</td>
+                        <td>
+                            <span class="${actClass} text-dark font-black px-3 py-1 rounded-lg text-sm kartun-border border-2">
+                                ${actName}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="bg-dark text-accent px-4 py-2 rounded-xl font-black text-lg border-2 border-dark shadow-sm">
+                                ${scoreData.score || 0}
+                            </span>
+                        </td>
+                        <td class="font-bold text-gray-500 text-sm">${dateStr}</td>
+                    </tr>
+                `;
+            });
+            tableBody.innerHTML = htmlContent;
+        }
+
+        // Search & Filter Logic
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const selectedActivity = document.getElementById('filterActivity').value;
+
+            const filtered = allScores.filter(s => {
+                const matchName = s.nickname && s.nickname.toLowerCase().includes(searchTerm);
+                const matchActivity = selectedActivity === 'all' || s.activityType === selectedActivity;
+                return matchName && matchActivity;
+            });
+
+            renderTable(filtered);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('filterActivity').addEventListener('change', applyFilters);
+
+        // --- Check User Session & Role (Auth Guard) ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        
+                        if (userData.role !== 'admin') {
+                            window.location.href = '../customer/dashboard.html';
+                            return;
+                        }
+
+                        document.getElementById('userNameDisplay').textContent = userData.nickname || "Admin";
+                        
+                        // Fetch score data after verified as Admin
+                        fetchScores();
+                        
+                    } else {
+                        await signOut(auth);
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error("Auth Error:", error);
+                }
+            } else {
+                window.location.href = '../index.html';
+            }
+        });
+    </script>
+</body>
+</html>

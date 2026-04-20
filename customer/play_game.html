@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidsComm - Play Game</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Nunito (Main) & Fredoka (Sidebar/Ceria) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Theme Configuration & Custom CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'], // For the ceria sidebar
+                    },
+                    colors: {
+                        primary: '#FF6B6B',
+                        secondary: '#4ECDC4',
+                        accent: '#FFE66D',
+                        dark: '#2B2D42',
+                        softbg: '#FFF6E5', // For sidebar hover states
+                        pink: '#FF9A9E',   // For sidebar icon
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .kartun-border {
+            border: 4px solid #2B2D42;
+            box-shadow: 6px 6px 0px #2B2D42;
+            transition: all 0.2s ease-in-out;
+        }
+        .kartun-border:hover { transform: translate(-4px, -4px); box-shadow: 10px 10px 0px #2B2D42; }
+        .kartun-border:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #2B2D42; }
+        .bg-dots { background-color: #f8fafc; background-image: radial-gradient(#cbd5e1 2px, transparent 2px); background-size: 30px 30px; }
+        
+        /* Custom Game Animations */
+        @keyframes pop { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .animate-pop { animation: pop 0.3s ease-out forwards; }
+        
+        /* Error Animation (Shake) */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+        }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+        
+        /* Prevent header/sidebar buttons from overflowing or rotating weirdly */
+        header .kartun-border:hover, aside .kartun-border:hover {
+            transform: translate(-2px, -2px) rotate(0deg);
+            box-shadow: 8px 8px 0px #2B2D42;
+        }
+
+        /* Drag & Drop Game Styles */
+        .drag-card {
+            cursor: grab;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .drag-card:active { cursor: grabbing; }
+        .drag-card.dragging { opacity: 0.4; transform: scale(0.95); }
+        .drop-zone { transition: background 0.2s, border-color 0.2s; }
+        .drop-zone.drag-over { background-color: #d1fae5 !important; border-color: #10b981 !important; }
+        .drop-zone.correct { background-color: #A8E6CF !important; border-color: #10b981 !important; }
+        .drop-zone.wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; }
+
+        /* Memory Flip Game Styles */
+        .memory-card { perspective: 800px; cursor: pointer; }
+        .memory-card-inner {
+            position: relative; width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.4s ease;
+        }
+        .memory-card.flipped .memory-card-inner { transform: rotateY(180deg); }
+        .memory-card-front, .memory-card-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; -webkit-backface-visibility: hidden;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 1rem; border: 4px solid #2B2D42;
+        }
+        .memory-card-front { background-color: #4ECDC4; }
+        .memory-card-back { background-color: #fff; transform: rotateY(180deg); }
+        .memory-card.matched .memory-card-front { background-color: #A8E6CF; }
+        .memory-card.matched .memory-card-inner { transform: rotateY(180deg); }
+        .memory-card.matched { cursor: default; }
+
+        /* Role Play Speech Bubble */
+        .speech-bubble {
+            position: relative;
+            background: #fff;
+            border: 4px solid #2B2D42;
+            border-radius: 1.5rem;
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 30px;
+            border-width: 20px 16px 0;
+            border-style: solid;
+            border-color: #2B2D42 transparent transparent transparent;
+        }
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 33px;
+            border-width: 14px 12px 0;
+            border-style: solid;
+            border-color: #fff transparent transparent transparent;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="bg-dots flex h-screen overflow-hidden text-dark relative">
+
+    <!-- MOBILE OVERLAY -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-dark bg-opacity-60 z-40 hidden md:hidden transition-opacity backdrop-blur-sm"></div>
+
+    <!-- CERIA SIDEBAR -->
+    <aside id="sidebar" class="w-72 bg-white border-r-4 border-dark flex flex-col z-50 shadow-xl fixed md:relative h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 rounded-r-3xl md:rounded-none">
+        <!-- Logo KidsComm -->
+        <div class="p-8 text-center border-b-4 border-dark bg-accent relative rounded-tr-3xl md:rounded-none">
+            <button id="closeSidebarBtn" class="md:hidden absolute top-4 right-4 text-2xl font-black w-8 h-8 flex items-center justify-center bg-white rounded-lg kartun-border hover:bg-primary hover:text-white transition-colors">&times;</button>
+            <h1 class="text-4xl font-display font-bold tracking-wide text-dark">Kids<span class="text-primary">Comm</span></h1>
+            <p class="font-bold text-sm mt-1 text-dark/70 bg-white/50 inline-block px-3 py-1 rounded-full border-2 border-dark/10">Let's Communicate!</p>
+        </div>
+        
+        <!-- Navigation Menu -->
+        <nav class="flex-1 p-6 space-y-2 overflow-y-auto" id="sidebarNav">
+            <!-- STUDENT MENU -->
+            <div id="customerMenu" class="flex flex-col space-y-3">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">Student Menu</p>
+                <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-primary transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-primary group-hover:scale-110 transition-all shadow-sm">🏠</span> Home
+                </a>
+                <a href="play_game.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-secondary transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-secondary group-hover:scale-110 transition-all shadow-sm">🎮</span> Play Game
+                </a>
+                <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-pink transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-pink group-hover:scale-110 transition-all shadow-sm">📝</span> Take Quiz
+                </a>
+                <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-accent transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-accent group-hover:scale-110 transition-all shadow-sm">🏆</span> My Scores
+                </a>
+            </div>
+            
+            <!-- TEACHER MENU -->
+            <div id="adminMenu" class="hidden flex-col space-y-3 mt-6">
+                <div class="h-1 w-full bg-gray-100 rounded-full mb-2"></div>
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">Teacher Menu</p>
+                <a href="../admin/dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-dark group-hover:scale-110 transition-all shadow-sm">📊</span> Statistics
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
+        
+        <!-- HEADER -->
+        <header id="header-container" class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
+            <div class="flex items-center gap-4">
+                <button id="openSidebarBtn" class="md:hidden text-2xl font-black bg-accent w-10 h-10 md:w-12 md:h-12 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">☰</button>
+                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Game Zone</h2>
+            </div>
+            <div class="flex items-center gap-4 md:gap-6">
+                <div class="text-right hidden sm:block">
+                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Student</p>
+                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Student Account</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN GAME CONTENT -->
+        <main class="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full flex flex-col">
+            
+            <div class="flex justify-between items-center mb-6 gap-2">
+                <a href="dashboard.html" class="bg-white px-3 md:px-4 py-2 rounded-xl font-bold kartun-border hover:bg-gray-100 flex items-center gap-2 text-sm md:text-base">
+                    <span>⬅️</span> <span class="hidden sm:inline">Back</span>
+                </a>
+                <div class="bg-accent px-4 py-2 rounded-xl font-black kartun-border text-base md:text-lg flex items-center gap-2">
+                    <span>⭐</span> Skor: <span id="scoreDisplay">0</span>
+                </div>
+            </div>
+
+                <!-- GAME CONTAINER -->
+                <div class="bg-white rounded-[2rem] kartun-border p-6 md:p-10 flex-1 flex flex-col relative overflow-hidden">
+                
+                <!-- Game Selection Screen -->
+                <div id="gameSelection" class="text-center flex-1 flex flex-col justify-center hidden">
+                    <h2 class="text-3xl md:text-4xl font-black mb-8">Choose Your Game!</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto w-full">
+                        <button onclick="window.location.href='?game=1'" class="bg-[#A8E6CF] p-6 md:p-8 rounded-2xl kartun-border group text-left relative overflow-hidden">
+                            <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform relative z-10">🧩</span>
+                            <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Picture Match</h3>
+                            <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">Match the situation with the correct phrase.</p>
+                            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white opacity-20 rounded-full"></div>
+                        </button>
+                        <button onclick="window.location.href='?game=2'" class="bg-[#FFD3B6] p-6 md:p-8 rounded-2xl kartun-border group text-left relative overflow-hidden">
+                            <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform relative z-10">🧱</span>
+                            <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Word Scramble</h3>
+                            <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">Arrange word blocks into a complete sentence.</p>
+                            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white opacity-20 rounded-full"></div>
+                        </button>
+                        <button onclick="window.location.href='?game=3'" class="bg-[#C3B1E1] p-6 md:p-8 rounded-2xl kartun-border group text-left relative overflow-hidden">
+                            <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform relative z-10">🖐️</span>
+                            <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Drag & Drop</h3>
+                            <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">Drag the right phrase to match the situation!</p>
+                            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white opacity-20 rounded-full"></div>
+                        </button>
+                        <button onclick="window.location.href='?game=4'" class="bg-[#FFE66D] p-6 md:p-8 rounded-2xl kartun-border group text-left relative overflow-hidden">
+                            <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform relative z-10">🎭</span>
+                            <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Role Play</h3>
+                            <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">A character speaks — pick the best reply!</p>
+                            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white opacity-20 rounded-full"></div>
+                        </button>
+                        <button onclick="window.location.href='?game=5'" class="bg-[#B5D5F5] p-6 md:p-8 rounded-2xl kartun-border group text-left relative overflow-hidden">
+                            <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform relative z-10">🧠</span>
+                            <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Memory Flip</h3>
+                            <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">Flip and match word cards with their emoji pairs!</p>
+                            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white opacity-20 rounded-full"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Game Screen -->
+                <div id="activeGameArea" class="hidden flex-1 flex flex-col">
+                    
+                    <!-- Top Bar: Lives & Progress -->
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-6 w-full max-w-3xl mx-auto gap-4">
+                        <div id="livesDisplay" class="text-2xl md:text-3xl tracking-widest drop-shadow-sm">❤️❤️❤️</div>
+                        <div class="flex-1 w-full mx-0 md:mx-6 bg-gray-200 h-4 rounded-full overflow-hidden border-2 border-dark kartun-border">
+                            <div id="gameProgressBar" class="bg-secondary h-full w-0 transition-all duration-500 relative">
+                                <div class="absolute inset-0 bg-white opacity-20 w-full animate-pulse"></div>
+                            </div>
+                        </div>
+                        <span id="gameBadge" class="bg-primary text-white font-black px-4 py-1 rounded-full text-xs md:text-sm uppercase tracking-wider kartun-border whitespace-nowrap border-2">Level 1</span>
+                    </div>
+
+                    <div class="text-center mb-6">
+                        <h2 id="gameTitle" class="text-2xl md:text-4xl font-black mb-2">Loading...</h2>
+                        <p id="gameInstruction" class="text-base md:text-lg font-bold text-gray-500">Please wait a moment.</p>
+                    </div>
+
+                    <!-- Dynamic Game Board -->
+                    <div id="gameBoard" class="flex-1 flex flex-col items-center justify-center bg-gray-50 rounded-2xl border-4 border-dashed border-gray-300 p-4 md:p-8 relative transition-colors duration-300">
+                        <!-- Game content will be generated here -->
+                    </div>
+                </div>
+
+                <!-- End/Win/Lose Screen -->
+                <div id="gameOverArea" class="hidden text-center flex-1 flex flex-col justify-center items-center">
+                    <div id="gameOverIcon" class="text-7xl md:text-8xl mb-6 animate-bounce">🎉</div>
+                    <h2 id="gameOverTitle" class="text-3xl md:text-5xl font-black mb-4 text-primary">Congratulations!</h2>
+                    <p id="gameOverText" class="text-lg md:text-xl font-bold text-gray-700 mb-8">You have completed the game with a score of <span id="finalScoreDisplay" class="text-accent text-2xl md:text-3xl bg-dark px-3 rounded-lg kartun-border ml-2">100</span></p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                        <button onclick="window.location.reload()" id="retryBtn" class="hidden bg-white text-dark text-lg font-black px-6 py-4 rounded-xl kartun-border hover:bg-gray-100">
+                            🔄 Try Again
+                        </button>
+                        <button id="saveScoreBtn" class="bg-secondary text-white text-lg md:text-xl font-black px-6 py-4 rounded-xl kartun-border hover:bg-teal-500">
+                            💾 Save Score
+                        </button>
+                    </div>
+                    <p id="saveStatusMessage" class="font-bold text-primary hidden mt-4">Saving score...</p>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Message (Modern Alert) -->
+    <div id="toastMessage" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl font-black text-white text-lg transition-all duration-300 translate-y-20 opacity-0 z-50 shadow-xl border-4 border-dark pointer-events-none text-center min-w-[300px]">
+        Message here
+    </div>
+
+    <!-- UI Scripts -->
+    <script>
+        // Mobile Sidebar Open/Close Logic
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobileOverlay');
+        const openBtn = document.getElementById('openSidebarBtn');
+        const closeBtn = document.getElementById('closeSidebarBtn');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        openBtn.addEventListener('click', toggleSidebar);
+        closeBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+    </script>
+
+    <!-- Firebase Module & Game Logic -->
+    <script type="module">
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { auth, db } from "../firebase-config.js";
+
+        // --- Global Game Variables ---
+        let currentUser = null;
+        let currentNickname = "Student";
+        let currentGameType = "";
+        let currentScore = 0;
+        let currentLevel = 0;
+        let lives = 3;
+        
+        // --- Game Data (Expanded) ---
+        const game1Data = [
+            { img: "🎁", situasi: "A friend gives you a birthday gift.", jawapan: "Thank You", pilihan: ["I'm Sorry", "You're Welcome", "Thank You"], hint: "When receiving something, we must show appreciation." },
+            { img: "🏃💨", situasi: "You accidentally bump into a friend.", jawapan: "I'm Sorry", pilihan: ["I'm Sorry", "Thank You", "Please Sit"], hint: "When you make a mistake, quickly ask for forgiveness." },
+            { img: "🤝", situasi: "A friend helps pick up your dropped book.", jawapan: "Thank You", pilihan: ["Let me do it", "Thank You", "See You Again"], hint: "Express appreciation for help received." },
+            { img: "👋", situasi: "The school dismissal bell rings.", jawapan: "See You Again", pilihan: ["Good Morning", "Congratulations", "See You Again"], hint: "A temporary farewell greeting." },
+            { img: "🏆", situasi: "Your friend wins first place in the cross-country race.", jawapan: "Congratulations", pilihan: ["Congratulations", "I'm Sorry", "You're Welcome"], hint: "Celebrate our friend's achievement." }
+        ];
+
+        const game2Data = [
+            { soalan: "A greeting when meeting your teacher in the morning.", words: ["Good", "morning,", "teacher."], betul: "Good morning, teacher." },
+            { soalan: "Asking permission to borrow a friend's eraser.", words: ["May", "I", "borrow", "your", "eraser?"], betul: "May I borrow your eraser?" },
+            { soalan: "How to ask permission to go to the toilet.", words: ["May", "I", "go", "to", "the", "toilet?"], betul: "May I go to the toilet?" },
+            { soalan: "Asking the teacher to explain the schoolwork.", words: ["Please", "explain", "this", "question."], betul: "Please explain this question." },
+            { soalan: "Inviting a guest to sit down.", words: ["Please", "sit", "here,", "sir."], betul: "Please sit here, sir." }
+        ];
+
+        // --- Game 3 Data: Drag & Drop Conversation ---
+        const game3Data = [
+            { situation: "You meet your teacher first thing in the morning.", phrases: ["Good morning!", "See you later!", "I'm hungry.", "Goodbye!"], correct: "Good morning!", hint: "We greet people when we meet them in the morning." },
+            { situation: "A classmate helps you pick up your fallen pencil case.", phrases: ["That's mine!", "Thank you!", "Go away!", "Sorry!"], correct: "Thank you!", hint: "We say this to show appreciation when someone helps us." },
+            { situation: "You accidentally step on your friend's foot.", phrases: ["Watch out!", "Thank you!", "I'm sorry!", "You're welcome!"], correct: "I'm sorry!", hint: "When we hurt someone accidentally, we apologise." },
+            { situation: "Your friend says 'Thank you' after you share your snack.", phrases: ["Goodbye!", "Please!", "You're welcome!", "Stop it!"], correct: "You're welcome!", hint: "This is the polite reply after someone thanks you." },
+            { situation: "You need to pass through a crowd of people.", phrases: ["Move!", "Excuse me!", "Hey you!", "Sit down!"], correct: "Excuse me!", hint: "We use this phrase politely to get someone's attention or pass through." }
+        ];
+
+        // --- Game 4 Data: Role Play Mini Game ---
+        const game4Data = [
+            { character: "👩‍🏫", name: "Teacher", dialogue: "Good morning, class! How are you today?", options: ["Good morning, Teacher! We are fine, thank you!", "Whatever.", "Goodbye!"], correct: 0, hint: "We greet our teacher back warmly and answer their question politely." },
+            { character: "🧑‍🤝‍🧑", name: "New Student", dialogue: "Hi! I'm the new student. What's your name?", options: ["None of your business!", "Hi! My name is Alex. Nice to meet you!", "I don't want to talk."], correct: 1, hint: "We introduce ourselves politely when meeting someone new." },
+            { character: "👴", name: "Grandpa", dialogue: "Can you help me carry these bags, please?", options: ["Of course, Grandpa! Let me help you.", "Do it yourself!", "I'm busy."], correct: 0, hint: "We should always offer to help our elders." },
+            { character: "🧑‍🍳", name: "Canteen Uncle", dialogue: "Here is your food. Enjoy your meal!", options: ["About time!", "Eww, this looks bad.", "Thank you, Uncle!"], correct: 2, hint: "We say thank you whenever someone gives us something." },
+            { character: "👦", name: "Classmate", dialogue: "I'm feeling sad today. My cat is sick.", options: ["That's not my problem!", "Ha ha ha!", "Oh no, I'm sorry to hear that. I hope your cat gets better soon!"], correct: 2, hint: "We show empathy and care when a friend is upset." }
+        ];
+
+        // --- Game 5 Data: Memory Flip Game ---
+        const game5Pairs = [
+            { word: "Hello", emoji: "👋" },
+            { word: "Thank You", emoji: "🙏" },
+            { word: "Sorry", emoji: "😔" },
+            { word: "Please", emoji: "🤲" },
+            { word: "Goodbye", emoji: "👋🏃" },
+            { word: "Congratulations", emoji: "🏆" }
+        ];
+
+        // --- Main UI Elements ---
+        const ui = {
+            selection: document.getElementById('gameSelection'),
+            active: document.getElementById('activeGameArea'),
+            gameOver: document.getElementById('gameOverArea'),
+            board: document.getElementById('gameBoard'),
+            title: document.getElementById('gameTitle'),
+            instruction: document.getElementById('gameInstruction'),
+            score: document.getElementById('scoreDisplay'),
+            badge: document.getElementById('gameBadge'),
+            lives: document.getElementById('livesDisplay'),
+            progress: document.getElementById('gameProgressBar'),
+            toast: document.getElementById('toastMessage')
+        };
+
+        function showToast(msg, type = 'error') {
+            ui.toast.textContent = msg;
+            ui.toast.className = `fixed bottom-10 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl font-black text-white text-lg transition-all duration-300 z-50 shadow-xl border-4 border-dark pointer-events-none text-center min-w-[300px] ${type === 'error' ? 'bg-red-500' : 'bg-green-500'}`;
+            
+            // Animasi masuk
+            requestAnimationFrame(() => {
+                ui.toast.classList.remove('translate-y-20', 'opacity-0');
+            });
+
+            // Animasi keluar
+            setTimeout(() => {
+                ui.toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        function updateProgress() {
+            let totalLevels;
+            if (currentGameType === 'game1') totalLevels = game1Data.length;
+            else if (currentGameType === 'game2') totalLevels = game2Data.length;
+            else if (currentGameType === 'game3') totalLevels = game3Data.length;
+            else if (currentGameType === 'game4') totalLevels = game4Data.length;
+            else if (currentGameType === 'game5') totalLevels = game5Pairs.length; // pairs = levels
+            else totalLevels = 5;
+
+            let percentage = (currentLevel / totalLevels) * 100;
+            ui.progress.style.width = `${percentage}%`;
+            ui.badge.textContent = `Level ${currentLevel + 1}`;
+            
+            // Update Nyawa
+            let hearts = "";
+            for(let i=0; i<3; i++) { hearts += i < lives ? "❤️" : "🖤"; }
+            ui.lives.innerHTML = hearts;
+        }
+
+        function loseLife(hintMsg) {
+            lives--;
+            updateProgress();
+            
+            // Goncang papan
+            ui.board.classList.add('animate-shake', 'border-red-500', 'bg-red-50');
+            setTimeout(() => { ui.board.classList.remove('animate-shake', 'border-red-500', 'bg-red-50'); }, 400);
+
+            if (lives <= 0) {
+                showToast("Oh no! Out of lives.", 'error');
+                setTimeout(showGameOver, 1000);
+            } else {
+                showToast(`❌ Wrong! Hint: ${hintMsg}`, 'error');
+            }
+        }
+
+        function initGame() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameId = urlParams.get('game');
+
+            if (!gameId) {
+                ui.selection.classList.remove('hidden');
+                return;
+            }
+
+            ui.active.classList.remove('hidden');
+            ui.active.classList.add('flex');
+
+            if (gameId === '1') {
+                currentGameType = "game1";
+                ui.title.textContent = "Picture Match";
+                ui.instruction.textContent = "Choose the most appropriate phrase for the situation below.";
+                loadGame1();
+            } else if (gameId === '2') {
+                currentGameType = "game2";
+                ui.title.textContent = "Word Scramble";
+                ui.instruction.textContent = "Click word blocks in order to form a sentence.";
+                loadGame2();
+            } else if (gameId === '3') {
+                currentGameType = "game3";
+                ui.title.textContent = "Drag & Drop";
+                ui.instruction.textContent = "Drag the correct phrase and drop it into the answer box!";
+                loadGame3();
+            } else if (gameId === '4') {
+                currentGameType = "game4";
+                ui.title.textContent = "Role Play";
+                ui.instruction.textContent = "Read what the character says, then pick the best reply!";
+                loadGame4();
+            } else if (gameId === '5') {
+                currentGameType = "game5";
+                ui.title.textContent = "Memory Flip";
+                ui.instruction.textContent = "Flip two cards to find a matching pair!";
+                loadGame5();
+            }
+            updateProgress();
+        }
+
+        // --- Game 1 Logic: Picture Match ---
+        function loadGame1() {
+            if (currentLevel >= game1Data.length || lives <= 0) { showGameOver(); return; }
+            updateProgress();
+            
+            const levelData = game1Data[currentLevel];
+            // Shuffle pilihan
+            let choices = [...levelData.pilihan].sort(() => Math.random() - 0.5);
+
+            // FIX: Escape single quotes in 'opt' to prevent SyntaxError in inline event handlers
+            ui.board.innerHTML = `
+                <div class="text-7xl md:text-8xl mb-4 animate-pop drop-shadow-lg">${levelData.img}</div>
+                <h3 class="text-lg md:text-2xl font-black text-center mb-8 bg-white px-6 py-4 rounded-2xl kartun-border text-dark max-w-lg w-full">${levelData.situasi}</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-3xl">
+                    ${choices.map(opt => {
+                        const safeOpt = opt.replace(/'/g, "\\'");
+                        return `
+                        <button onclick="checkAnswer1(this, '${safeOpt}')" class="bg-white hover:bg-secondary hover:text-white p-3 sm:p-4 lg:p-6 rounded-2xl kartun-border font-bold text-base sm:text-lg lg:text-xl transition-all hover:-translate-y-1 flex items-center justify-center text-center min-h-[4rem] sm:min-h-[5rem] h-full w-full">
+                            <span class="w-full whitespace-normal leading-tight">${opt}</span>
+                        </button>
+                        `
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        window.checkAnswer1 = function(btnElement, selected) {
+            // FIX: Disable all buttons instantly to prevent multiple rapid clicks
+            if (btnElement.disabled) return;
+            const buttons = btnElement.parentElement.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+
+            const levelData = game1Data[currentLevel];
+            
+            if (selected === levelData.jawapan) {
+                currentScore += 50;
+                ui.score.textContent = currentScore;
+                currentLevel++;
+                
+                showToast("✨ Spot on!", "success");
+                btnElement.classList.replace('bg-white', 'bg-green-400');
+                btnElement.classList.add('text-white', 'scale-105');
+                ui.board.classList.add('bg-green-100', 'border-green-400');
+                
+                setTimeout(() => { 
+                    ui.board.classList.remove('bg-green-100', 'border-green-400'); 
+                    loadGame1(); 
+                }, 800);
+            } else {
+                loseLife(levelData.hint);
+                // Re-enable buttons if life is lost but game is not over yet
+                if (lives > 0) {
+                    setTimeout(() => {
+                        buttons.forEach(btn => btn.disabled = false);
+                    }, 800);
+                }
+            }
+        }
+
+        // --- Game 2 Logic: Word Scramble ---
+        let currentSentenceArrangement = [];
+        
+        function loadGame2() {
+            if (currentLevel >= game2Data.length || lives <= 0) { showGameOver(); return; }
+            updateProgress();
+            currentSentenceArrangement = [];
+            renderGame2Board();
+        }
+
+        function renderGame2Board() {
+            const levelData = game2Data[currentLevel];
+            // Blok yang tinggal
+            const remainingWords = levelData.words.filter(w => !currentSentenceArrangement.includes(w));
+            // Shuffle sisa perkataan untuk pastikan ia sentiasa rawak
+            let displayWords = [...remainingWords].sort((a, b) => a.localeCompare(b));
+            
+            // FIX: Escape single quotes in words just in case for Game 2 as well
+            ui.board.innerHTML = `
+                <h3 class="text-xl md:text-2xl font-black text-gray-700 mb-8 text-center bg-white px-6 py-2 rounded-xl kartun-border">${levelData.soalan}</h3>
+                
+                <!-- Kotak Jawapan (Ayat yang sedang disusun) -->
+                <div class="w-full max-w-3xl min-h-[100px] bg-white border-4 border-dark rounded-2xl shadow-inner p-4 md:p-6 flex flex-wrap gap-2 mb-10 items-center justify-center relative">
+                    ${currentSentenceArrangement.length === 0 ? '<span class="text-gray-400 font-bold text-center text-lg">Tap words below to start arranging...</span>' : ''}
+                    ${currentSentenceArrangement.map((word, index) => `
+                        <button onclick="removeWord2(${index})" class="bg-primary text-white font-black px-4 md:px-5 py-2 md:py-3 rounded-xl kartun-border border-2 animate-pop hover:bg-red-600 text-lg md:text-xl transition-transform hover:scale-105" title="Click to remove">${word}</button>
+                    `).join('')}
+                </div>
+
+                <!-- Blok Perkataan Rawak -->
+                <div class="flex flex-wrap gap-3 md:gap-4 justify-center">
+                    ${displayWords.map(word => {
+                        const safeWord = word.replace(/'/g, "\\'");
+                        return `
+                        <button onclick="addWord2('${safeWord}')" class="bg-accent text-dark font-black px-5 md:px-6 py-3 md:py-4 text-lg md:text-xl rounded-2xl kartun-border hover:bg-yellow-400 transition-transform hover:-translate-y-2 shadow-sm">
+                            ${word}
+                        </button>
+                        `
+                    }).join('')}
+                </div>
+                
+                <div class="flex flex-col sm:flex-row items-center gap-4 mt-8 w-full justify-center">
+                    ${remainingWords.length === 0 ? `
+                        <button onclick="checkAnswer2(this)" class="bg-dark text-accent text-xl font-black px-8 py-4 rounded-xl kartun-border hover:bg-gray-800 animate-bounce w-full sm:w-auto shadow-xl">✅ Check Sentence!</button>
+                    ` : ''}
+                    
+                    ${currentSentenceArrangement.length > 0 ? `
+                         <button onclick="clearAllWords()" class="text-sm font-bold text-gray-400 hover:text-red-500 underline py-2 mt-2 sm:mt-0">Clear All</button>
+                    `: ''}
+                </div>
+            `;
+        }
+
+        window.addWord2 = function(word) {
+            currentSentenceArrangement.push(word);
+            renderGame2Board();
+        }
+        
+        window.removeWord2 = function(index) {
+            currentSentenceArrangement.splice(index, 1);
+            renderGame2Board();
+        }
+
+        window.clearAllWords = function() {
+            currentSentenceArrangement = [];
+            renderGame2Board();
+        }
+
+        window.checkAnswer2 = function(btnElement) {
+            if (btnElement) btnElement.disabled = true; // Prevent multiple clicks
+
+            const levelData = game2Data[currentLevel];
+            const formedSentence = currentSentenceArrangement.join(" ");
+            
+            if (formedSentence === levelData.betul) {
+                currentScore += 60; // Game 2 is slightly harder, worth more points
+                ui.score.textContent = currentScore;
+                currentLevel++;
+                
+                showToast("✨ Smart! Your sentence is correct.", "success");
+                ui.board.classList.add('bg-green-100', 'border-green-400');
+                
+                setTimeout(() => { 
+                    ui.board.classList.remove('bg-green-100', 'border-green-400'); 
+                    loadGame2(); 
+                }, 800);
+            } else {
+                loseLife("The word order is incorrect. Please try again.");
+                if(lives > 0) {
+                    currentSentenceArrangement = [];
+                    setTimeout(renderGame2Board, 500);
+                } else {
+                    if (btnElement) btnElement.disabled = false;
+                }
+            }
+        }
+
+        // --- Game 3 Logic: Drag & Drop Conversation ---
+        function loadGame3() {
+            if (currentLevel >= game3Data.length || lives <= 0) { showGameOver(); return; }
+            updateProgress();
+            const levelData = game3Data[currentLevel];
+            const shuffled = [...levelData.phrases].sort(() => Math.random() - 0.5);
+
+            ui.board.innerHTML = `
+                <h3 class="text-lg md:text-xl font-black text-center mb-6 bg-white px-6 py-4 rounded-2xl kartun-border text-dark max-w-lg w-full">📍 ${levelData.situation}</h3>
+                <p class="font-bold text-gray-500 mb-4 text-sm">Drag the correct phrase into the box below:</p>
+                
+                <!-- Drop Zone -->
+                <div id="dropZone3" class="drop-zone w-full max-w-md min-h-[80px] bg-gray-100 border-4 border-dashed border-gray-400 rounded-2xl flex items-center justify-center mb-8 p-4 text-gray-400 font-black text-lg"
+                    ondragover="event.preventDefault(); this.classList.add('drag-over')"
+                    ondragleave="this.classList.remove('drag-over')"
+                    ondrop="handleDrop3(event)">
+                    Drop here!
+                </div>
+
+                <!-- Phrase Cards -->
+                <div class="flex flex-wrap gap-3 justify-center" id="phraseCards3">
+                    ${shuffled.map(p => {
+                        const safe = p.replace(/"/g, '&quot;');
+                        return `<div draggable="true" data-phrase="${safe}" class="drag-card bg-white px-5 py-3 rounded-2xl kartun-border font-black text-base md:text-lg cursor-grab hover:bg-secondary hover:text-white transition-colors select-none"
+                            ondragstart="event.dataTransfer.setData('text/plain', '${p.replace(/'/g, "\\'")}'); this.classList.add('dragging')"
+                            ondragend="this.classList.remove('dragging')"
+                        >${p}</div>`;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        window.handleDrop3 = function(event) {
+            event.preventDefault();
+            const dropZone = document.getElementById('dropZone3');
+            dropZone.classList.remove('drag-over');
+            const phrase = event.dataTransfer.getData('text/plain');
+            if (!phrase) return;
+
+            const levelData = game3Data[currentLevel];
+            if (phrase === levelData.correct) {
+                currentScore += 50;
+                ui.score.textContent = currentScore;
+                dropZone.classList.add('correct');
+                dropZone.innerHTML = `<span class="font-black text-lg text-green-700">✅ ${phrase}</span>`;
+                document.querySelectorAll('#phraseCards3 .drag-card').forEach(c => c.setAttribute('draggable', 'false'));
+                showToast("✨ Correct! Well done!", "success");
+                currentLevel++;
+                setTimeout(() => {
+                    dropZone.classList.remove('correct');
+                    loadGame3();
+                }, 900);
+            } else {
+                dropZone.classList.add('wrong');
+                dropZone.innerHTML = `<span class="font-black text-lg text-red-600">❌ ${phrase}</span>`;
+                loseLife(levelData.hint);
+                setTimeout(() => {
+                    if (lives > 0) {
+                        dropZone.classList.remove('wrong');
+                        dropZone.innerHTML = 'Drop here!';
+                        dropZone.style.color = '';
+                        document.querySelectorAll('#phraseCards3 .drag-card').forEach(c => c.setAttribute('draggable', 'true'));
+                    }
+                }, 800);
+            }
+        }
+
+        // --- Game 4 Logic: Role Play Mini Game ---
+        function loadGame4() {
+            if (currentLevel >= game4Data.length || lives <= 0) { showGameOver(); return; }
+            updateProgress();
+            const levelData = game4Data[currentLevel];
+
+            ui.board.innerHTML = `
+                <div class="flex flex-col items-start w-full max-w-lg mx-auto mb-8">
+                    <!-- Speech Bubble -->
+                    <div class="speech-bubble w-full p-5 mb-6">
+                        <p class="font-black text-lg md:text-xl text-dark">"${levelData.dialogue}"</p>
+                    </div>
+                    <!-- Character -->
+                    <div class="flex items-center gap-4 pl-2">
+                        <span class="text-5xl drop-shadow">${levelData.character}</span>
+                        <span class="font-black text-gray-700 text-lg">${levelData.name}</span>
+                    </div>
+                </div>
+
+                <!-- Response Options -->
+                <p class="font-bold text-gray-500 mb-4 text-sm uppercase tracking-widest">Your reply:</p>
+                <div class="flex flex-col gap-3 w-full max-w-lg mx-auto" id="roleplayOptions4">
+                    ${levelData.options.map((opt, i) => `
+                        <button onclick="checkAnswer4(this, ${i})" class="bg-white text-left px-5 py-4 rounded-2xl kartun-border font-bold text-base md:text-lg hover:bg-secondary hover:text-white transition-colors w-full">
+                            <span class="font-black mr-2 text-gray-400">${String.fromCharCode(65+i)}.</span> ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        window.checkAnswer4 = function(btnElement, selectedIndex) {
+            const btns = document.querySelectorAll('#roleplayOptions4 button');
+            btns.forEach(b => b.disabled = true);
+            const levelData = game4Data[currentLevel];
+
+            if (selectedIndex === levelData.correct) {
+                currentScore += 40;
+                ui.score.textContent = currentScore;
+                btnElement.classList.replace('bg-white', 'bg-green-400');
+                btnElement.classList.add('text-white', 'scale-105');
+                ui.board.classList.add('bg-green-100', 'border-green-400');
+                showToast("✨ Great reply!", "success");
+                currentLevel++;
+                setTimeout(() => {
+                    ui.board.classList.remove('bg-green-100', 'border-green-400');
+                    loadGame4();
+                }, 900);
+            } else {
+                loseLife(levelData.hint);
+                btnElement.classList.replace('bg-white', 'bg-red-300');
+                btnElement.classList.add('text-white');
+                if (lives > 0) {
+                    setTimeout(() => { btns.forEach(b => { b.disabled = false; b.classList.remove('bg-red-300', 'text-white'); }); }, 800);
+                }
+            }
+        }
+
+        // --- Game 5 Logic: Memory Flip Game ---
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let canFlip = true;
+
+        function loadGame5() {
+            if (lives <= 0) { showGameOver(); return; }
+            matchedPairs = 0;
+            flippedCards = [];
+            canFlip = true;
+            currentLevel = 0;
+            updateProgress();
+
+            // Build card pairs: each pair has a word card and an emoji card
+            const cards = [];
+            game5Pairs.forEach((pair, i) => {
+                cards.push({ id: i, type: 'word', content: pair.word, pairId: i });
+                cards.push({ id: i + game5Pairs.length, type: 'emoji', content: pair.emoji, pairId: i });
+            });
+            // Shuffle
+            memoryCards = cards.sort(() => Math.random() - 0.5);
+
+            ui.board.innerHTML = `
+                <p class="font-bold text-gray-500 mb-4 text-sm">Find all ${game5Pairs.length} matching pairs!</p>
+                <div class="grid grid-cols-4 gap-3 w-full max-w-sm md:max-w-md mx-auto" id="memoryGrid">
+                    ${memoryCards.map((card, idx) => `
+                        <div class="memory-card w-full" style="height: 80px;" onclick="flipCard5(${idx})" data-index="${idx}" data-pair="${card.pairId}">
+                            <div class="memory-card-inner">
+                                <div class="memory-card-front text-2xl font-black text-white select-none">?</div>
+                                <div class="memory-card-back text-center px-1 select-none">
+                                    ${card.type === 'emoji' ? `<span class="text-3xl">${card.content}</span>` : `<span class="font-black text-xs md:text-sm leading-tight text-dark">${card.content}</span>`}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <p class="font-bold text-gray-400 mt-4 text-sm">Matched: <span id="matchedCount" class="text-secondary font-black">0</span> / ${game5Pairs.length}</p>
+            `;
+            // Update badge for memory game
+            ui.badge.textContent = `Pairs: 0/${game5Pairs.length}`;
+        }
+
+        window.flipCard5 = function(idx) {
+            if (!canFlip) return;
+            const cardEl = document.querySelector(`[data-index="${idx}"]`);
+            const card = memoryCards[idx];
+
+            if (!cardEl || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+
+            cardEl.classList.add('flipped');
+            flippedCards.push({ idx, card, el: cardEl });
+
+            if (flippedCards.length === 2) {
+                canFlip = false;
+                const [first, second] = flippedCards;
+                if (first.card.pairId === second.card.pairId) {
+                    // Match!
+                    matchedPairs++;
+                    currentScore += 10;
+                    ui.score.textContent = currentScore;
+                    first.el.classList.add('matched');
+                    second.el.classList.add('matched');
+                    document.getElementById('matchedCount').textContent = matchedPairs;
+                    ui.badge.textContent = `Pairs: ${matchedPairs}/${game5Pairs.length}`;
+                    flippedCards = [];
+                    canFlip = true;
+                    showToast(`✨ Match! +10 stars`, "success");
+
+                    if (matchedPairs === game5Pairs.length) {
+                        currentLevel = game5Pairs.length; // trigger win
+                        setTimeout(showGameOver, 700);
+                    }
+                } else {
+                    // No match
+                    setTimeout(() => {
+                        first.el.classList.remove('flipped');
+                        second.el.classList.remove('flipped');
+                        flippedCards = [];
+                        canFlip = true;
+                        loseLife("Look carefully! Find the word that matches the emoji.");
+                    }, 900);
+                }
+            }
+        }
+
+        // --- Game Over Sound ---
+        const gameOverSound = new Audio('../assets/sounds/gameover.mp3');
+
+        // --- Game Over Management & Firestore ---
+        function showGameOver() {
+            if (lives <= 0) gameOverSound.play().catch(() => {});
+            ui.active.classList.add('hidden');
+            ui.gameOver.classList.remove('hidden');
+            ui.gameOver.classList.add('flex');
+            
+            document.getElementById('finalScoreDisplay').textContent = currentScore;
+            
+            const title = document.getElementById('gameOverTitle');
+            const icon = document.getElementById('gameOverIcon');
+            const text = document.getElementById('gameOverText');
+            const retryBtn = document.getElementById('retryBtn');
+
+            if (lives <= 0) {
+                icon.textContent = "💔";
+                title.textContent = "Oh no!";
+                title.classList.replace('text-primary', 'text-red-500');
+                text.innerHTML = `You have run out of lives. Score collected: <span class="text-accent text-2xl md:text-3xl bg-dark px-3 rounded-lg kartun-border ml-2">${currentScore}</span>`;
+                retryBtn.classList.remove('hidden');
+            } else {
+                icon.textContent = "🏆";
+                title.textContent = "Congratulations!";
+                // Progress bar full
+                ui.progress.style.width = '100%';
+            }
+        }
+
+        document.getElementById('saveScoreBtn').addEventListener('click', async () => {
+            if (!currentUser) return;
+            
+            const btn = document.getElementById('saveScoreBtn');
+            const msg = document.getElementById('saveStatusMessage');
+            btn.disabled = true;
+            msg.classList.remove('hidden');
+            msg.textContent = "Saving score to cloud database...";
+
+            try {
+                // Save to Firestore
+                await addDoc(collection(db, "scores"), {
+                    userId: currentUser.uid,
+                    nickname: currentNickname,
+                    activityType: currentGameType,
+                    score: currentScore,
+                    playedAt: serverTimestamp()
+                });
+                
+                msg.textContent = "Score Saved Successfully!";
+                msg.classList.replace('text-primary', 'text-green-500');
+                
+                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+                
+            } catch (error) {
+                console.error("Error saving score:", error);
+                msg.textContent = "Error: Failed to save score.";
+                btn.disabled = false;
+            }
+        });
+
+        // --- User Authentication (Auth Guard) ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        if (userData.role === 'admin') {
+                            window.location.href = '../admin/dashboard.html';
+                            return;
+                        }
+                        
+                        currentUser = user;
+                        currentNickname = userData.nickname || "Student";
+                        document.getElementById('userNameDisplay').textContent = currentNickname;
+                        
+                        initGame();
+                    } else {
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error("Auth Error:", error);
+                }
+            } else {
+                window.location.href = '../index.html';
+            }
+        });
+        
+        // --- Ceria Auto-Highlight Active Menu ---
+        function highlightActiveMenu() {
+            const currentPage = window.location.pathname.split('/').pop() || 'play_game.html';
+            const links = document.querySelectorAll('#sidebarNav a');
+            
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.includes(currentPage)) {
+                    // Ceria Active State (Thick border, solid background, slightly shifted)
+                    const isCustomer = link.closest('#customerMenu');
+                    const activeBg = isCustomer ? 'bg-secondary' : 'bg-primary';
+                    link.className = `menu-link flex items-center gap-4 ${activeBg} text-white p-4 rounded-2xl font-bold text-lg kartun-border shadow-[4px_4px_0px_#2B2D42]`;
+                    
+                    // Highlight the emoji container inside the active link
+                    const iconSpan = link.querySelector('span');
+                    if(iconSpan) {
+                        iconSpan.className = "text-2xl bg-white p-2 rounded-xl border-2 border-dark text-dark transform -rotate-6 shadow-sm";
+                    }
+                }
+            });
+        }
+        highlightActiveMenu();
+    </script>
+</body>
+</html>

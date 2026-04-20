@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidsComm - Mind Challenge (Quiz)</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Nunito (Main) & Fredoka (Sidebar/Ceria) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Theme Configuration & Custom CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'], // For the ceria sidebar
+                    },
+                    colors: {
+                        primary: '#FF6B6B',
+                        secondary: '#4ECDC4',
+                        accent: '#FFE66D',
+                        dark: '#2B2D42',
+                        softbg: '#FFF6E5', // For sidebar hover states
+                        pink: '#FF9A9E',   // For sidebar icon
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .kartun-border {
+            border: 4px solid #2B2D42;
+            box-shadow: 6px 6px 0px #2B2D42;
+            transition: all 0.2s ease-in-out;
+        }
+        .kartun-border:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 10px 10px 0px #2B2D42;
+        }
+        .kartun-border:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #2B2D42;
+        }
+        .bg-dots {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        
+        /* Animation */
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-in { animation: slideIn 0.4s ease-out forwards; }
+        
+        @keyframes pop { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .animate-pop { animation: pop 0.3s ease-out forwards; }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+        }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+        
+        /* Prevent header/sidebar buttons from overflowing or rotating weirdly */
+        header .kartun-border:hover, aside .kartun-border:hover {
+            transform: translate(-2px, -2px) rotate(0deg);
+            box-shadow: 8px 8px 0px #2B2D42;
+        }
+    </style>
+</head>
+<body class="bg-dots flex h-screen overflow-hidden text-dark relative">
+
+    <!-- MOBILE OVERLAY -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-dark bg-opacity-60 z-40 hidden md:hidden transition-opacity backdrop-blur-sm"></div>
+
+    <!-- CERIA SIDEBAR -->
+    <aside id="sidebar" class="w-72 bg-white border-r-4 border-dark flex flex-col z-50 shadow-xl fixed md:relative h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 rounded-r-3xl md:rounded-none">
+        <!-- Logo KidsComm -->
+        <div class="p-8 text-center border-b-4 border-dark bg-accent relative rounded-tr-3xl md:rounded-none">
+            <button id="closeSidebarBtn" class="md:hidden absolute top-4 right-4 text-2xl font-black w-8 h-8 flex items-center justify-center bg-white rounded-lg kartun-border hover:bg-primary hover:text-white transition-colors">&times;</button>
+            <h1 class="text-4xl font-display font-bold tracking-wide text-dark">Kids<span class="text-primary">Comm</span></h1>
+            <p class="font-bold text-sm mt-1 text-dark/70 bg-white/50 inline-block px-3 py-1 rounded-full border-2 border-dark/10">Let's Communicate!</p>
+        </div>
+        
+        <!-- Navigation Menu -->
+        <nav class="flex-1 p-6 space-y-2 overflow-y-auto" id="sidebarNav">
+            <!-- STUDENT MENU -->
+            <div id="customerMenu" class="flex flex-col space-y-3">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">Student Menu</p>
+                <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-primary transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-primary group-hover:scale-110 transition-all shadow-sm">🏠</span> Home
+                </a>
+                <a href="play_game.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-secondary transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-secondary group-hover:scale-110 transition-all shadow-sm">🎮</span> Play Game
+                </a>
+                <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-pink transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-pink group-hover:scale-110 transition-all shadow-sm">📝</span> Take Quiz
+                </a>
+                <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-accent transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-accent group-hover:scale-110 transition-all shadow-sm">🏆</span> My Scores
+                </a>
+            </div>
+            
+            <!-- TEACHER MENU -->
+            <div id="adminMenu" class="hidden flex-col space-y-3 mt-6">
+                <div class="h-1 w-full bg-gray-100 rounded-full mb-2"></div>
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">Teacher Menu</p>
+                <a href="../admin/dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-dark group-hover:scale-110 transition-all shadow-sm">📊</span> Statistics
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
+        
+        <!-- HEADER -->
+        <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
+            <div class="flex items-center gap-4">
+                <button id="openSidebarBtn" class="md:hidden text-2xl font-black bg-accent w-10 h-10 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">☰</button>
+                <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Mind Challenge</h2>
+            </div>
+            <div class="flex items-center gap-4 md:gap-6">
+                <div class="text-right hidden sm:block">
+                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider">Student Account</p>
+                </div>
+                <button id="logoutBtn" class="bg-primary hover:bg-red-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-black kartun-border text-sm md:text-base transition-all">
+                    Log Out
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN QUIZ CONTENT -->
+        <main class="flex-1 p-4 md:p-8 lg:p-10 max-w-4xl mx-auto w-full flex flex-col justify-center">
+            
+            <!-- QUIZ INTRODUCTION SCREEN -->
+            <div id="quizIntro" class="bg-white rounded-[2rem] kartun-border p-8 md:p-12 text-center animate-slide-in">
+                <div class="text-7xl md:text-8xl mb-6 drop-shadow-lg">📝</div>
+                <h1 class="text-3xl md:text-5xl font-black mb-4 leading-tight">Mind Challenge!</h1>
+                <p class="text-lg md:text-xl font-bold text-gray-600 mb-8 max-w-lg mx-auto">Let's test your understanding of good communication. Answer correctly without losing all your lives!</p>
+                
+                <button id="startQuizBtn" class="bg-[#FF8A8A] hover:bg-red-500 text-white text-xl md:text-2xl font-black px-8 md:px-10 py-4 md:py-5 rounded-2xl kartun-border transition-transform hover:scale-105 shadow-lg w-full md:w-auto">
+                    Start Quiz Now! 🚀
+                </button>
+            </div>
+
+            <!-- ACTIVE QUESTION SCREEN -->
+            <div id="quizActive" class="hidden flex-col flex-1 w-full animate-slide-in">
+                
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <span id="questionCounter" class="bg-dark text-white font-black px-4 py-2 rounded-xl text-base md:text-lg kartun-border w-full md:w-auto text-center border-2">Question 1 / 5</span>
+                    <div id="livesDisplay" class="text-2xl md:text-3xl tracking-widest drop-shadow-sm">❤️❤️❤️</div>
+                    <span class="bg-accent text-dark font-black px-4 py-2 rounded-xl text-base md:text-lg kartun-border w-full md:w-auto text-center border-2">Score: <span id="currentScore">0</span></span>
+                </div>
+
+                <!-- Question Card -->
+                <div class="bg-white rounded-[2rem] kartun-border p-6 md:p-10 mb-8 flex-1 flex flex-col justify-center relative overflow-hidden transition-colors duration-300" id="questionCard">
+                    <!-- Progress Bar -->
+                    <div class="absolute top-0 left-0 w-full h-3 bg-gray-100">
+                        <div id="progressBar" class="h-full bg-secondary w-0 transition-all duration-500 relative">
+                            <div class="absolute inset-0 bg-white opacity-30 w-full animate-pulse"></div>
+                        </div>
+                    </div>
+
+                    <h2 id="questionText" class="text-xl md:text-3xl font-black text-center mb-8 mt-4 leading-relaxed text-gray-800">
+                        Loading Question...
+                    </h2>
+
+                    <!-- Answer Options -->
+                    <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <!-- Answer buttons will be generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULTS SCREEN (QUIZ ENDED) -->
+            <div id="quizResult" class="hidden bg-white rounded-[2rem] kartun-border p-8 md:p-12 text-center flex-col items-center animate-slide-in">
+                <div id="resultIcon" class="text-7xl md:text-8xl mb-6 animate-bounce drop-shadow-lg">🏆</div>
+                <h2 id="resultTitle" class="text-3xl md:text-5xl font-black mb-2 text-primary">Quiz Over!</h2>
+                <p id="resultMessage" class="text-lg md:text-xl font-bold text-gray-600 mb-6">Well done! You have completed the Mind Challenge.</p>
+                
+                <div class="bg-gray-50 border-4 border-dashed border-gray-300 rounded-2xl p-6 mb-8 w-full max-w-sm">
+                    <p class="text-gray-500 font-bold uppercase tracking-wider mb-2">Your Final Score</p>
+                    <p id="finalScoreText" class="text-6xl md:text-7xl font-black text-dark">0<span class="text-2xl text-gray-400">/100</span></p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                    <button onclick="window.location.reload()" id="retryBtn" class="hidden bg-white text-dark text-lg font-black px-6 py-4 rounded-xl kartun-border hover:bg-gray-100 w-full md:w-auto">
+                        🔄 Try Again
+                    </button>
+                    <button id="saveScoreBtn" class="bg-secondary hover:bg-teal-500 text-white text-lg md:text-xl font-black px-8 py-4 rounded-xl kartun-border mb-4 w-full md:w-auto">
+                        💾 Save Score
+                    </button>
+                </div>
+                <p id="saveStatusMessage" class="font-bold text-primary hidden mt-2">Saving your score...</p>
+                
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast Message (Modern Alert) -->
+    <div id="toastMessage" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl font-black text-white text-lg md:text-xl transition-all duration-300 translate-y-20 opacity-0 z-50 shadow-xl border-4 border-dark pointer-events-none text-center min-w-[300px]">
+        Message here
+    </div>
+
+    <!-- UI Scripts -->
+    <script>
+        // Mobile Sidebar Logic
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobileOverlay');
+        const openBtn = document.getElementById('openSidebarBtn');
+        const closeBtn = document.getElementById('closeSidebarBtn');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        openBtn.addEventListener('click', toggleSidebar);
+        closeBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+    </script>
+
+    <!-- Quiz & Firebase Logic -->
+    <script type="module">
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { auth, db } from "../firebase-config.js";
+
+        // --- Ceria Auto-Highlight Active Menu ---
+        function highlightActiveMenu() {
+            const currentPage = window.location.pathname.split('/').pop() || 'take_quiz.html';
+            const links = document.querySelectorAll('#sidebarNav a');
+            
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.includes(currentPage)) {
+                    // Ceria Active State (Thick border, solid background, slightly shifted)
+                    const isCustomer = link.closest('#customerMenu');
+                    const activeBg = isCustomer ? 'bg-secondary' : 'bg-primary';
+                    link.className = `menu-link flex items-center gap-4 ${activeBg} text-white p-4 rounded-2xl font-bold text-lg kartun-border shadow-[4px_4px_0px_#2B2D42]`;
+                    
+                    // Highlight the emoji container inside the active link
+                    const iconSpan = link.querySelector('span');
+                    if(iconSpan) {
+                        iconSpan.className = "text-2xl bg-white p-2 rounded-xl border-2 border-dark text-dark transform -rotate-6 shadow-sm";
+                    }
+                }
+            });
+        }
+        highlightActiveMenu();
+
+        // --- Game Over Sound ---
+        const gameOverSound = new Audio('../assets/sounds/gameover.mp3');
+
+        // --- Global Quiz Variables ---
+        let currentUser = null;
+        let currentNickname = "Student";
+        
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let lives = 3;
+        const POINTS_PER_QUESTION = 20;
+
+        // --- Quiz Question Data (Updated with Hints) ---
+        const quizData = [
+            {
+                question: "What is the appropriate response when a friend lends you a pencil?",
+                options: ["You're welcome", "Thank you", "I'm sorry", "Please be quiet"],
+                answerIndex: 1,
+                hint: "When receiving any help, we must show appreciation."
+            },
+            {
+                question: "If you accidentally step on a friend's shoe, you should say...",
+                options: ["Serves you right", "Thank you", "I am sorry", "Move aside"],
+                answerIndex: 2,
+                hint: "When we make a mistake, we should quickly admit it."
+            },
+            {
+                question: "When meeting a teacher in the morning, we should say...",
+                options: ["Good night", "Goodbye", "Good morning", "See you again"],
+                answerIndex: 2,
+                hint: "Look at when the situation takes place (Morning time)."
+            },
+            {
+                question: "Your friend is sad because their pencil is lost. What is your response?",
+                options: ["Don't cry, let's look for it together", "Serves you right", "Ignore them", "I want to go home"],
+                answerIndex: 0,
+                hint: "A good friend will always be there to help."
+            },
+            {
+                question: "Before entering the teacher's room, we must...",
+                options: ["Rush straight in", "Knock and greet", "Shout from outside", "Cry"],
+                answerIndex: 1,
+                hint: "We must be polite before entering someone else's room."
+            }
+        ];
+
+        // --- UI Elements ---
+        const ui = {
+            intro: document.getElementById('quizIntro'),
+            active: document.getElementById('quizActive'),
+            result: document.getElementById('quizResult'),
+            questionText: document.getElementById('questionText'),
+            optionsContainer: document.getElementById('optionsContainer'),
+            counter: document.getElementById('questionCounter'),
+            scoreDisplay: document.getElementById('currentScore'),
+            progressBar: document.getElementById('progressBar'),
+            lives: document.getElementById('livesDisplay'),
+            card: document.getElementById('questionCard'),
+            toast: document.getElementById('toastMessage')
+        };
+
+        function showToast(msg, type = 'error') {
+            ui.toast.textContent = msg;
+            ui.toast.className = `fixed bottom-10 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl font-black text-white text-base md:text-lg transition-all duration-300 z-50 shadow-xl border-4 border-dark pointer-events-none text-center min-w-[300px] ${type === 'error' ? 'bg-red-500' : 'bg-green-500'}`;
+            
+            requestAnimationFrame(() => ui.toast.classList.remove('translate-y-20', 'opacity-0'));
+            setTimeout(() => ui.toast.classList.add('translate-y-20', 'opacity-0'), 2500);
+        }
+
+        function updateLives() {
+            let hearts = "";
+            for(let i=0; i<3; i++) { hearts += i < lives ? "❤️" : "🖤"; }
+            ui.lives.innerHTML = hearts;
+        }
+
+        // --- Main Quiz Logic ---
+        document.getElementById('startQuizBtn').addEventListener('click', () => {
+            ui.intro.classList.add('hidden');
+            ui.active.classList.remove('hidden');
+            ui.active.classList.add('flex');
+            updateLives();
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            const currentQ = quizData[currentQuestionIndex];
+            
+            // Update Counter & Progress Bar
+            ui.counter.textContent = `Question ${currentQuestionIndex + 1} / ${quizData.length}`;
+            const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
+            ui.progressBar.style.width = `${progressPercent}%`;
+
+            // Load Question
+            ui.questionText.textContent = currentQ.question;
+            
+            // Load Answer Options
+            ui.optionsContainer.innerHTML = '';
+            
+            const colors = ['bg-[#A8E6CF]', 'bg-[#FFD3B6]', 'bg-[#FF8A8A]', 'bg-[#9BF6FF]'];
+
+            currentQ.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = `${colors[index % colors.length]} hover:brightness-95 text-dark font-black text-base md:text-lg p-5 md:p-6 rounded-2xl kartun-border transition-transform hover:-translate-y-1 text-left flex items-center shadow-sm`;
+                btn.innerHTML = `<span class="bg-white rounded-full min-w-[32px] w-8 h-8 inline-flex items-center justify-center mr-4 border-2 border-dark shrink-0">${String.fromCharCode(65 + index)}</span> <span>${option}</span>`;
+                
+                btn.onclick = () => selectAnswer(index, btn);
+                ui.optionsContainer.appendChild(btn);
+            });
+        }
+
+        let isProcessing = false;
+
+        function selectAnswer(selectedIndex, btnElement) {
+            if (isProcessing) return; // Prevent double click
+            
+            const currentQ = quizData[currentQuestionIndex];
+            
+            if (selectedIndex === currentQ.answerIndex) {
+                // Correct Answer
+                isProcessing = true;
+                score += POINTS_PER_QUESTION;
+                ui.scoreDisplay.textContent = score;
+                
+                showToast("✨ Spot on!", "success");
+                
+                // Style the button
+                btnElement.classList.remove('bg-[#A8E6CF]', 'bg-[#FFD3B6]', 'bg-[#FF8A8A]', 'bg-[#9BF6FF]');
+                btnElement.classList.add('bg-green-400', 'text-white', 'scale-105', 'z-10');
+                ui.card.classList.add('bg-green-50');
+
+                // Disable all other buttons
+                Array.from(ui.optionsContainer.children).forEach(b => {
+                    b.disabled = true;
+                    if(b !== btnElement) b.classList.add('opacity-50');
+                });
+
+                setTimeout(() => {
+                    ui.card.classList.remove('bg-green-50');
+                    currentQuestionIndex++;
+                    isProcessing = false;
+
+                    if (currentQuestionIndex < quizData.length) {
+                        loadQuestion();
+                    } else {
+                        endQuiz();
+                    }
+                }, 1200);
+
+            } else {
+                // Wrong Answer
+                lives--;
+                updateLives();
+                
+                btnElement.classList.add('animate-shake', 'opacity-50', 'bg-gray-300');
+                btnElement.disabled = true; // Prevent pressing wrong button multiple times
+                
+                ui.card.classList.add('animate-shake', 'border-red-500');
+                setTimeout(() => ui.card.classList.remove('animate-shake', 'border-red-500'), 400);
+
+                if (lives <= 0) {
+                    isProcessing = true;
+                    showToast("Oh no! Out of lives.", 'error');
+                    setTimeout(() => {
+                        isProcessing = false;
+                        endQuiz();
+                    }, 1200);
+                } else {
+                    showToast(`❌ Wrong! Hint: ${currentQ.hint}`, 'error');
+                }
+            }
+        }
+
+        function endQuiz() {
+            if (lives <= 0) gameOverSound.play().catch(() => {});
+            ui.active.classList.remove('flex');
+            ui.active.classList.add('hidden');
+            
+            ui.result.classList.remove('hidden');
+            ui.result.classList.add('flex');
+            
+            const totalMaxScore = quizData.length * POINTS_PER_QUESTION;
+            document.getElementById('finalScoreText').innerHTML = `${score}<span class="text-2xl text-gray-400">/${totalMaxScore}</span>`;
+            
+            const title = document.getElementById('resultTitle');
+            const icon = document.getElementById('resultIcon');
+            const message = document.getElementById('resultMessage');
+            const retryBtn = document.getElementById('retryBtn');
+
+            if (lives <= 0) {
+                icon.textContent = "💔";
+                title.textContent = "Oh no!";
+                title.classList.replace('text-primary', 'text-red-500');
+                message.textContent = "You have run out of lives. Try again for a perfect score!";
+                retryBtn.classList.remove('hidden');
+            } else {
+                ui.progressBar.style.width = '100%';
+                if (score === totalMaxScore) {
+                    icon.textContent = '🌟';
+                    message.textContent = "Excellent! You answered all questions perfectly!";
+                } else {
+                    icon.textContent = '👍';
+                    message.textContent = "Great job! You have completed this quiz.";
+                }
+            }
+        }
+
+        // --- Firebase Save Score Logic ---
+        document.getElementById('saveScoreBtn').addEventListener('click', async () => {
+            if (!currentUser) return;
+            
+            const btn = document.getElementById('saveScoreBtn');
+            const msg = document.getElementById('saveStatusMessage');
+            
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            msg.classList.remove('hidden');
+            msg.textContent = "Saving score to database...";
+
+            try {
+                await addDoc(collection(db, "scores"), {
+                    userId: currentUser.uid,
+                    nickname: currentNickname,
+                    activityType: "quiz",
+                    score: score,
+                    playedAt: serverTimestamp()
+                });
+                
+                msg.textContent = "Score Saved Successfully! ✅";
+                msg.classList.replace('text-primary', 'text-green-500');
+                
+                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+                
+            } catch (error) {
+                console.error("Error saving score:", error);
+                msg.textContent = "Failed to save score. Please try again.";
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        });
+
+        // --- Auth Guard (Check Session) ---
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.href = '../index.html';
+        });
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        
+                        if (userData.role === 'admin') {
+                            window.location.href = '../admin/dashboard.html';
+                            return;
+                        }
+
+                        currentUser = user;
+                        currentNickname = userData.nickname || "Student";
+                        document.getElementById('userNameDisplay').textContent = currentNickname;
+                        
+                    } else {
+                        await signOut(auth);
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error("Auth Error:", error);
+                }
+            } else {
+                window.location.href = '../index.html';
+            }
+        });
+    </script>
+</body>
+</html>

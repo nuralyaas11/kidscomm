@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidsComm - Student Dashboard</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Nunito (Body) & Fredoka (Headings/Bubbly text) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Theme Configuration & Custom CSS -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'], // Added bubbly font
+                    },
+                    colors: {
+                        primary: '#FF6B6B',    // Coral Red
+                        secondary: '#4ECDC4',  // Teal
+                        accent: '#FFE66D',     // Yellow
+                        dark: '#2B2D42',       // Navy Dark
+                        softbg: '#FFF6E5',     // Warm cream background
+                        pink: '#FF9A9E',
+                        lightgreen: '#A8E6CF',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* A more colorful, warmer dot background */
+        .bg-ceria {
+            background-color: #FFF6E5;
+            background-image: radial-gradient(#FFC4C4 3px, transparent 3px);
+            background-size: 32px 32px;
+        }
+
+        /* Enhanced Toy-like Border */
+        .kartun-border {
+            border: 4px solid #2B2D42;
+            box-shadow: 6px 6px 0px #2B2D42;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        /* Slight tilt added to hover for a "sticker" feel */
+        .kartun-border:hover {
+            transform: translate(-4px, -4px) rotate(-1deg);
+            box-shadow: 10px 10px 0px #2B2D42;
+        }
+        
+        .kartun-border:active {
+            transform: translate(2px, 2px) rotate(1deg);
+            box-shadow: 2px 2px 0px #2B2D42;
+        }
+
+        /* Prevent header buttons from rotating */
+        header .kartun-border:hover, 
+        aside .kartun-border:hover {
+            transform: translate(-2px, -2px) rotate(0deg);
+        }
+
+        /* Custom soft blob shape for the welcome banner */
+        .blob-shape {
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        }
+    </style>
+</head>
+<body class="bg-ceria flex h-screen overflow-hidden text-dark relative">
+
+    <!-- MOBILE OVERLAY -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-dark bg-opacity-60 z-40 hidden md:hidden transition-opacity backdrop-blur-sm"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-72 bg-white border-r-4 border-dark flex flex-col z-50 shadow-xl fixed md:relative h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 rounded-r-3xl md:rounded-none">
+        <!-- Logo KidsComm -->
+        <div class="p-8 text-center border-b-4 border-dark bg-accent relative rounded-tr-3xl md:rounded-none">
+            <button id="closeSidebarBtn" class="md:hidden absolute top-4 right-4 text-2xl font-black w-8 h-8 flex items-center justify-center bg-white rounded-lg kartun-border hover:bg-primary hover:text-white transition-colors">&times;</button>
+            <h1 class="text-4xl font-display font-bold tracking-wide text-dark">Kids<span class="text-primary">Comm</span></h1>
+            <p class="font-bold text-sm mt-1 text-dark/70 bg-white/50 inline-block px-3 py-1 rounded-full border-2 border-dark/10">Let's Communicate!</p>
+        </div>
+        
+        <!-- Navigation Menu -->
+        <nav class="flex-1 p-6 space-y-2 overflow-y-auto" id="sidebarNav">
+            <!-- STUDENT MENU -->
+            <div id="customerMenu" class="flex flex-col space-y-3">
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">Student Menu</p>
+                <!-- Active states handled by JS, but default styles updated to be chunkier -->
+                <a href="dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-primary transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-primary group-hover:scale-110 transition-all shadow-sm">🏠</span> Home
+                </a>
+                <a href="play_game.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-secondary transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-secondary group-hover:scale-110 transition-all shadow-sm">🎮</span> Play Game
+                </a>
+                <a href="take_quiz.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-pink transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-pink group-hover:scale-110 transition-all shadow-sm">📝</span> Take Quiz
+                </a>
+                <a href="my_scores.html" class="menu-link flex items-center gap-4 bg-white hover:bg-softbg p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-accent transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-accent group-hover:scale-110 transition-all shadow-sm">🏆</span> My Scores
+                </a>
+            </div>
+            
+            <!-- TEACHER MENU (Hidden for Student Dashboard) -->
+            <div id="adminMenu" class="hidden flex-col space-y-3 mt-6">
+                <div class="h-1 w-full bg-gray-100 rounded-full mb-2"></div>
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 pl-2">Teacher Menu</p>
+                <a href="../admin/dashboard.html" class="menu-link flex items-center gap-4 bg-white hover:bg-gray-100 p-4 rounded-2xl font-bold text-lg border-4 border-transparent hover:border-dark transition-all text-dark group">
+                    <span class="text-2xl bg-white p-2 rounded-xl border-2 border-gray-100 group-hover:border-dark group-hover:scale-110 transition-all shadow-sm">📊</span> Statistics
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col h-full overflow-y-auto relative">
+        
+        <!-- HEADER -->
+        <header class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-20 shadow-sm w-full">
+            <div class="flex items-center gap-4">
+                <button id="openSidebarBtn" class="md:hidden text-2xl font-black bg-accent w-12 h-12 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">☰</button>
+                <h2 class="text-2xl md:text-3xl font-display font-bold text-dark tracking-wide" id="pageTitle">Dashboard</h2>
+            </div>
+            <div class="flex items-center gap-4 md:gap-6">
+                <div class="text-right hidden sm:block bg-softbg px-4 py-2 rounded-2xl border-2 border-dark border-dashed">
+                    <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Loading...</p>
+                    <p class="text-xs font-bold text-dark/60 uppercase tracking-wider" id="userRoleDisplay">Student Account</p>
+                </div>
+                <button id="logoutBtn" class="bg-white hover:bg-primary hover:text-white text-dark px-4 py-2 md:px-6 md:py-3 rounded-xl font-black kartun-border text-sm md:text-base transition-all group">
+                    <span class="inline-block group-hover:-translate-x-1 transition-transform">👋</span> Log Out
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN DASHBOARD CONTENT -->
+        <main class="flex-1 p-4 md:p-8 lg:p-10 max-w-7xl mx-auto w-full">
+            
+            <!-- Welcome Banner (More vibrant and organic) -->
+            <div class="bg-secondary kartun-border rounded-[2.5rem] p-8 md:p-12 text-white mb-10 relative overflow-hidden flex flex-col md:flex-row items-center justify-between">
+                
+                <!-- Decorative Static Blobs -->
+                <div class="absolute -right-10 -top-20 w-80 h-80 bg-[#65E0D8] blob-shape opacity-50 z-0"></div>
+                <div class="absolute right-40 -bottom-20 w-60 h-60 bg-[#35B5AC] blob-shape opacity-40 z-0"></div>
+                <div class="absolute left-10 -top-10 w-32 h-32 bg-accent blob-shape opacity-20 z-0"></div>
+
+                <div class="relative z-10 w-full md:w-2/3">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-white text-secondary font-black px-4 py-1.5 rounded-full text-sm uppercase tracking-wider border-2 border-dark shadow-[2px_2px_0px_#2B2D42]">Level 1</span>
+                        <span class="bg-accent text-dark font-black px-3 py-1.5 rounded-full text-sm border-2 border-dark shadow-[2px_2px_0px_#2B2D42]">⭐ Newbie</span>
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-display font-bold mb-4 leading-tight text-white drop-shadow-md">
+                        Welcome Back,<br><span id="welcomeName" class="text-accent underline decoration-4 underline-offset-8">Friend</span>!
+                    </h1>
+                    <p class="text-lg md:text-xl font-bold bg-dark/20 inline-block px-4 py-2 rounded-2xl backdrop-blur-sm border border-white/20">
+                        Ready for today's communication mission? 🚀
+                    </p>
+                </div>
+                <div class="relative z-10 text-8xl md:text-9xl mt-8 md:mt-0 drop-shadow-xl select-none">
+                    <img src="https://api.dicebear.com/7.x/fun-emoji/svg?seed=KidsComm&backgroundColor=transparent" alt="Happy Face" class="w-32 h-32 md:w-48 md:h-48 transform rotate-6">
+                </div>
+            </div>
+
+            <!-- Stats Grid (Color-coded like candy) -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
+                <div class="bg-accent p-5 rounded-[2rem] kartun-border text-center flex flex-col items-center justify-center">
+                    <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center text-3xl mb-2 border-2 border-dark shadow-sm">⭐</div>
+                    <p class="font-bold text-dark/70 text-sm uppercase tracking-wide">Stars</p>
+                    <p class="text-3xl font-display font-bold text-dark">120</p>
+                </div>
+                <div class="bg-primary p-5 rounded-[2rem] kartun-border text-center flex flex-col items-center justify-center text-white">
+                    <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center text-3xl mb-2 border-2 border-dark shadow-sm">🏅</div>
+                    <p class="font-bold text-white/80 text-sm uppercase tracking-wide">Badges</p>
+                    <p class="text-3xl font-display font-bold">3</p>
+                </div>
+                <div class="bg-[#FF9A9E] p-5 rounded-[2rem] kartun-border text-center flex flex-col items-center justify-center text-white">
+                    <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center text-3xl mb-2 border-2 border-dark shadow-sm">🔥</div>
+                    <p class="font-bold text-white/80 text-sm uppercase tracking-wide">Day Streak</p>
+                    <p class="text-3xl font-display font-bold">2 <span class="text-xl">Days</span></p>
+                </div>
+                <div class="bg-lightgreen p-5 rounded-[2rem] kartun-border text-center flex flex-col items-center justify-center">
+                    <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center text-3xl mb-2 border-2 border-dark shadow-sm">🎯</div>
+                    <p class="font-bold text-dark/70 text-sm uppercase tracking-wide">Accuracy</p>
+                    <p class="text-3xl font-display font-bold text-dark">85%</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-6 bg-white px-6 py-3 rounded-2xl border-4 border-dark shadow-[4px_4px_0px_#2B2D42] inline-flex">
+                <h2 class="text-2xl font-display font-bold text-dark">🎮 Let's Start Playing!</h2>
+            </div>
+            
+            <!-- Game Cards (Chunky, sticker-like design) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
+                <!-- Card 1 -->
+                <div class="bg-[#FFE194] rounded-[2.5rem] p-8 kartun-border group flex flex-col justify-between h-full relative overflow-hidden">
+                    <!-- Static Decoration -->
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/40 rounded-full z-0"></div>
+                    <div class="relative z-10">
+                        <div class="bg-white w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-6 border-4 border-dark shadow-[4px_4px_0px_#2B2D42] transform -rotate-3">🧩</div>
+                        <h3 class="text-2xl font-display font-bold mb-2 text-dark">Picture Match</h3>
+                        <p class="font-bold text-dark/70 leading-relaxed mb-6 text-sm">Drag and match situations with the right phrase. Collect stars for every correct match!</p>
+                    </div>
+                    <a href="play_game.html?game=1" class="relative z-10 bg-white text-dark font-black py-4 w-full rounded-2xl text-center text-lg border-4 border-dark hover:bg-dark hover:text-white transition-colors shadow-[4px_4px_0px_#2B2D42] hover:shadow-none hover:translate-y-1 hover:translate-x-1 block">
+                        Play Now!
+                    </a>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="bg-[#B9F3E4] rounded-[2.5rem] p-8 kartun-border group flex flex-col justify-between h-full relative overflow-hidden">
+                    <div class="absolute -left-4 -bottom-4 w-32 h-32 bg-white/40 rounded-full z-0"></div>
+                    <div class="relative z-10">
+                        <div class="bg-white w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-6 border-4 border-dark shadow-[4px_4px_0px_#2B2D42] transform rotate-3">🧱</div>
+                        <h3 class="text-2xl font-display font-bold mb-2 text-dark">Word Scramble</h3>
+                        <p class="font-bold text-dark/70 leading-relaxed mb-6 text-sm">Oops, the sentence is all scrambled! Arrange the word blocks into a complete sentence.</p>
+                    </div>
+                    <a href="play_game.html?game=2" class="relative z-10 bg-white text-dark font-black py-4 w-full rounded-2xl text-center text-lg border-4 border-dark hover:bg-dark hover:text-white transition-colors shadow-[4px_4px_0px_#2B2D42] hover:shadow-none hover:translate-y-1 hover:translate-x-1 block">
+                        Play Now!
+                    </a>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-pink rounded-[2.5rem] p-8 kartun-border group flex flex-col justify-between h-full md:col-span-2 lg:col-span-1 text-white relative overflow-hidden">
+                    <div class="absolute right-0 top-1/2 w-24 h-24 bg-white/20 rounded-full z-0 transform -translate-y-1/2"></div>
+                    <div class="relative z-10">
+                        <div class="bg-white w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-6 border-4 border-dark shadow-[4px_4px_0px_#2B2D42] transform -rotate-6">📝</div>
+                        <h3 class="text-2xl font-display font-bold mb-2 text-white">Mind Challenge</h3>
+                        <p class="font-bold text-white/90 leading-relaxed mb-6 text-sm">Test your understanding! Answer questions and become a communication champion!</p>
+                    </div>
+                    <a href="take_quiz.html" class="relative z-10 bg-dark text-white font-black py-4 w-full rounded-2xl text-center text-lg border-4 border-dark hover:bg-white hover:text-dark transition-colors shadow-[4px_4px_0px_#2B2D42] hover:shadow-none hover:translate-y-1 hover:translate-x-1 block">
+                        Take Quiz
+                    </a>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-[#C3B1E1] rounded-[2.5rem] p-8 kartun-border group flex flex-col justify-between h-full relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/40 rounded-full z-0"></div>
+                    <div class="relative z-10">
+                        <div class="bg-white w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-6 border-4 border-dark shadow-[4px_4px_0px_#2B2D42] transform rotate-3">🖐️</div>
+                        <h3 class="text-2xl font-display font-bold mb-2 text-dark">Drag & Drop</h3>
+                        <p class="font-bold text-dark/70 leading-relaxed mb-6 text-sm">Drag the right phrase and drop it to match the conversation situation!</p>
+                    </div>
+                    <a href="play_game.html?game=3" class="relative z-10 bg-white text-dark font-black py-4 w-full rounded-2xl text-center text-lg border-4 border-dark hover:bg-dark hover:text-white transition-colors shadow-[4px_4px_0px_#2B2D42] hover:shadow-none hover:translate-y-1 hover:translate-x-1 block">
+                        Play Now!
+                    </a>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="bg-[#FFE66D] rounded-[2.5rem] p-8 kartun-border group flex flex-col justify-between h-full relative overflow-hidden">
+                    <div class="absolute -left-4 -bottom-4 w-32 h-32 bg-white/40 rounded-full z-0"></div>
+                    <div class="relative z-10">
+                        <div class="bg-white w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-6 border-4 border-dark shadow-[4px_4px_0px_#2B2D42] transform -rotate-3">🎭</div>
+                        <h3 class="text-2xl font-display font-bold mb-2 text-dark">Role Play</h3>
+                        <p class="font-bold text-dark/70 leading-relaxed mb-6 text-sm">A character speaks — pick the best reply and practise real-life conversations!</p>
+                    </div>
+                    <a href="play_game.html?game=4" class="relative z-10 bg-white text-dark font-black py-4 w-full rounded-2xl text-center text-lg border-4 border-dark hover:bg-dark hover:text-white transition-colors shadow-[4px_4px_0px_#2B2D42] hover:shadow-none hover:translate-y-1 hover:translate-x-1 block">
+                        Play Now!
+                    </a>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="bg-[#B5D5F5] rounded-[2.5rem] p-8 kartun-border group flex flex-col justify-between h-full relative overflow-hidden">
+                    <div class="absolute right-0 top-1/2 w-24 h-24 bg-white/20 rounded-full z-0 transform -translate-y-1/2"></div>
+                    <div class="relative z-10">
+                        <div class="bg-white w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-6 border-4 border-dark shadow-[4px_4px_0px_#2B2D42] transform rotate-6">🧠</div>
+                        <h3 class="text-2xl font-display font-bold mb-2 text-dark">Memory Flip</h3>
+                        <p class="font-bold text-dark/70 leading-relaxed mb-6 text-sm">Flip cards to find matching word and emoji pairs. Train your memory!</p>
+                    </div>
+                    <a href="play_game.html?game=5" class="relative z-10 bg-white text-dark font-black py-4 w-full rounded-2xl text-center text-lg border-4 border-dark hover:bg-dark hover:text-white transition-colors shadow-[4px_4px_0px_#2B2D42] hover:shadow-none hover:translate-y-1 hover:translate-x-1 block">
+                        Play Now!
+                    </a>
+                </div>
+            </div>
+
+        </main>
+        
+    </div>
+
+    <!-- UI Scripts -->
+    <script>
+        // Mobile Sidebar Open/Close Logic
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobileOverlay');
+        const openBtn = document.getElementById('openSidebarBtn');
+        const closeBtn = document.getElementById('closeSidebarBtn');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        openBtn.addEventListener('click', toggleSidebar);
+        closeBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+    </script>
+
+    <!-- Firebase & Active Menu Logic -->
+    <script type="module">
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { auth, db } from "../firebase-config.js";
+
+        // --- Auto-Highlight Active Menu ---
+        function highlightActiveMenu() {
+            const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
+            const links = document.querySelectorAll('#sidebarNav a');
+            
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.includes(currentPage)) {
+                    // Ceria Active State (Thick border, solid background, slightly shifted)
+                    const isCustomer = link.closest('#customerMenu');
+                    const activeBg = isCustomer ? 'bg-secondary' : 'bg-primary';
+                    link.className = `menu-link flex items-center gap-4 ${activeBg} text-white p-4 rounded-2xl font-bold text-lg kartun-border shadow-[4px_4px_0px_#2B2D42]`;
+                    
+                    // Highlight the emoji container inside the active link
+                    const iconSpan = link.querySelector('span');
+                    if(iconSpan) {
+                        iconSpan.className = "text-2xl bg-white p-2 rounded-xl border-2 border-dark text-dark transform -rotate-6 shadow-sm";
+                    }
+                }
+            });
+        }
+        highlightActiveMenu();
+
+        // --- Logout Button Logic ---
+        const logoutBtn = document.getElementById('logoutBtn');
+        if(logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                await signOut(auth);
+                window.location.href = '../index.html';
+            });
+        }
+
+        // --- Check User Session & Role ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        
+                        if (userData.role === 'admin') {
+                            window.location.href = '../admin/dashboard.html';
+                            return;
+                        }
+
+                        document.getElementById('welcomeName').textContent = userData.nickname || "Friend";
+                        const userNameDisplay = document.getElementById('userNameDisplay');
+                        if(userNameDisplay) userNameDisplay.textContent = userData.nickname || "Student";
+                        
+                    } else {
+                        await signOut(auth);
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error("Error fetching profile:", error);
+                }
+            } else {
+                window.location.href = '../index.html';
+            }
+        });
+    </script>
+</body>
+</html>

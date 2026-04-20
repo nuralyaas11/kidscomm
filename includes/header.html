@@ -1,0 +1,25 @@
+<!-- Header Utama (Gamifikasi) -->
+<div class="bg-white border-b-4 border-dark p-4 md:p-6 flex justify-between items-center sticky top-0 z-10 shadow-sm w-full">
+    
+    <!-- Tajuk Halaman & Butang Menu Mobile -->
+    <div class="flex items-center gap-4">
+        <!-- Butang untuk peranti mudah alih (Boleh dihubungkan dengan logik JS untuk buka sidebar kelak) -->
+        <button id="mobileMenuBtn" class="md:hidden text-2xl font-black bg-accent w-10 h-10 md:w-12 md:h-12 rounded-xl kartun-border flex items-center justify-center hover:bg-yellow-300 transition-colors">
+            ☰
+        </button>
+        <h2 class="text-xl md:text-3xl font-black text-dark tracking-tight" id="pageTitle">Papan Pemuka</h2>
+    </div>
+    
+    <!-- Info Pengguna & Butang Log Keluar -->
+    <div class="flex items-center gap-4 md:gap-6">
+        <div class="text-right hidden sm:block">
+            <p class="font-black text-base md:text-lg text-primary" id="userNameDisplay">Memuatkan...</p>
+            <p class="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-wider" id="userRoleDisplay">Akaun</p>
+        </div>
+        
+        <!-- Butang Log Keluar dengan kesan Neo-brutalism -->
+        <button id="logoutBtn" class="bg-primary hover:bg-red-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl font-black kartun-border text-sm md:text-base transition-all">
+            Log Keluar
+        </button>
+    </div>
+</div>

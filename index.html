@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidsComm - Login</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Theme Configuration (Cheerful Colours) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B6B',
+                        secondary: '#4ECDC4',
+                        accent: '#FFE66D',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-secondary via-blue-200 to-primary min-h-screen flex items-center justify-center p-4">
+
+    <!-- Login Box -->
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-md p-8 relative overflow-hidden">
+        <!-- Decorative Elements -->
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent rounded-full opacity-50"></div>
+        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-primary rounded-full opacity-50"></div>
+
+        <div class="relative z-10">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold text-gray-800 mb-2 tracking-tight">Kids<span class="text-primary">Comm</span></h1>
+                <p class="text-gray-500 font-medium">Let's Learn to Communicate!</p>
+            </div>
+
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
+                    <input type="email" id="email" required
+                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-secondary focus:ring-2 focus:ring-secondary focus:outline-none transition-colors bg-gray-50"
+                        placeholder="example@email.com">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-bold text-gray-700 mb-2">Password</label>
+                    <input type="password" id="password" required
+                        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none transition-colors bg-gray-50"
+                        placeholder="••••••••">
+                </div>
+
+                <button type="submit" id="loginBtn"
+                    class="w-full bg-secondary hover:bg-teal-500 text-white font-bold text-lg py-3 px-4 rounded-xl transition-transform transform hover:scale-105 shadow-lg">
+                    Log In Now!
+                </button>
+                
+                <div id="errorMessage" class="hidden text-center text-red-500 font-semibold mt-4 text-sm bg-red-50 py-2 rounded-lg border border-red-200">
+                    <!-- Error messages will be displayed here -->
+                </div>
+
+                <p class="text-center text-gray-500 text-sm font-medium">
+                    Don't have an account?
+                    <a href="./register.html" class="text-secondary font-bold hover:underline">Register here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase Module (Version 11.6.1) -->
+    <script type="module">
+        import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // Import Auth and Database from separate config file
+        import { auth, db } from "./firebase-config.js";
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Helper function to check role and redirect user
+        async function routeUserBasedOnRole(uid) {
+            try {
+                // Reference the user document in the 'users' collection by UID
+                const userDocRef = doc(db, "users", uid);
+                const userDocSnap = await getDoc(userDocRef);
+                
+                if (userDocSnap.exists()) {
+                    const userData = userDocSnap.data();
+                    
+                    // Redirect based on the 'role' field in Firestore
+                    if (userData.role === 'admin') {
+                        window.location.href = './admin/dashboard.html';
+                    } else {
+                        window.location.href = './customer/dashboard.html';
+                    }
+                } else {
+                    // Jika rekod tiada di Firestore, tunjukkan ralat
+                    throw new Error("Profile data not found. Please contact the Admin.");
+                }
+            } catch (error) {
+                console.error("Error fetching user role:", error);
+                throw error;
+            }
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // UI Loading State
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = 'Verifying...';
+            errorMessage.classList.add('hidden');
+
+            try {
+                // 1. Log in via Firebase Auth
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // 2. Check actual role in Firestore for routing
+                await routeUserBasedOnRole(user.uid);
+
+            } catch (error) {
+                console.error("Login error:", error);
+                
+                // User-friendly error messages
+                if(error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                     errorMessage.textContent = "Login failed. Incorrect email or password.";
+                } else if (error.message.includes("Profile data")) {
+                     errorMessage.textContent = error.message;
+                } else {
+                     errorMessage.textContent = "Server error. Please try again shortly.";
+                }
+                
+                errorMessage.classList.remove('hidden');
+                
+                // Reset button UI
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'Log In Now!';
+            }
+        });
+
+        // Check if user is already logged in, redirect to dashboard immediately
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = 'Redirecting to Dashboard...';
+                
+                try {
+                    await routeUserBasedOnRole(user.uid);
+                } catch (error) {
+                    console.error("Auto-Login Error:", error);
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = 'Log In Now!';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
