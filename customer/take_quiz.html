@@ -143,11 +143,37 @@
         <!-- MAIN QUIZ CONTENT -->
         <main class="flex-1 p-4 md:p-8 lg:p-10 max-w-4xl mx-auto w-full flex flex-col justify-center">
             
+            <!-- QUIZ SELECTION SCREEN -->
+            <div id="quizSelection" class="text-center animate-slide-in hidden">
+                <h2 class="text-3xl md:text-4xl font-black mb-8">Choose Your Quiz!</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto w-full">
+                    <button onclick="window.location.href='?quiz=1'" class="bg-[#FF8A8A] p-6 md:p-8 rounded-2xl kartun-border group text-left relative overflow-hidden">
+                        <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform relative z-10">🧠</span>
+                        <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Mind Challenge</h3>
+                        <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">Test your knowledge on polite communication.</p>
+                        <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white opacity-20 rounded-full"></div>
+                    </button>
+                    <button onclick="window.location.href='?quiz=2'" class="bg-[#A8E6CF] p-6 md:p-8 rounded-2xl kartun-border group text-left relative overflow-hidden">
+                        <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform relative z-10">✏️</span>
+                        <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Fill in the Blank</h3>
+                        <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">Complete the sentence with the correct word!</p>
+                        <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white opacity-20 rounded-full"></div>
+                    </button>
+                    <button onclick="window.location.href='?quiz=3'" class="bg-[#C3B1E1] p-6 md:p-8 rounded-2xl kartun-border group text-left relative overflow-hidden">
+                        <span class="text-5xl mb-4 block group-hover:rotate-12 transition-transform relative z-10">🗣️</span>
+                        <h3 class="text-xl md:text-2xl font-black mb-2 relative z-10">Polite or Rude?</h3>
+                        <p class="font-bold text-gray-700 text-sm md:text-base relative z-10">Pick the most polite sentence in each situation.</p>
+                        <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white opacity-20 rounded-full"></div>
+                    </button>
+                </div>
+            </div>
+
             <!-- QUIZ INTRODUCTION SCREEN -->
-            <div id="quizIntro" class="bg-white rounded-[2rem] kartun-border p-8 md:p-12 text-center animate-slide-in">
-                <div class="text-7xl md:text-8xl mb-6 drop-shadow-lg">📝</div>
-                <h1 class="text-3xl md:text-5xl font-black mb-4 leading-tight">Mind Challenge!</h1>
-                <p class="text-lg md:text-xl font-bold text-gray-600 mb-8 max-w-lg mx-auto">Let's test your understanding of good communication. Answer correctly without losing all your lives!</p>
+            <div id="quizIntro" class="bg-white rounded-[2rem] kartun-border p-8 md:p-12 text-center animate-slide-in hidden">
+                <a href="take_quiz.html" class="inline-block mb-6 bg-white px-4 py-2 rounded-xl font-bold kartun-border hover:bg-gray-100 text-sm">⬅️ Back</a>
+                <div id="quizIntroIcon" class="text-7xl md:text-8xl mb-6 drop-shadow-lg">📝</div>
+                <h1 id="quizIntroTitle" class="text-3xl md:text-5xl font-black mb-4 leading-tight">Mind Challenge!</h1>
+                <p id="quizIntroDesc" class="text-lg md:text-xl font-bold text-gray-600 mb-8 max-w-lg mx-auto">Let's test your understanding of good communication. Answer correctly without losing all your lives!</p>
                 
                 <button id="startQuizBtn" class="bg-[#FF8A8A] hover:bg-red-500 text-white text-xl md:text-2xl font-black px-8 md:px-10 py-4 md:py-5 rounded-2xl kartun-border transition-transform hover:scale-105 shadow-lg w-full md:w-auto">
                     Start Quiz Now! 🚀
@@ -172,9 +198,12 @@
                         </div>
                     </div>
 
-                    <h2 id="questionText" class="text-xl md:text-3xl font-black text-center mb-8 mt-4 leading-relaxed text-gray-800">
-                        Loading Question...
-                    </h2>
+                    <div class="flex items-start gap-3 justify-center mb-8 mt-4">
+                        <h2 id="questionText" class="text-xl md:text-3xl font-black text-center leading-relaxed text-gray-800 flex-1">
+                            Loading Question...
+                        </h2>
+                        <button onclick="speakText(document.getElementById('questionText').textContent.trim())" class="bg-white rounded-xl w-10 h-10 flex items-center justify-center border-2 border-dark hover:bg-secondary hover:text-white transition-colors shrink-0 text-lg shadow-sm mt-1" title="Read question aloud">🔊</button>
+                    </div>
 
                     <!-- Answer Options -->
                     <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
@@ -261,6 +290,41 @@
         }
         highlightActiveMenu();
 
+        // --- Text to Speech ---
+        window.speakText = function(text) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'en-US';
+            utter.rate = 0.88;
+            utter.pitch = 1.1;
+
+            const trySpeak = () => {
+                const voices = window.speechSynthesis.getVoices();
+                const preferred = [
+                    'Google US English',
+                    'Microsoft Aria Online (Natural)',
+                    'Microsoft Jenny Online (Natural)',
+                    'Microsoft Zira',
+                    'Samantha'
+                ];
+                let picked = null;
+                for (const name of preferred) {
+                    picked = voices.find(v => v.name === name);
+                    if (picked) break;
+                }
+                if (!picked) picked = voices.find(v => v.lang === 'en-US');
+                if (picked) utter.voice = picked;
+                window.speechSynthesis.speak(utter);
+            };
+
+            if (window.speechSynthesis.getVoices().length > 0) {
+                trySpeak();
+            } else {
+                window.speechSynthesis.onvoiceschanged = () => { trySpeak(); };
+            }
+        };
+
         // --- Game Over Sound ---
         const gameOverSound = new Audio('../assets/sounds/gameover.mp3');
 
@@ -272,6 +336,8 @@
         let score = 0;
         let lives = 3;
         const POINTS_PER_QUESTION = 20;
+        let activeQuizData = [];
+        let currentQuizType = "quiz";
 
         // --- Quiz Question Data (Updated with Hints) ---
         const quizData = [
@@ -307,6 +373,74 @@
             }
         ];
 
+        // --- Quiz 2 Data: Fill in the Blank ---
+        const quiz2Data = [
+            {
+                question: 'Complete the sentence: "Good ______, teacher."',
+                options: ["morning", "night", "bye", "sorry"],
+                answerIndex: 0,
+                hint: "We use this greeting in the morning."
+            },
+            {
+                question: 'Complete the sentence: "May I ______ your eraser?"',
+                options: ["take", "borrow", "steal", "break"],
+                answerIndex: 1,
+                hint: "We ask permission to use something temporarily."
+            },
+            {
+                question: 'Complete the sentence: "I am ______ for being late."',
+                options: ["happy", "glad", "sorry", "ready"],
+                answerIndex: 2,
+                hint: "We say this when we have made a mistake."
+            },
+            {
+                question: 'Complete the sentence: "______ sit here, sir."',
+                options: ["You", "Go", "Please", "Never"],
+                answerIndex: 2,
+                hint: "We use this word to make a polite invitation."
+            },
+            {
+                question: 'Complete the sentence: "Thank you for your ______."',
+                options: ["money", "help", "food", "game"],
+                answerIndex: 1,
+                hint: "We thank someone for the assistance they gave us."
+            }
+        ];
+
+        // --- Quiz 3 Data: Polite or Rude? ---
+        const quiz3Data = [
+            {
+                question: "Which sentence is more polite?",
+                options: ["Give me that pencil.", "May I have that pencil, please?", "I want the pencil now!", "That pencil is mine."],
+                answerIndex: 1,
+                hint: "A polite request uses 'May I' and 'please'."
+            },
+            {
+                question: "Your teacher is explaining. Which is the polite thing to do?",
+                options: ["Talk to your friend.", "Listen quietly.", "Play with your phone.", "Walk around the class."],
+                answerIndex: 1,
+                hint: "Showing respect means giving full attention."
+            },
+            {
+                question: "You need to pass through a group of people. What do you say?",
+                options: ["Move!", "Get out of my way!", "Excuse me, please.", "Hey, shift!"],
+                answerIndex: 2,
+                hint: "'Excuse me' is used to politely get through."
+            },
+            {
+                question: "A friend helps you carry your bag. What is the polite response?",
+                options: ["It's about time!", "Whatever.", "Thank you so much!", "You should do more."],
+                answerIndex: 2,
+                hint: "We always thank people who help us."
+            },
+            {
+                question: "Which is the correct way to greet your school principal?",
+                options: ["Hey, what's up?", "Good morning, Sir/Madam.", "Morning dude!", "I don't know you."],
+                answerIndex: 1,
+                hint: "We use formal greetings for people in authority."
+            }
+        ];
+
         // --- UI Elements ---
         const ui = {
             intro: document.getElementById('quizIntro'),
@@ -336,6 +470,48 @@
             ui.lives.innerHTML = hearts;
         }
 
+        // --- Quiz Initialisation ---
+        function initQuiz() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const quizId = urlParams.get('quiz');
+            const selection = document.getElementById('quizSelection');
+            const intro = document.getElementById('quizIntro');
+
+            if (!quizId) {
+                selection.classList.remove('hidden');
+                document.getElementById('pageTitle').textContent = 'Take Quiz';
+                return;
+            }
+
+            if (quizId === '1') {
+                activeQuizData = quizData;
+                currentQuizType = "quiz";
+                document.getElementById('quizIntroIcon').textContent = '🧠';
+                document.getElementById('quizIntroTitle').textContent = 'Mind Challenge!';
+                document.getElementById('quizIntroDesc').textContent = "Let's test your understanding of good communication. Answer correctly without losing all your lives!";
+                document.getElementById('pageTitle').textContent = 'Mind Challenge';
+            } else if (quizId === '2') {
+                activeQuizData = quiz2Data;
+                currentQuizType = "quiz_fillblank";
+                document.getElementById('quizIntroIcon').textContent = '✏️';
+                document.getElementById('quizIntroTitle').textContent = 'Fill in the Blank!';
+                document.getElementById('quizIntroDesc').textContent = 'Complete each sentence with the correct missing word. Choose carefully!';
+                document.getElementById('pageTitle').textContent = 'Fill in the Blank';
+            } else if (quizId === '3') {
+                activeQuizData = quiz3Data;
+                currentQuizType = "quiz_polite";
+                document.getElementById('quizIntroIcon').textContent = '🗣️';
+                document.getElementById('quizIntroTitle').textContent = 'Polite or Rude?';
+                document.getElementById('quizIntroDesc').textContent = 'Can you spot the polite sentence? Choose the best, most respectful response!';
+                document.getElementById('pageTitle').textContent = 'Polite or Rude?';
+            } else {
+                selection.classList.remove('hidden');
+                return;
+            }
+
+            intro.classList.remove('hidden');
+        }
+
         // --- Main Quiz Logic ---
         document.getElementById('startQuizBtn').addEventListener('click', () => {
             ui.intro.classList.add('hidden');
@@ -346,11 +522,11 @@
         });
 
         function loadQuestion() {
-            const currentQ = quizData[currentQuestionIndex];
+            const currentQ = activeQuizData[currentQuestionIndex];
             
             // Update Counter & Progress Bar
-            ui.counter.textContent = `Question ${currentQuestionIndex + 1} / ${quizData.length}`;
-            const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
+            ui.counter.textContent = `Question ${currentQuestionIndex + 1} / ${activeQuizData.length}`;
+            const progressPercent = ((currentQuestionIndex) / activeQuizData.length) * 100;
             ui.progressBar.style.width = `${progressPercent}%`;
 
             // Load Question
@@ -376,7 +552,7 @@
         function selectAnswer(selectedIndex, btnElement) {
             if (isProcessing) return; // Prevent double click
             
-            const currentQ = quizData[currentQuestionIndex];
+            const currentQ = activeQuizData[currentQuestionIndex];
             
             if (selectedIndex === currentQ.answerIndex) {
                 // Correct Answer
@@ -402,7 +578,7 @@
                     currentQuestionIndex++;
                     isProcessing = false;
 
-                    if (currentQuestionIndex < quizData.length) {
+                    if (currentQuestionIndex < activeQuizData.length) {
                         loadQuestion();
                     } else {
                         endQuiz();
@@ -441,7 +617,7 @@
             ui.result.classList.remove('hidden');
             ui.result.classList.add('flex');
             
-            const totalMaxScore = quizData.length * POINTS_PER_QUESTION;
+            const totalMaxScore = activeQuizData.length * POINTS_PER_QUESTION;
             document.getElementById('finalScoreText').innerHTML = `${score}<span class="text-2xl text-gray-400">/${totalMaxScore}</span>`;
             
             const title = document.getElementById('resultTitle');
@@ -483,7 +659,7 @@
                 await addDoc(collection(db, "scores"), {
                     userId: currentUser.uid,
                     nickname: currentNickname,
-                    activityType: "quiz",
+                    activityType: currentQuizType,
                     score: score,
                     playedAt: serverTimestamp()
                 });
@@ -522,6 +698,7 @@
                         currentUser = user;
                         currentNickname = userData.nickname || "Student";
                         document.getElementById('userNameDisplay').textContent = currentNickname;
+                        initQuiz();
                         
                     } else {
                         await signOut(auth);

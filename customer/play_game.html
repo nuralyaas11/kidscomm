@@ -192,7 +192,7 @@
                     <span>⬅️</span> <span class="hidden sm:inline">Back</span>
                 </a>
                 <div class="bg-accent px-4 py-2 rounded-xl font-black kartun-border text-base md:text-lg flex items-center gap-2">
-                    <span>⭐</span> Skor: <span id="scoreDisplay">0</span>
+                    <span>⭐</span> Score: <span id="scoreDisplay">0</span>
                 </div>
             </div>
 
@@ -482,7 +482,10 @@
             // FIX: Escape single quotes in 'opt' to prevent SyntaxError in inline event handlers
             ui.board.innerHTML = `
                 <div class="text-7xl md:text-8xl mb-4 animate-pop drop-shadow-lg">${levelData.img}</div>
-                <h3 class="text-lg md:text-2xl font-black text-center mb-8 bg-white px-6 py-4 rounded-2xl kartun-border text-dark max-w-lg w-full">${levelData.situasi}</h3>
+                <div class="flex items-center gap-3 mb-8 max-w-lg w-full">
+                    <h3 class="text-lg md:text-2xl font-black text-center bg-white px-6 py-4 rounded-2xl kartun-border text-dark flex-1">${levelData.situasi}</h3>
+                    <button onclick="speakText(this.dataset.text)" data-text="${levelData.situasi.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}" class="bg-white rounded-xl w-10 h-10 flex items-center justify-center border-2 border-dark hover:bg-secondary hover:text-white transition-colors shrink-0 text-lg shadow-sm" title="Read aloud">🔊</button>
+                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-3xl">
                     ${choices.map(opt => {
                         const safeOpt = opt.replace(/'/g, "\\'");
@@ -499,6 +502,7 @@
         window.checkAnswer1 = function(btnElement, selected) {
             // FIX: Disable all buttons instantly to prevent multiple rapid clicks
             if (btnElement.disabled) return;
+            clickSound.currentTime = 0; clickSound.play().catch(() => {});
             const buttons = btnElement.parentElement.querySelectorAll('button');
             buttons.forEach(btn => btn.disabled = true);
 
@@ -548,7 +552,10 @@
             
             // FIX: Escape single quotes in words just in case for Game 2 as well
             ui.board.innerHTML = `
-                <h3 class="text-xl md:text-2xl font-black text-gray-700 mb-8 text-center bg-white px-6 py-2 rounded-xl kartun-border">${levelData.soalan}</h3>
+                <div class="flex items-center gap-3 mb-8 w-full max-w-3xl">
+                    <h3 class="text-xl md:text-2xl font-black text-gray-700 text-center bg-white px-6 py-2 rounded-xl kartun-border flex-1">${levelData.soalan}</h3>
+                    <button onclick="speakText(this.dataset.text)" data-text="${levelData.soalan.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}" class="bg-white rounded-xl w-10 h-10 flex items-center justify-center border-2 border-dark hover:bg-secondary hover:text-white transition-colors shrink-0 text-lg shadow-sm" title="Read aloud">🔊</button>
+                </div>
                 
                 <!-- Kotak Jawapan (Ayat yang sedang disusun) -->
                 <div class="w-full max-w-3xl min-h-[100px] bg-white border-4 border-dark rounded-2xl shadow-inner p-4 md:p-6 flex flex-wrap gap-2 mb-10 items-center justify-center relative">
@@ -583,22 +590,26 @@
         }
 
         window.addWord2 = function(word) {
+            clickSound.currentTime = 0; clickSound.play().catch(() => {});
             currentSentenceArrangement.push(word);
             renderGame2Board();
         }
         
         window.removeWord2 = function(index) {
+            clickSound.currentTime = 0; clickSound.play().catch(() => {});
             currentSentenceArrangement.splice(index, 1);
             renderGame2Board();
         }
 
         window.clearAllWords = function() {
+            clickSound.currentTime = 0; clickSound.play().catch(() => {});
             currentSentenceArrangement = [];
             renderGame2Board();
         }
 
         window.checkAnswer2 = function(btnElement) {
             if (btnElement) btnElement.disabled = true; // Prevent multiple clicks
+            clickSound.currentTime = 0; clickSound.play().catch(() => {});
 
             const levelData = game2Data[currentLevel];
             const formedSentence = currentSentenceArrangement.join(" ");
@@ -634,7 +645,10 @@
             const shuffled = [...levelData.phrases].sort(() => Math.random() - 0.5);
 
             ui.board.innerHTML = `
-                <h3 class="text-lg md:text-xl font-black text-center mb-6 bg-white px-6 py-4 rounded-2xl kartun-border text-dark max-w-lg w-full">📍 ${levelData.situation}</h3>
+                <div class="flex items-center gap-3 mb-6 max-w-lg w-full">
+                    <h3 class="text-lg md:text-xl font-black text-center bg-white px-6 py-4 rounded-2xl kartun-border text-dark flex-1">📍 ${levelData.situation}</h3>
+                    <button onclick="speakText(this.dataset.text)" data-text="${levelData.situation.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}" class="bg-white rounded-xl w-10 h-10 flex items-center justify-center border-2 border-dark hover:bg-secondary hover:text-white transition-colors shrink-0 text-lg shadow-sm" title="Read aloud">🔊</button>
+                </div>
                 <p class="font-bold text-gray-500 mb-4 text-sm">Drag the correct phrase into the box below:</p>
                 
                 <!-- Drop Zone -->
@@ -702,8 +716,9 @@
             ui.board.innerHTML = `
                 <div class="flex flex-col items-start w-full max-w-lg mx-auto mb-8">
                     <!-- Speech Bubble -->
-                    <div class="speech-bubble w-full p-5 mb-6">
-                        <p class="font-black text-lg md:text-xl text-dark">"${levelData.dialogue}"</p>
+                    <div class="speech-bubble w-full p-5 mb-6 flex items-start gap-3">
+                        <p class="font-black text-lg md:text-xl text-dark flex-1">"${levelData.dialogue}"</p>
+                        <button onclick="speakText(this.dataset.text)" data-text="${levelData.dialogue.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}" class="bg-white rounded-xl w-10 h-10 flex items-center justify-center border-2 border-dark hover:bg-secondary hover:text-white transition-colors shrink-0 text-lg shadow-sm" title="Read aloud">🔊</button>
                     </div>
                     <!-- Character -->
                     <div class="flex items-center gap-4 pl-2">
@@ -725,6 +740,7 @@
         }
 
         window.checkAnswer4 = function(btnElement, selectedIndex) {
+            clickSound.currentTime = 0; clickSound.play().catch(() => {});
             const btns = document.querySelectorAll('#roleplayOptions4 button');
             btns.forEach(b => b.disabled = true);
             const levelData = game4Data[currentLevel];
@@ -800,6 +816,7 @@
             const card = memoryCards[idx];
 
             if (!cardEl || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+            clickSound.currentTime = 0; clickSound.play().catch(() => {});
 
             cardEl.classList.add('flipped');
             flippedCards.push({ idx, card, el: cardEl });
@@ -837,8 +854,49 @@
             }
         }
 
-        // --- Game Over Sound ---
+        // --- Text to Speech ---
+        window.speakText = function(text) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'en-US';
+            utter.rate = 0.88;
+            utter.pitch = 1.1;
+
+            const trySpeak = () => {
+                const voices = window.speechSynthesis.getVoices();
+                // Prefer natural-sounding voices in order
+                const preferred = [
+                    'Google US English',
+                    'Microsoft Aria Online (Natural)',
+                    'Microsoft Jenny Online (Natural)',
+                    'Microsoft Zira',
+                    'Samantha'
+                ];
+                let picked = null;
+                for (const name of preferred) {
+                    picked = voices.find(v => v.name === name);
+                    if (picked) break;
+                }
+                // Fallback: any en-US voice
+                if (!picked) picked = voices.find(v => v.lang === 'en-US');
+                if (picked) utter.voice = picked;
+                window.speechSynthesis.speak(utter);
+            };
+
+            // Voices may not be ready yet on first load
+            if (window.speechSynthesis.getVoices().length > 0) {
+                trySpeak();
+            } else {
+                window.speechSynthesis.onvoiceschanged = () => { trySpeak(); };
+            }
+        };
+
+        // --- Game Over Sound & Click Sound ---
         const gameOverSound = new Audio('../assets/sounds/gameover.mp3');
+        const clickSound = new Audio('../assets/sounds/click_sound.mp3');
+        clickSound.preload = 'auto';
+        clickSound.load();
 
         // --- Game Over Management & Firestore ---
         function showGameOver() {
