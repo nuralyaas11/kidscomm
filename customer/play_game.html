@@ -66,6 +66,7 @@
         /* Drag & Drop Game Styles */
         .drag-card {
             cursor: grab;
+            touch-action: none;
             transition: opacity 0.2s, transform 0.2s;
         }
         .drag-card:active { cursor: grabbing; }
@@ -674,14 +675,15 @@
                     }).join('')}
                 </div>
             `;
+            // Enable touch drag for mobile devices
+            initTouchDrag3();
         }
 
-        window.handleDrop3 = function(event) {
-            event.preventDefault();
+        // Shared logic for processing a drop answer in Game 3
+        function processDropAnswer3(phrase) {
             const dropZone = document.getElementById('dropZone3');
+            if (!phrase || !dropZone) return;
             dropZone.classList.remove('drag-over');
-            const phrase = event.dataTransfer.getData('text/plain');
-            if (!phrase) return;
 
             const levelData = game3Data[currentLevel];
             if (phrase === levelData.correct) {
@@ -709,6 +711,83 @@
                     }
                 }, 800);
             }
+        }
+
+        // Touch drag-and-drop support for mobile (Game 3)
+        function initTouchDrag3() {
+            const cards = document.querySelectorAll('#phraseCards3 .drag-card');
+            const dropZone = document.getElementById('dropZone3');
+            if (!dropZone) return;
+
+            let ghost = null;
+            let activePhrase = null;
+            let activeCard = null;
+
+            cards.forEach(card => {
+                card.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    activePhrase = card.dataset.phrase;
+                    activeCard = card;
+
+                    const touch = e.touches[0];
+                    const rect = card.getBoundingClientRect();
+
+                    ghost = card.cloneNode(true);
+                    ghost.style.cssText = `
+                        position: fixed;
+                        z-index: 9999;
+                        opacity: 0.85;
+                        pointer-events: none;
+                        transform: scale(1.1);
+                        transition: none;
+                        width: ${rect.width}px;
+                        left: ${touch.clientX - rect.width / 2}px;
+                        top: ${touch.clientY - rect.height / 2}px;
+                    `;
+                    document.body.appendChild(ghost);
+                    card.classList.add('dragging');
+                }, { passive: false });
+
+                card.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    if (!ghost) return;
+                    const touch = e.touches[0];
+                    const gRect = ghost.getBoundingClientRect();
+                    ghost.style.left = (touch.clientX - gRect.width / 2) + 'px';
+                    ghost.style.top  = (touch.clientY - gRect.height / 2) + 'px';
+
+                    const dzRect = dropZone.getBoundingClientRect();
+                    const over = touch.clientX >= dzRect.left && touch.clientX <= dzRect.right
+                              && touch.clientY >= dzRect.top  && touch.clientY <= dzRect.bottom;
+                    dropZone.classList.toggle('drag-over', over);
+                }, { passive: false });
+
+                card.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    if (!ghost) return;
+
+                    const touch = e.changedTouches[0];
+                    ghost.remove();
+                    ghost = null;
+                    if (activeCard) activeCard.classList.remove('dragging');
+                    dropZone.classList.remove('drag-over');
+
+                    const dzRect = dropZone.getBoundingClientRect();
+                    const dropped = touch.clientX >= dzRect.left && touch.clientX <= dzRect.right
+                                 && touch.clientY >= dzRect.top  && touch.clientY <= dzRect.bottom;
+                    if (dropped) processDropAnswer3(activePhrase);
+
+                    activePhrase = null;
+                    activeCard = null;
+                }, { passive: false });
+            });
+        }
+
+        window.handleDrop3 = function(event) {
+            event.preventDefault();
+            const phrase = event.dataTransfer.getData('text/plain');
+            if (!phrase) return;
+            processDropAnswer3(phrase);
         }
 
         // --- Game 4 Logic: Role Play Mini Game ---
