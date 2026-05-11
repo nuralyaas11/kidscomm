@@ -151,8 +151,8 @@
 
                 <div class="relative z-10 w-full md:w-2/3">
                     <div class="flex items-center gap-3 mb-4">
-                        <span class="bg-white text-secondary font-black px-4 py-1.5 rounded-full text-sm uppercase tracking-wider border-2 border-dark shadow-[2px_2px_0px_#2B2D42]">Level 1</span>
-                        <span class="bg-accent text-dark font-black px-3 py-1.5 rounded-full text-sm border-2 border-dark shadow-[2px_2px_0px_#2B2D42]">⭐ Newbie</span>
+                        <span id="levelBadge" class="bg-white text-secondary font-black px-4 py-1.5 rounded-full text-sm uppercase tracking-wider border-2 border-dark shadow-[2px_2px_0px_#2B2D42]">Level 1</span>
+                        <span id="titleBadge" class="bg-accent text-dark font-black px-3 py-1.5 rounded-full text-sm border-2 border-dark shadow-[2px_2px_0px_#2B2D42]">⭐ Newbie</span>
                     </div>
                     <h1 class="text-4xl md:text-6xl font-display font-bold mb-4 leading-tight text-white drop-shadow-md">
                         Welcome Back,<br><span id="welcomeName" class="text-accent underline decoration-4 underline-offset-8">Friend</span>!
@@ -171,17 +171,17 @@
                 <div class="bg-accent p-5 rounded-[2rem] kartun-border text-center flex flex-col items-center justify-center">
                     <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center text-3xl mb-2 border-2 border-dark shadow-sm">⭐</div>
                     <p class="font-bold text-dark/70 text-sm uppercase tracking-wide">Stars</p>
-                    <p class="text-3xl font-display font-bold text-dark">120</p>
+                    <p class="text-3xl font-display font-bold text-dark" id="starsDisplay">—</p>
                 </div>
                 <div class="bg-primary p-5 rounded-[2rem] kartun-border text-center flex flex-col items-center justify-center text-white">
                     <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center text-3xl mb-2 border-2 border-dark shadow-sm">🏅</div>
                     <p class="font-bold text-white/80 text-sm uppercase tracking-wide">Badges</p>
-                    <p class="text-3xl font-display font-bold">3</p>
+                    <p class="text-3xl font-display font-bold" id="badgesDisplay">—</p>
                 </div>
                 <div class="bg-[#FF9A9E] p-5 rounded-[2rem] kartun-border text-center flex flex-col items-center justify-center text-white">
                     <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center text-3xl mb-2 border-2 border-dark shadow-sm">🔥</div>
                     <p class="font-bold text-white/80 text-sm uppercase tracking-wide">Day Streak</p>
-                    <p class="text-3xl font-display font-bold">2 <span class="text-xl">Days</span></p>
+                    <p class="text-3xl font-display font-bold" id="streakDisplay">— <span class="text-xl">Days</span></p>
                 </div>
                 <div class="bg-lightgreen p-5 rounded-[2rem] kartun-border text-center flex flex-col items-center justify-center">
                     <div class="bg-white w-14 h-14 rounded-full flex items-center justify-center text-3xl mb-2 border-2 border-dark shadow-sm">🎯</div>
@@ -301,8 +301,54 @@
     <!-- Firebase & Active Menu Logic -->
     <script type="module">
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { auth, db } from "../firebase-config.js";
+
+        const LEVELS = [
+            { min: 0,   level: 1, title: 'Newbie',       icon: '⭐' },
+            { min: 50,  level: 2, title: 'Explorer',     icon: '🔍' },
+            { min: 150, level: 3, title: 'Communicator', icon: '💬' },
+            { min: 300, level: 4, title: 'Star Speaker', icon: '🌟' },
+            { min: 500, level: 5, title: 'Champion',     icon: '🏆' },
+        ];
+
+        function getLevelData(totalScore) {
+            let current = LEVELS[0];
+            for (const l of LEVELS) { if (totalScore >= l.min) current = l; }
+            return current;
+        }
+
+        async function loadStats(userId) {
+            const q = query(collection(db, 'scores'), where('userId', '==', userId));
+            const snap = await getDocs(q);
+
+            let totalScore = 0;
+            const gameTypes = new Set();
+            const daysPlayed = new Set();
+
+            snap.forEach(d => {
+                const data = d.data();
+                totalScore += data.score || 0;
+                if (data.activityType) gameTypes.add(data.activityType);
+                if (data.playedAt) daysPlayed.add(data.playedAt.toDate().toDateString());
+            });
+
+            // Streak: count consecutive days backwards from today
+            let streak = 0;
+            const today = new Date();
+            for (let i = 0; i < 365; i++) {
+                const d = new Date(today);
+                d.setDate(today.getDate() - i);
+                if (daysPlayed.has(d.toDateString())) { streak++; } else { break; }
+            }
+
+            const lvl = getLevelData(totalScore);
+            document.getElementById('levelBadge').textContent = `Level ${lvl.level}`;
+            document.getElementById('titleBadge').textContent = `${lvl.icon} ${lvl.title}`;
+            document.getElementById('starsDisplay').textContent = totalScore;
+            document.getElementById('badgesDisplay').textContent = gameTypes.size;
+            document.getElementById('streakDisplay').innerHTML = `${streak} <span class="text-xl">Days</span>`;
+        }
 
         // --- Auto-Highlight Active Menu ---
         function highlightActiveMenu() {
@@ -352,6 +398,8 @@
                         document.getElementById('welcomeName').textContent = userData.nickname || "Friend";
                         const userNameDisplay = document.getElementById('userNameDisplay');
                         if(userNameDisplay) userNameDisplay.textContent = userData.nickname || "Student";
+
+                        await loadStats(user.uid);
                         
                     } else {
                         await signOut(auth);

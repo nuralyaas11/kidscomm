@@ -318,14 +318,14 @@
         let currentScore = 0;
         let currentLevel = 0;
         let lives = 3;
+        let maxLives = 3;
         
         // --- Game Data (Expanded) ---
         const game1Data = [
-            { img: "🎁", situasi: "A friend gives you a birthday gift.", jawapan: "Thank You", pilihan: ["I'm Sorry", "You're Welcome", "Thank You"], hint: "When receiving something, we must show appreciation." },
-            { img: "🏃💨", situasi: "You accidentally bump into a friend.", jawapan: "I'm Sorry", pilihan: ["I'm Sorry", "Thank You", "Please Sit"], hint: "When you make a mistake, quickly ask for forgiveness." },
-            { img: "🤝", situasi: "A friend helps pick up your dropped book.", jawapan: "Thank You", pilihan: ["Let me do it", "Thank You", "See You Again"], hint: "Express appreciation for help received." },
-            { img: "👋", situasi: "The school dismissal bell rings.", jawapan: "See You Again", pilihan: ["Good Morning", "Congratulations", "See You Again"], hint: "A temporary farewell greeting." },
-            { img: "🏆", situasi: "Your friend wins first place in the cross-country race.", jawapan: "Congratulations", pilihan: ["Congratulations", "I'm Sorry", "You're Welcome"], hint: "Celebrate our friend's achievement." }
+            { img: "../assets/games/match_game1.jpeg", situasi: "You accidentally bump into a friend.", jawapan: "I'm Sorry", pilihan: ["I'm Sorry", "Thank You", "See You Again"], hint: "When you hurt someone by accident, you should apologise." },
+            { img: "../assets/games/match_game2.jpeg", situasi: "A friend helps pick up your dropped book.", jawapan: "Thank You", pilihan: ["Excuse Me", "I'm Sorry", "Thank You"], hint: "We show appreciation when someone helps us." },
+            { img: "../assets/games/match_game3.jpeg", situasi: "The school dismissal bell rings.", jawapan: "See You Again", pilihan: ["Good Morning", "See You Again", "Congratulations"], hint: "A temporary farewell greeting when leaving." },
+            { img: "../assets/games/match_game4.jpeg", situasi: "You accidentally bump into a friend.", jawapan: "I'm Sorry", pilihan: ["You're Welcome", "Thank You", "I'm Sorry"], hint: "When you cause someone discomfort by accident, apologise." }
         ];
 
         const game2Data = [
@@ -409,7 +409,7 @@
             
             // Update Nyawa
             let hearts = "";
-            for(let i=0; i<3; i++) { hearts += i < lives ? "❤️" : "🖤"; }
+            for(let i=0; i<maxLives; i++) { hearts += i < lives ? "❤️" : "🖤"; }
             ui.lives.innerHTML = hearts;
         }
 
@@ -481,7 +481,7 @@
 
             // FIX: Escape single quotes in 'opt' to prevent SyntaxError in inline event handlers
             ui.board.innerHTML = `
-                <div class="text-7xl md:text-8xl mb-4 animate-pop drop-shadow-lg">${levelData.img}</div>
+                <img src="${levelData.img}" alt="situation image" class="w-full max-w-sm rounded-2xl kartun-border object-cover mb-4 animate-pop" style="max-height:200px;" />
                 <div class="flex items-center gap-3 mb-8 max-w-lg w-full">
                     <h3 class="text-lg md:text-2xl font-black text-center bg-white px-6 py-4 rounded-2xl kartun-border text-dark flex-1">${levelData.situasi}</h3>
                     <button onclick="speakText(this.dataset.text)" data-text="${levelData.situasi.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}" class="bg-white rounded-xl w-10 h-10 flex items-center justify-center border-2 border-dark hover:bg-secondary hover:text-white transition-colors shrink-0 text-lg shadow-sm" title="Read aloud">🔊</button>
@@ -503,6 +503,7 @@
             // FIX: Disable all buttons instantly to prevent multiple rapid clicks
             if (btnElement.disabled) return;
             clickSound.currentTime = 0; clickSound.play().catch(() => {});
+            speakText(selected);
             const buttons = btnElement.parentElement.querySelectorAll('button');
             buttons.forEach(btn => btn.disabled = true);
 
@@ -591,6 +592,7 @@
 
         window.addWord2 = function(word) {
             clickSound.currentTime = 0; clickSound.play().catch(() => {});
+            speakText(word);
             currentSentenceArrangement.push(word);
             renderGame2Board();
         }
@@ -619,6 +621,7 @@
                 ui.score.textContent = currentScore;
                 currentLevel++;
                 
+                speakText("Good job!");
                 showToast("✨ Smart! Your sentence is correct.", "success");
                 ui.board.classList.add('bg-green-100', 'border-green-400');
                 
@@ -664,6 +667,7 @@
                     ${shuffled.map(p => {
                         const safe = p.replace(/"/g, '&quot;');
                         return `<div draggable="true" data-phrase="${safe}" class="drag-card bg-white px-5 py-3 rounded-2xl kartun-border font-black text-base md:text-lg cursor-grab hover:bg-secondary hover:text-white transition-colors select-none"
+                            onclick="speakText(this.dataset.phrase)"
                             ondragstart="event.dataTransfer.setData('text/plain', '${p.replace(/'/g, "\\'")}'); this.classList.add('dragging')"
                             ondragend="this.classList.remove('dragging')"
                         >${p}</div>`;
@@ -744,6 +748,7 @@
             const btns = document.querySelectorAll('#roleplayOptions4 button');
             btns.forEach(b => b.disabled = true);
             const levelData = game4Data[currentLevel];
+            speakText(levelData.options[selectedIndex]);
 
             if (selectedIndex === levelData.correct) {
                 currentScore += 40;
@@ -774,6 +779,8 @@
         let canFlip = true;
 
         function loadGame5() {
+            lives = 5;
+            maxLives = 5;
             if (lives <= 0) { showGameOver(); return; }
             matchedPairs = 0;
             flippedCards = [];
@@ -791,10 +798,10 @@
             memoryCards = cards.sort(() => Math.random() - 0.5);
 
             ui.board.innerHTML = `
-                <p class="font-bold text-gray-500 mb-4 text-sm">Find all ${game5Pairs.length} matching pairs!</p>
+                <p class="font-bold text-gray-500 mb-4 text-sm" id="memoryStatusText">👀 Memorise the cards! Starting in <span id="previewCountdown">3</span>...</p>
                 <div class="grid grid-cols-4 gap-3 w-full max-w-sm md:max-w-md mx-auto" id="memoryGrid">
                     ${memoryCards.map((card, idx) => `
-                        <div class="memory-card w-full" style="height: 80px;" onclick="flipCard5(${idx})" data-index="${idx}" data-pair="${card.pairId}">
+                        <div class="memory-card flipped w-full" style="height: 80px;" onclick="flipCard5(${idx})" data-index="${idx}" data-pair="${card.pairId}">
                             <div class="memory-card-inner">
                                 <div class="memory-card-front text-2xl font-black text-white select-none">?</div>
                                 <div class="memory-card-back text-center px-1 select-none">
@@ -808,6 +815,25 @@
             `;
             // Update badge for memory game
             ui.badge.textContent = `Pairs: 0/${game5Pairs.length}`;
+
+            // Preview phase: cards shown face-up, countdown 3→2→1, then flip all back
+            canFlip = false;
+            let countdown = 3;
+            const countdownEl = document.getElementById('previewCountdown');
+            const statusEl = document.getElementById('memoryStatusText');
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    if (countdownEl) countdownEl.textContent = countdown;
+                } else {
+                    clearInterval(countdownInterval);
+                    // Flip all cards back face-down
+                    document.querySelectorAll('#memoryGrid .memory-card').forEach(el => el.classList.remove('flipped'));
+                    if (statusEl) statusEl.innerHTML = `Find all ${game5Pairs.length} matching pairs!`;
+                    statusEl.className = 'font-bold text-gray-500 mb-4 text-sm';
+                    canFlip = true;
+                }
+            }, 1000);
         }
 
         window.flipCard5 = function(idx) {
@@ -832,13 +858,16 @@
                     first.el.classList.add('matched');
                     second.el.classList.add('matched');
                     document.getElementById('matchedCount').textContent = matchedPairs;
+                    // Sync currentLevel so the progress bar updates correctly
+                    currentLevel = matchedPairs;
+                    updateProgress();
+                    // Override badge to show pairs format instead of "Level X"
                     ui.badge.textContent = `Pairs: ${matchedPairs}/${game5Pairs.length}`;
                     flippedCards = [];
                     canFlip = true;
                     showToast(`✨ Match! +10 stars`, "success");
 
                     if (matchedPairs === game5Pairs.length) {
-                        currentLevel = game5Pairs.length; // trigger win
                         setTimeout(showGameOver, 700);
                     }
                 } else {
