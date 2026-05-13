@@ -219,7 +219,7 @@
                 // Calculate average (simple formula)
                 if(allScoresSnapshot.size > 0) {
                     let totalPoin = 0;
-                    allScoresSnapshot.forEach(doc => totalPoin += doc.data().score);
+                    allScoresSnapshot.forEach(doc => totalPoin += (Number(doc.data().score) || 0));
                     let avg = Math.round(totalPoin / allScoresSnapshot.size);
                     document.getElementById('averageScore').innerHTML = `${avg}<span class="text-2xl">pts</span>`;
                 }
